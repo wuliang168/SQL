@@ -1,0 +1,8 @@
+-- HRL_V_REPORT_FIELDS
+
+select FormatCnName,FormatEnName,AlignCnName,AlignEnName,FormatDescription,SummaryFlagCnName,SummaryFlagEnName,
+report_field_guid,distribution_guid,field_guid,table_code,field_code,e_name,c_name,null_text,sort_flag_code,sort_order,
+group_flag_code,group_order,summary_flag_code,field_type_code,is_para,length,format_code,is_self_define,self_define_formula,
+display_order,is_show_para,para_function,is_display,align_flag_code,para_type_code,para_type_cn,para_type_en,display_equal_field,
+is_show_desc,sql_string,rpt_cust_sort
+from OPENQUERY(HRLINK, 'SELECT * FROM DBO.V_REPORT_FIELDS') a

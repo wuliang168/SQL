@@ -1,8 +1,10 @@
--- pVW_pEMPPayRollHRLCurMM
+-- pVW_pEMPPayRollHRLMM_all
 
 select 
 -- 工资发放月份
 a.pay_date as PayRollMonth,
+-- EMP_CODE
+a.emp_code,
 -- 员工
 (select EID from eEmployee where HRLID=a.emp_code and Status not in (4,5)) as EID,
 -- 基本工资：固定工资(考核工资)+保代津贴+保代补贴
@@ -13,6 +15,8 @@ ISNULL(a.SA_01,0)+ISNULL(a.SA_02,0)+ISNULL(a.SA_03,0) as SalaryTotal,
 ISNULL(a.SA_04,0) as BackPayBTTotal,
 -- 补贴总额
 ISNULL(a.SA_06,0) as AllowanceBTTotal,
+-- 补发&补贴总额
+ISNULL(a.SA_04,0)+ISNULL(a.SA_06,0) as BackPayAlowBTTotal,
 -- 过节费总额
 ISNULL(a.OTHER_02,0) as FestivalFeeBTTotal,
 -- 其他奖金
@@ -33,6 +37,8 @@ ISNULL(a.SB_02,0) as MedicalInsEMP,
 ISNULL(a.SB_03,0) as UnemployInsEMP,
 -- 五险一金补缴(个人)
 ISNULL(a.SB_07,0)+ISNULL(a.SB_06,0)+ISNULL(a.SB_10,0)+ISNULL(a.SB_09,0) as FundInsEMPPlusTotal,
+-- 五险一金合计(含补缴)(个人)
+ISNULL(a.SB_04,0)+ISNULL(a.SB_01,0)+ISNULL(a.SB_02,0)+ISNULL(a.SB_03,0)+ISNULL(a.SB_07,0)+ISNULL(a.SB_06,0)+ISNULL(a.SB_10,0)+ISNULL(a.SB_09,0) as FundInsEMPTotal,
 -- 专项附加扣除
 ISNULL(a.OTHER_10001,0)+ISNULL(a.OTHER_10002,0)+ISNULL(a.OTHER_10003,0)+ISNULL(a.OTHER_10004,0)+ISNULL(a.OTHER_10005,0)+ISNULL(a.OTHER_10006,0) as PITSpclMinusTotal,
 -- 应税额：固定工资+保代津贴+补发工资+税前补贴+过节费+奖金-税前扣款-五险一金-专项附加扣除

@@ -15,4 +15,4 @@ a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.
 e.kpiDepID as KPIDepID,d.DepAbbr as DepTitle,d.DepProperty1 as DepProperty1,c.Title as JobTitle,a.Status as Status,a.EmpGrade as EmpGrade,ISNULL(e.pegroup,e.perole) as CompPartTime,b.JoinDate as JoinDate
 from eEmployee a,eStatus b,oJob c,oDepartment d,pEmployee_register e
 where a.EID=b.EID and a.JobID=c.JobID and a.DepID=d.DepID
-and a.EID=e.EID and a.DepID not in (349)
+and a.EID=e.EID

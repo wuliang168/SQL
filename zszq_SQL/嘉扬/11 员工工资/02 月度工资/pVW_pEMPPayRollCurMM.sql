@@ -2,57 +2,62 @@
 
 select 
 -- 工资发放月份
-a.pay_date as PayRollMonth,
+b.Date as PayRollMonth,
 -- 员工
-(select EID from eEmployee where HRLID=a.emp_code and Status not in (4,5)) as EID,
+a.EID as EID,
 -- 基本工资：固定工资(考核工资)+保代津贴+保代补贴
 --- 转正前后工资计算
 ---- 未转正人员或者已转正但转正月份和发薪月份相同，固定工资80%(未包含考核工资)
-ISNULL(a.SA_01,0)+ISNULL(a.SA_02,0)+ISNULL(a.SA_03,0) as SalaryTotal,
+ISNULL(a.SalaryPerMM,0)+ISNULL(a.SponsorAllowance,0)+ISNULL(a.CheckUpSalary,0) as SalaryTotal,
 -- 补发总额
-(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (1,2,3,4,5,6,7)) as BackPayBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (1,2,3,4,5,6,7) and DATEDIFF(MM,Date,b.Date)=0) as BackPayBTTotal,
 -- 补贴总额
-(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (8,9,10,11,12)) as AllowanceBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (8,9,10,11,12) and DATEDIFF(MM,Date,b.Date)=0) as AllowanceBTTotal,
 -- 过节费总额
-ISNULL(a.OTHER_02,0) as FestivalFeeBTTotal,
+(select FestivalFee from pEMPFestivalFeePerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as FestivalFeeBTTotal,
 -- 其他奖金
-ISNULL(a.SA_15,0) as GeneralBonus,
+NULL as GeneralBonus,
 -- 考核扣款总额
-(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (13,14,15)) as DeductionBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (13,14,15) and DATEDIFF(MM,Date,b.Date)=0) as DeductionBTTotal,
 -- 应发工资：固定工资+保代津贴+补发工资+税前补贴+过节费+奖金-税前扣款
-ISNULL(a.AC_01,0) as TotalPayAmount,
+NULL as TotalPayAmount,
 -- 一次性奖金
-ISNULL(a.SA_11,0) as OneTimeAnnualBonus,
+NULL as OneTimeAnnualBonus,
 -- 公积金(个人)
-ISNULL(a.SB_04,0) as HousingFundEMP,
+(select ISNULL(HousingFundEMP,0) from pEMPHousingFundPerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as HousingFundEMP,
 -- 养老保险(个人)
-ISNULL(a.SB_01,0) as EndowInsEMP,
+(select ISNULL(EndowInsEMP,0) from pEMPInsurancePerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as EndowInsEMP,
 -- 医疗保险(个人)
-ISNULL(a.SB_02,0) as MedicalInsEMP,
+(select ISNULL(MedicalInsEMP,0) from pEMPInsurancePerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as MedicalInsEMP,
 -- 失业保险(个人)
-ISNULL(a.SB_03,0) as UnemployInsEMP,
+(select ISNULL(UnemployInsEMP,0) from pEMPInsurancePerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as UnemployInsEMP,
 -- 五险一金补缴(个人)
-ISNULL(a.SB_07,0)+ISNULL(a.SB_06,0)+ISNULL(a.SB_10,0)+ISNULL(a.SB_09,0) as FundInsEMPPlusTotal,
+---- 社保补缴
+(select ISNULL(EndowInsEMPPlus,0)+ISNULL(MedicalInsEMPPlus,0)+ISNULL(UnemployInsEMPPlus,0) 
+from pEMPInsurancePerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0)
+---- 公积金补缴
++(select ISNULL(HousingFundEMPPlus,0) from pEMPHousingFundPerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as FundInsEMPPlusTotal,
 -- 专项附加扣除
-ISNULL(a.OTHER_10001,0)+ISNULL(a.OTHER_10002,0)+ISNULL(a.OTHER_10003,0)+ISNULL(a.OTHER_10004,0)+ISNULL(a.OTHER_10005,0)+ISNULL(a.OTHER_10006,0) as PITSpclMinusTotal,
+(select ISNULL(ChildEdu,0)+ISNULL(ContEdu,0)+ISNULL(CritiIll,0)+ISNULL(HousLoanInte,0)+ISNULL(HousRent,0)+ISNULL(SuppElder,0) 
+from pPITSpclMinusPerMM where EID=a.EID and DATEDIFF(MM,Date,b.Date)=0) as PITSpclMinusTotal,
 -- 应税额：固定工资+保代津贴+补发工资+税前补贴+过节费+奖金-税前扣款-五险一金-专项附加扣除
-ISNULL(a.AC_02,0) as TotalTaxAmount,
+NULL as TotalTaxAmount,
 -- 个人所得税总计
-ISNULL(a.TX_IIT,0) as PersonalIncomeTax,
+NULL as PersonalIncomeTax,
 -- 一次性奖金税
-ISNULL(a.TX_bit,0) as OneTimeAnnualBonusTax,
+NULL as OneTimeAnnualBonusTax,
 -- 税后补贴合计
-ISNULL(a.OTHER_03,0) as AllowanceATTotal,
+NULL as AllowanceATTotal,
 -- 税后扣款合计
-ISNULL(a.SA_09,0) as DeductionATTotal,
+NULL as DeductionATTotal,
 -- 个税手续费返还
 --as TaxFeeReturnAT,
 -- 企业年金(个人)
-ISNULL(a.SA_34,0) as PensionEMP,
+NULL as PensionEMP,
 -- 企业年金(个人)抵税额
-ISNULL(a.SA_35,0) as PensionEMPBT,
+NULL as PensionEMPBT,
 -- 实发工资
-ISNULL(a.net,0) as FinalPayingAmount,
+NULL as FinalPayingAmount,
 -- 备注
 NULL as Remark
 from pVW_pEMPEmolu a,pSalaryPerMonth b

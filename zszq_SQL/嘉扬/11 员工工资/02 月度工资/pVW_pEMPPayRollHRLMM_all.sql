@@ -61,4 +61,4 @@ ISNULL(a.SA_35,0) as PensionEMPBT,
 ISNULL(a.net,0) as FinalPayingAmount,
 -- 备注
 NULL as Remark
-from pEMPHRLINKPerMM_all a
+from pEMPPayRollHRLPerMM_all a

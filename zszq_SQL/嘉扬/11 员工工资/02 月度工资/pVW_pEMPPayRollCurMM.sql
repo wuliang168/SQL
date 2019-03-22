@@ -10,15 +10,15 @@ a.pay_date as PayRollMonth,
 ---- 未转正人员或者已转正但转正月份和发薪月份相同，固定工资80%(未包含考核工资)
 ISNULL(a.SA_01,0)+ISNULL(a.SA_02,0)+ISNULL(a.SA_03,0) as SalaryTotal,
 -- 补发总额
-ISNULL(a.SA_04,0) as BackPayBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (1,2,3,4,5,6,7)) as BackPayBTTotal,
 -- 补贴总额
-ISNULL(a.SA_06,0) as AllowanceBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (8,9,10,11,12)) as AllowanceBTTotal,
 -- 过节费总额
 ISNULL(a.OTHER_02,0) as FestivalFeeBTTotal,
 -- 其他奖金
 ISNULL(a.SA_15,0) as GeneralBonus,
 -- 考核扣款总额
-ISNULL(a.SA_07,0) as DeductionBTTotal,
+(select BTATPay from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (13,14,15)) as DeductionBTTotal,
 -- 应发工资：固定工资+保代津贴+补发工资+税前补贴+过节费+奖金-税前扣款
 ISNULL(a.AC_01,0) as TotalPayAmount,
 -- 一次性奖金
@@ -55,4 +55,6 @@ ISNULL(a.SA_35,0) as PensionEMPBT,
 ISNULL(a.net,0) as FinalPayingAmount,
 -- 备注
 NULL as Remark
-from pEMPHRLINKPerMM_all a
+from pVW_pEMPEmolu a,pSalaryPerMonth b
+where a.Status in (1,2,3) and a.SalaryPayID not in (6,8,17,18)
+and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0

@@ -22,15 +22,20 @@ As
 Begin
 	Declare @tax decimal(10,2)
 
-	-- 新个人所得税
+	-- 新个人所得税(月)
+	select @tax=ROUND(@salary*TaxRate,2)-QuickCalcDed
+	from oCD_TaxRateType
+	where TaxRangeLowerLimit<=@salary and @salary<=ISNULL(TaxRangeUpperLimit,99999999) and TaxRateType=@type and @type=1
+
+	-- 新个人所得税(年)
 	select @tax=ROUND(@salary*TaxRate,2)-QuickCalcDed
 	from oCD_TaxRateType
 	where TaxRangeLowerLimit<=@salary and @salary<=ISNULL(TaxRangeUpperLimit,99999999) and TaxRateType=@type and @type=2
 
 	-- 新一次性奖金税
-	select @tax=ROUND(@salary*12*TaxRate,2)-QuickCalcDed
+	select @tax=ROUND(@salary*TaxRate,2)-QuickCalcDed
 	from oCD_TaxRateType
-	where TaxRangeLowerLimit<=@salary and @salary<=ISNULL(TaxRangeUpperLimit,99999999) and TaxRateType=@type and @type=3
+	where TaxRangeLowerLimit<=@salary/12 and @salary/12<=ISNULL(TaxRangeUpperLimit,99999999) and TaxRateType=@type and @type=3
 
 	return @tax
 

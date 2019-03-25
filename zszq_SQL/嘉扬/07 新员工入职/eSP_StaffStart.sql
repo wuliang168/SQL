@@ -628,6 +628,14 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+    -- 专项附加扣除项添加
+    insert into pPITSpclMinus(eid)
+    select eid
+    from eemployee a
+    where a.EID=@EID and a.EID not in (select EID from pPITSpclMinus)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 年金
     ---- 前台转后台；根据身份证编号

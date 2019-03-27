@@ -1,6 +1,7 @@
 -- pVW_pEMPEmolu
-select a.EID as EID,b.Badge as Badge,b.Name as Name,j.Gender as Gender,a.IsAppraised as IsAppraised,a.AppraisedDate as AppraisedDate,j.CertNo as CertNo,b.CompID as CompID,
-dbo.eFN_getdepid1st(b.DepID) as DepID1,dbo.eFN_getdepid2nd(b.DepID) as DepID2,dbo.eFN_getdepid3th(b.DepID) as DepID3,dbo.eFN_getdepid4th(b.DepID) as DepID4,
+
+select a.EID as EID,b.HRLID as HRLID,b.Badge as Badge,b.Name as Name,j.Gender as Gender,a.IsAppraised as IsAppraised,a.AppraisedDate as AppraisedDate,j.CertNo as CertNo,
+b.CompID as CompID,dbo.eFN_getdepid1st(b.DepID) as DepID1,dbo.eFN_getdepid2nd(b.DepID) as DepID2,dbo.eFN_getdepid3th(b.DepID) as DepID3,dbo.eFN_getdepid4th(b.DepID) as DepID4,
 h.DepType as DepType,h.DepProperty as DepProperty,b.JobID as JobID,g.JobProperty1 as JobProperty,
 (case when b.EmpGrade=3 then l.Title else m.Title end) as EmpGrade,
 i.JoinDate as JoinDate,i.LeaDate as LeaDate,b.Status as Status,i.LeaReason as LeaReason,

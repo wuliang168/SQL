@@ -51,24 +51,26 @@ Begin
 
 
     -- 插入月度工资流程的部门月度工资流程表项pDepSalaryPerMonth
-    insert into pDepSalaryPerMonth(Date,SupDepID,DepID,Status,SalaryPayID,SalaryContact,IsSubmit)
+    insert into pDepSalaryPerMonth(Date,DepID1st,DepID2nd,Status,SalaryPayID,SalaryContact,IsSubmit)
     select b.Date,a.SupDepID,a.DepID,a.Status,a.SalaryPayID,a.SalaryContact,NULL
     from pVW_DepSalaryContact a,pSalaryPerMonth b
     where b.ID=@ID
-    -- 营业部
-    and ((a.DepID is not NULL and a.DepID not in (select DepID from pDepSalaryPerMonth where DATEDIFF(MM,b.Date,Date)=0))
-    -- 非营业部
-    or (a.DepID is NULL and a.SalaryPayID not in (select SalaryPayID from pDepSalaryPerMonth where DATEDIFF(MM,b.Date,Date)=0)))
+    ---- 非营业部
+    and a.SupDepID is NULL
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 通讯费
     ---- 总部人员(工资发放)
-    insert into pEMPCommPerMM (EID,Date,CommAllowance,CommAllowanceType)
-    select a.EID,b.Date,a.CommAllowance,a.CommAllowanceType
-    from pEMPTrafficComm a,pSalaryPerMonth b,eEmployee c
-    where b.ID=@ID and a.EID=c.EID and dbo.eFN_getdeptype(c.DepID) in (1,4) and c.Status in (1,2,3)
+    insert into pEMPCommPerMM (EID,Date,CommAllowance,CommAllowanceTotal,CommAllowanceType,Remark,JoinDate)
+    select a.EID,b.Date,a.CommAllowance,
+    ------ 上月新入职员工，10日前补1个月，10日后不补
+    a.CommAllowance*(case when DATEDIFF(mm,d.JoinDate,b.Date)=1 and DAY(d.JoinDate)<=10 then 2 else 1 end),
+    a.CommAllowanceType,(case when DATEDIFF(mm,d.JoinDate,b.Date)=1 then N'新入职' else NULL end),
+    (case when DATEDIFF(mm,d.JoinDate,b.Date)=1 then d.Joindate else NULL end)
+    from pEMPTrafficComm a,pSalaryPerMonth b,eEmployee c,eStatus d
+    where b.ID=@ID and a.EID=c.EID and c.EID=d.EID and dbo.eFN_getdeptype(c.DepID) in (1,4) and c.Status in (1,2,3)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -119,6 +121,21 @@ Begin
     and DATEDIFF(dd,d.term,a.LeaveBeginDate)>=0 and DATEDIFF(DD,a.LeaveEndDate,d.Term)>=0 and ApprDep=N'绩效管理室' and d.xType=1
     and DATEDIFF(MM,a.ApprTime,b.Date)=1 and a.LeaveType=2
     group by a.EID,b.Date,e.SalaryPerMM,e.SponsorAllowance,e.Cyear
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    -- 专项附加扣除项
+    insert into pPITSpclMinusPerMM(EID,Date,ChildEdu,ContEdu,CritiIll,HousLoanInte,HousRent,SuppElder)
+    select a.EID,b.Date,
+    ISNULL(a.ChildEdu,0)+(select ISNULL(ChildEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
+    ISNULL(a.ContEdu,0)+(select ISNULL(ContEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
+    ISNULL(a.CritiIll,0)+(select ISNULL(CritiIll,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
+    ISNULL(a.HousLoanInte,0)+(select ISNULL(HousLoanInte,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
+    ISNULL(a.HousRent,0)+(select ISNULL(HousRent,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
+    ISNULL(a.SuppElder,0)+(select ISNULL(SuppElder,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1)
+    from pPITSpclMinus a,pSalaryPerMonth b,eEmployee c
+    where b.ID=@ID and a.EID=c.EID and c.Status in (1,2,3)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

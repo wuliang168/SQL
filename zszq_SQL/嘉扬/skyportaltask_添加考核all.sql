@@ -71,13 +71,9 @@ SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600021'',''月�
 ISNULL(a.kpiReportTo, 5256) AS approver, 3 AS id
 FROM pEmpProcess_Month a
 WHERE ISNULL(a.Closed, 0)  = 0
---AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=1)
---AND DATEPART(dd,GETDATE()) BETWEEN 16 AND 31
---AND ISNULL(a.kpiReportTo,0) <> 0
-AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=2)
+AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=1)
+AND DATEPART(dd,GETDATE()) BETWEEN 16 AND 31
 AND ISNULL(a.kpiReportTo,0) <> 0
-and a.kpiReportTo=(select EID from eEmployee where name=N'张丽英')
-
 
 -- 月工作计划评分(新)
 --UNION
@@ -169,14 +165,16 @@ WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit
 
 --------------- 月度工资 ------------
 ---- 薪酬类型非营业部;
---UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.550010'',''leftid^' + cast(a.SalaryPayID AS nvarchar(15)) + 
---N''',''月度工资分配反馈'')">请您完成' + cast(datepart(yy, a.Date) AS varchar(10)) + N'年' + 
---cast(datepart(mm, a.Date) AS varchar(10)) + N'月' + b.Title + N'员工月度工资分配</a>' AS url, 
---a.SalaryContact AS approver, 1 AS id
---FROM pDepSalaryPerMonth a,oCD_SalaryPayType b
---WHERE a.SalaryPayID=b.ID AND a.SalaryPayID not in (6,8) AND ISNULL(IsSubmit,0)=0 AND a.SalaryContact is not NULL
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.550010'',''leftid^' + cast(a.SalaryPayID AS nvarchar(15)) + 
+N''',''月度工资分配反馈'')">请您完成' + cast(datepart(yy, a.Date) AS varchar(10)) + N'年' + 
+cast(datepart(mm, a.Date) AS varchar(10)) + N'月' + b.Title + N'员工月度工资分配</a>' AS url, 
+a.SalaryContact AS approver, 1 AS id
+FROM pDepSalaryPerMonth a,oCD_SalaryPayType b,pSalaryPerMonth c
+WHERE a.SalaryPayID=b.ID AND a.SalaryContact is not NULL AND DATEDIFF(MM,a.Date,c.Date)=0
+AND ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0
+AND ISNULL(c.Submit,0)=1 AND ISNULL(c.Closed,0)=0
 ---- 薪酬类型为营业部;
 --UNION
 --SELECT DISTINCT

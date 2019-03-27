@@ -52,7 +52,7 @@ ISNULL(a.OTHER_03,0) as AllowanceATTotal,
 -- 税后扣款合计
 ISNULL(a.SA_09,0) as DeductionATTotal,
 -- 个税手续费返还
---as TaxFeeReturnAT,
+ISNULL(NULL,0) as TaxFeeReturnAT,
 -- 企业年金(个人)
 ISNULL(a.SA_34,0) as PensionEMP,
 -- 企业年金(个人)抵税额

@@ -175,6 +175,19 @@ FROM pDepSalaryPerMonth a,oCD_SalaryPayType b,pSalaryPerMonth c
 WHERE a.SalaryPayID=b.ID AND a.SalaryContact is not NULL AND DATEDIFF(MM,a.Date,c.Date)=0
 AND ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0
 AND ISNULL(c.Submit,0)=1 AND ISNULL(c.Closed,0)=0
+AND a.SalaryPayID in (1,3,4,5,7,17)
+---- 通讯费&过节费
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.550050'',''leftid^' + cast(a.SalaryPayID AS nvarchar(15)) + 
+N''',''月度工资分配反馈'')">请您完成' + cast(datepart(yy, a.Date) AS varchar(10)) + N'年' + 
+cast(datepart(mm, a.Date) AS varchar(10)) + N'月' + b.Title + N'员工月度工资分配</a>' AS url, 
+a.SalaryContact AS approver, 1 AS id
+FROM pDepSalaryPerMonth a,oCD_SalaryPayType b,pSalaryPerMonth c
+WHERE a.SalaryPayID=b.ID AND a.SalaryContact is not NULL AND DATEDIFF(MM,a.Date,c.Date)=0
+AND ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0
+AND ISNULL(c.Submit,0)=1 AND ISNULL(c.Closed,0)=0
+AND a.SalaryPayID=20
 ---- 薪酬类型为营业部;
 --UNION
 --SELECT DISTINCT

@@ -2,7 +2,7 @@
 ---- 薪酬类型非营业部;
 select NULL as SupDepID,NULL as DepID,1 as Status,a.ID as SalaryPayID,a.SalaryContact as SalaryContact
 from oCD_SalaryPayType a
-where a.ID in (1,3,4,5,7,17)
+where a.ID in (1,3,4,5,7,17,20)
 
 ---- 在职或退休;薪酬类型为营业部;
 ---- status:1表示在职; SalaryPayID: 6表示薪酬类型为营业部

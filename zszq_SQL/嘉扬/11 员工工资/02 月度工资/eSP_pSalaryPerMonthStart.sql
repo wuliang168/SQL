@@ -128,12 +128,12 @@ Begin
     -- 专项附加扣除项
     insert into pPITSpclMinusPerMM(EID,Date,ChildEdu,ContEdu,CritiIll,HousLoanInte,HousRent,SuppElder)
     select a.EID,b.Date,
-    ISNULL(a.ChildEdu,0)+(select ISNULL(ChildEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
-    ISNULL(a.ContEdu,0)+(select ISNULL(ContEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
-    ISNULL(a.CritiIll,0)+(select ISNULL(CritiIll,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
-    ISNULL(a.HousLoanInte,0)+(select ISNULL(HousLoanInte,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
-    ISNULL(a.HousRent,0)+(select ISNULL(HousRent,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1),
-    ISNULL(a.SuppElder,0)+(select ISNULL(SuppElder,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1)
+    ISNULL(a.ChildEdu,0)+(select ISNULL(ChildEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0),
+    ISNULL(a.ContEdu,0)+(select ISNULL(ContEdu,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0),
+    ISNULL(a.CritiIll,0)+(select ISNULL(CritiIll,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0),
+    ISNULL(a.HousLoanInte,0)+(select ISNULL(HousLoanInte,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0),
+    ISNULL(a.HousRent,0)+(select ISNULL(HousRent,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0),
+    ISNULL(a.SuppElder,0)+(select ISNULL(SuppElder,0) from pPITSpclMinusPerMM_all where EID=a.EID and DATEDIFF(MM,Date,b.Date)=1 and DATEDIFF(YY,Date,b.Date)=0)
     from pPITSpclMinus a,pSalaryPerMonth b,eEmployee c
     where b.ID=@ID and a.EID=c.EID and c.Status in (1,2,3)
     -- 异常流程

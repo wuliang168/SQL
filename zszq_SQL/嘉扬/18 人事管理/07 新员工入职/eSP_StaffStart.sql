@@ -5,85 +5,85 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER procedure  [dbo].[eSP_StaffStart]                                                      
---skydatarefresh eSP_StaffStart 45,0                                                                             
- @ID  Int,                                                   
- @URID int,                                                                                                 
- @RetVal Int =0 OUTPUT                                                                                                  
-As                                                                                                           
-/*                                                                
--- Create By kayang                                                   
--- 员工入职处理程序                                                  
--- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取                                              
-alter by Jimmy                                                  
-*/                                                                                               
-Declare @badge varchar(20),                                                                                               
-        @EID int,                                
-        @depid int                                                  
-                                                                                            
-Begin                                                                                                  
- --数据还未确认！                                                                                            
- If Exists(Select 1 From estaff_Register                                                                                             
- Where ID=@ID And Isnull(Initialized,0)=0 )                                                                                            
- Begin                                                                                            
-  Set @RetVal = 910020                                                                                         
-  Return @RetVal                                                                                            
- End                                                                                                   
-                                                                                             
+ALTER procedure  [dbo].[eSP_StaffStart]
+--skydatarefresh eSP_StaffStart 45,0
+ @ID  Int,
+ @URID int,
+ @RetVal Int =0 OUTPUT
+As
+/*
+-- Create By kayang
+-- 员工入职处理程序
+-- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取
+alter by Jimmy
+*/
+Declare @badge varchar(20),
+        @EID int,
+        @depid int
+
+Begin
+ --数据还未确认！
+ If Exists(Select 1 From estaff_Register
+ Where ID=@ID And Isnull(Initialized,0)=0 )
+ Begin
+  Set @RetVal = 910020
+  Return @RetVal
+ End
+
  ----请先分配员工工号!                                                                                                  
- --IF Exists(Select 1 From eStaff_register                                                                                     
- --Where ID=@ID and Badge Is Null)                                                                                                  
- --Begin                                                                                                  
- -- Set @Retval=920038                                                                                              
- -- Return @Retval                                                                                                  
- --End                           
-                           
-  --入职日期不是操作当天，无法入职处理，请联系总部综合人事庄武君处理，0571-87903100!                                                                                 
-    --if Exists(Select 1 from eStaff_Register Where ID=@ID And datediff(D,Joindate,GETDATE())<>0                           
+ --IF Exists(Select 1 From eStaff_register
+ --Where ID=@ID and Badge Is Null)
+ --Begin
+ -- Set @Retval=920038
+ -- Return @Retval
+ --End
+
+  --入职日期不是操作当天，无法入职处理，请联系总部综合人事庄武君处理，0571-87903100!
+    --if Exists(Select 1 from eStaff_Register Where ID=@ID And datediff(D,Joindate,GETDATE())<>0
     --   and (@URID not in (2108,1,2196,5660))
-    --     )                                                                                                             
-    --Begin                                                                                         
-    --     Set @RetVal=920097                                      
-    --     Return @RetVal                                                                                                           
-    --End                                                                                                  
-                                             
- -- 入职信息检查,防止入职信息确认通过之后长时间不处理，校验条件发生变化                                                                                            
- Exec eSP_StaffCheckSub @ID,@RetVal output                                     
-             
- If @RetVal <> 0                                                               
- Return @RetVal                                                                      
-                                                                                            
+    --     )
+    --Begin
+    --     Set @RetVal=920097
+    --     Return @RetVal
+    --End
+
+ -- 入职信息检查,防止入职信息确认通过之后长时间不处理，校验条件发生变化
+ Exec eSP_StaffCheckSub @ID,@RetVal output
+
+ If @RetVal <> 0
+ Return @RetVal
+
  Begin TRANSACTION
- --分配工号                              
- if exists(select 1 from eStaff_Register where ID=@ID and Type=1)                                      
- begin                                              
- exec eSP_StaffBadge @id,@RetVal                                      
- end                                                                
- /* 1                                                                                                
- 将员工信息插入eemployee表，EID自增生成，同时eemployee的insert触发器会将EID插入estatus\edetails\ephoto以及相关模块接口表                                                                                                
- */                                                  
- --入职                                                                                            
- if exists(select 1 from eStaff_Register where ID=@ID and Type=1)                                                    
- begin                                                                            
- insert into eemployee(Badge,Name,EName,CompID,DepID,JobID,Status,ReportTo,wfreportto,EmpType,EmpGrade,hrg,                                                
-  EmpCategory,EmpProperty,EmpGroup,EmpKind,WorkCity,EZID)                                                                                            
- select Badge,Name,EName,CompID,DepID,JobID,Status,ReportTo,wfreportto,EmpType,EmpGrade,hrg,                                                   
-  EmpCategory,EmpProperty,EmpGroup,EmpKind,WorkCity,EZID                                                                                        
- from estaff_register                                                                     
- where id=@id                                                                                  
-                                                                 
-                                                                                  
- IF @@Error <> 0                                                                              
- Goto ErrM                                                    
-                                                
+ --分配工号
+ if exists(select 1 from eStaff_Register where ID=@ID and Type=1)
+ begin
+ exec eSP_StaffBadge @id,@RetVal
+ end
+ /* 1
+ 将员工信息插入eemployee表，EID自增生成，同时eemployee的insert触发器会将EID插入estatus\edetails\ephoto以及相关模块接口表
+ */
+ --入职
+ if exists(select 1 from eStaff_Register where ID=@ID and Type=1)
+ begin
+ insert into eemployee(Badge,Name,EName,CompID,DepID,JobID,Status,ReportTo,wfreportto,EmpType,EmpGrade,hrg,
+  EmpCategory,EmpProperty,EmpGroup,EmpKind,WorkCity,EZID)
+ select Badge,Name,EName,CompID,DepID,JobID,Status,ReportTo,wfreportto,EmpType,EmpGrade,hrg,
+  EmpCategory,EmpProperty,EmpGroup,EmpKind,WorkCity,EZID
+ from estaff_register
+ where id=@id
+
+
+ IF @@Error <> 0
+ Goto ErrM
+
  Select @badge = badge From estaff_register Where ID=@ID
- Select @EID=Max(EID) From eEmployee Where Badge=@Badge                                
- Select @depid=depid From eEmployee Where Badge=@Badge                                                   
- end                                                  
- --复职 add by Jimmy                                              
- if exists(select 1 from eStaff_Register where ID=@ID and Type=2)                                                    
- begin                                                  
-                                               
+ Select @EID=Max(EID) From eEmployee Where Badge=@badge
+ Select @depid=depid From eEmployee Where Badge=@Badge
+ end
+ --复职 add by Jimmy
+ if exists(select 1 from eStaff_Register where ID=@ID and Type=2)
+ begin
+
  Select @badge = badge From estaff_register Where ID=@ID                                                 
  select @eid=OldEID From estaff_register Where ID=@ID                                               
                                                
@@ -561,7 +561,6 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
-
     -- 薪酬信息
     ---- 薪酬更新
     insert into pEmployeeEmolu(eid)

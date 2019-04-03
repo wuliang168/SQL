@@ -29,9 +29,19 @@ Begin
 
     -- 更新pEMPInsHFChange_register
     insert into pEMPInsHFChange_register(EID,CompID,DepID1st,DepID2nd,JobID,InsHFChangeType,
+    EMPInsBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,EMPHFBase,EMPInsDate,EMPHFDate,
     EMPInsDepart,EMPInsLoc,EMPHFDepart,EMPHFLoc,EMPInsDepart_Orig,EMPInsLoc_Orig,EMPHFDepart_Orig,EMPHFLoc_Orig)
     select @EID,(select CompID from eEmployee where EID=@EID),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=@EID),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=@EID),(select JobID from eEmployee where EID=@EID),@InsHFChangeType,
+    (case when @InsHFChangeType=3 then (select EMPInsuranceBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPEndowBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPMedicalBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPUnemployBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPMaternityBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPInjuryBase from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPHousingFundBase from pEMPHousingFund where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPInsuranceDate from pEMPInsurance where EID=@EID) else NULL end),
+    (case when @InsHFChangeType=3 then (select EMPHousingFundDate from pEMPHousingFund where EID=@EID) else NULL end),
     (case when @InsHFChangeType=3 then (select EMPInsuranceDepart from pEMPInsurance where EID=@EID) else NULL end),
     (case when @InsHFChangeType=3 then (select EMPInsuranceLoc from pEMPInsurance where EID=@EID) else NULL end),
     (case when @InsHFChangeType=3 then (select EMPHousingFundDepart from pEMPHousingFund where EID=@EID) else NULL end),

@@ -20,7 +20,7 @@ Begin
 
     -- 员工社保或公积金基数为空，无法递交!
     If Exists(Select 1 From pEMPInsHFChange_register Where EID=@EID and InsHFChangeType=@InsHFChangeType
-    and (EMPInsBase is NULL or EMPHFBase is NULL))
+    and (EMPInsBase is NULL or EMPHFBase is NULL) and @InsHFChangeType in (1,2))
     Begin
         Set @RetVal = 950210
         Return @RetVal
@@ -28,7 +28,7 @@ Begin
 
     -- 员工社保或公积金归属部门为空，无法递交!
     If Exists(Select 1 From pEMPInsHFChange_register Where EID=@EID and InsHFChangeType=@InsHFChangeType
-    and (EMPInsDepart is NULL or EMPHFDepart is NULL))
+    and (EMPInsDepart is NULL or EMPHFDepart is NULL) and @InsHFChangeType in (1,2))
     Begin
         Set @RetVal = 950220
         Return @RetVal
@@ -36,7 +36,7 @@ Begin
 
     -- 员工社保或公积金缴纳地为空，无法递交!
     If Exists(Select 1 From pEMPInsHFChange_register Where EID=@EID and InsHFChangeType=@InsHFChangeType
-    and (EMPInsLoc is NULL or EMPHFLoc is NULL))
+    and (EMPInsLoc is NULL or EMPHFLoc is NULL) and @InsHFChangeType in (1,2))
     Begin
         Set @RetVal = 950230
         Return @RetVal
@@ -44,7 +44,7 @@ Begin
 
     -- 员工社保或公积金起缴时间为空，无法递交!
     If Exists(Select 1 From pEMPInsHFChange_register Where EID=@EID and InsHFChangeType=@InsHFChangeType
-    and (EMPInsDate is NULL or EMPHFDate is NULL))
+    and (EMPInsDate is NULL or EMPHFDate is NULL) and @InsHFChangeType in (1,2))
     Begin
         Set @RetVal = 950240
         Return @RetVal
@@ -75,6 +75,7 @@ Begin
     where EID=@EID and InsHFChangeType=@InsHFChangeType 
 
     -- 更新pEMPInsurance
+    ---- 入职；转移
     update a
     set a.EMPInsuranceBase=b.EMPInsBase,a.EMPEndowBase=ISNULL(b.EMPEndowBase,b.EMPInsBase),a.EMPMedicalBase=ISNULL(b.EMPMedicalBase,b.EMPInsBase),
     a.EMPUnemployBase=ISNULL(b.EMPUnemployBase,b.EMPInsBase),a.EMPMaternityBase=ISNULL(b.EMPMaternityBase,b.EMPInsBase),a.EMPInjuryBase=ISNULL(b.EMPInjuryBase,b.EMPInsBase),
@@ -82,18 +83,19 @@ Begin
     a.EMPInsuranceLoc=b.EMPInsLoc,a.EMPInsuranceDepart=b.EMPInsDepart
     from pEMPInsurance a,pEMPInsHFChange_register b
     where b.EID=@EID and b.InsHFChangeType=@InsHFChangeType 
-    and a.EID=b.EID
+    and a.EID=b.EID and @InsHFChangeType in (1,2)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 更新pEMPHousingFund
+    ---- 入职；转移
     update a
     set a.EMPHousingFundBase=b.EMPHFBase,a.EMPHousingFundDate=b.EMPHFDate,
     a.EMPHousingFundLoc=b.EMPHFLoc,a.EMPHousingFundDepart=b.EMPHFDepart
     from pEMPHousingFund a,pEMPInsHFChange_register b
     where b.EID=@EID and b.InsHFChangeType=@InsHFChangeType 
-    and a.EID=b.EID
+    and a.EID=b.EID and @InsHFChangeType in (1,2)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

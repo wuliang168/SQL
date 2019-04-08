@@ -1,4 +1,4 @@
--- pVW_pEMPPayRollHRLCurMM
+-- pVW_pEMPPayRollCurMM
 
 select 
 -- 工资发放月份
@@ -42,11 +42,11 @@ a.PITSpclMinusTotal as PITSpclMinusTotal,
 a.SalaryTotal+a.BackPayBTTotal+a.FestivalFeeBTTotal+a.GeneralBonus-a.DeductionBTTotal
 -a.HousingFundEMP-a.MedicalInsEMP-a.UnemployInsEMP-a.FundInsEMPPlusTotal-a.PITSpclMinusTotal as TotalTaxAmount,
 -- 个人所得税总计
-dbo.eFN_getPersonalIncomeTax((select ISNULL(TotalTaxAmountYY,0) from pVW_pEMPPayRollYY_all where DATEDIFF(mm,PayRollMonth,a.PayRollMonth)=1)
+dbo.CFN_GETMAX(dbo.eFN_getPersonalIncomeTax(dbo.CFN_GETMAX(ISNULL((select TotalTaxAmountYY from pVW_pEMPPayRollYY_all where DATEDIFF(mm,PayRollMonth,a.PayRollMonth)=1 and EID=a.EID),0)
 +a.SalaryTotal+a.BackPayBTTotal+a.FestivalFeeBTTotal+a.GeneralBonus-a.DeductionBTTotal
--a.HousingFundEMP-a.MedicalInsEMP-a.UnemployInsEMP-a.FundInsEMPPlusTotal-a.PITSpclMinusTotal-a.PensionEMPBT
--(select ISNULL(TaxBase,0) from oCD_TaxRateType where ID=1),2)
--(select ISNULL(PersonalIncomeTaxYY,0) from pVW_pEMPPayRollYY_all where DATEDIFF(mm,PayRollMonth,a.PayRollMonth)=1) as PersonalIncomeTax,
+-a.HousingFundEMP-a.EndowInsEMP-a.MedicalInsEMP-a.UnemployInsEMP-a.FundInsEMPPlusTotal-a.PITSpclMinusTotal-a.PensionEMPBT
+-ISNULL((select ISNULL(TaxBase,0) from oCD_TaxRateType where ID=1),0),0),2)
+-ISNULL((select ISNULL(PersonalIncomeTaxYY,0) from pVW_pEMPPayRollYY_all where DATEDIFF(mm,PayRollMonth,a.PayRollMonth)=1 and EID=a.EID),0),0) as PersonalIncomeTax,
 -- 一次性奖金税
 dbo.eFN_getPersonalIncomeTax(a.OneTimeAnnualBonus,3) as OneTimeAnnualBonusTax,
 -- 税后补贴合计
@@ -63,7 +63,8 @@ a.PensionEMPBT as PensionEMPBT,
 -- 实发工资
 ---- 应发工资-个人所得税+税后补贴合计-税后扣款合计+个税手续费返还-企业年金(个人)
 a.SalaryTotal+a.BackPayBTTotal+a.FestivalFeeBTTotal+a.GeneralBonus-a.DeductionBTTotal
+-a.HousingFundEMP-a.EndowInsEMP-a.MedicalInsEMP-a.UnemployInsEMP-a.FundInsEMPPlusTotal
 +a.AllowanceATTotal-a.DeductionATTotal+a.TaxFeeReturnAT-a.PensionEMP as FinalPayingAmount,
 -- 备注
 a.Remark as Remark
-from pVW_pEMPPayRollHRLCurMMnoTax a
+from pVW_pEMPPayRollCurMMnoTax a

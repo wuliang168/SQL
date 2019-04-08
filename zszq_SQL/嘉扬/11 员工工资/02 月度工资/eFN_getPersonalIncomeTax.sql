@@ -22,6 +22,7 @@ As
 Begin
 	Declare @tax decimal(10,2)
 
+	
 	-- 新个人所得税(月)
 	select @tax=ROUND(@salary*TaxRate,2)-QuickCalcDed
 	from oCD_TaxRateType

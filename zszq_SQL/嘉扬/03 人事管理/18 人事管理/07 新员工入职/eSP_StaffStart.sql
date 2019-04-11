@@ -697,16 +697,17 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
                          
   IF @@Error <> 0           
  Goto ErrM                         
-                         
-  update a                         
- set a.Status=b.Status                        
- from PEMPLOYEE_REGISTER a,eemployee b                    
- where a.EID=@EID and a.EID=b.EID    
-                         
-  IF @@Error <> 0                                                                                                  
- Goto ErrM                         
-                                                                                             
-                                
+
+  -- Update pEmployee_Register
+  update a
+  set a.Status=b.Status,a.KPIDepID=b.DepID,a.pStatus=1
+  from pEmployee_Register a,eemployee b
+  where a.EID=@EID and a.EID=b.EID
+  -- 异常处理
+  IF @@Error <> 0
+  Goto ErrM
+
+
  COMMIT TRANSACTION                                                    
  Set @Retval = 0                                                    
  Return @Retval                                                   

@@ -108,16 +108,16 @@ Declare @badge varchar(20)
  --GOTO ErrM                 
                  
  --end              
-       
-  ----员工调动，考核关系需重新设置                   
- update a                    
- set a.Initialized=0,a.InitializedTime=GETDATE()                   
- from PEMPLOYEE_REGISTER a, echangeorg_Register b                    
- where a.eid=b.eid and b.id=@id                              
-                        
- If @@Error<>0                                  
- Goto ErrM  
-                    
+
+   ----员工调动，考核关系需重新设置
+   update a
+   set a.Initialized=0,a.InitializedTime=GETDATE(),a.KPIDEPID=b.new_depid
+   from PEMPLOYEE_REGISTER a, echangeorg_Register b
+   where a.eid=b.eid and b.id=@id
+   -- 异常流程
+   If @@Error<>0
+   Goto ErrM
+
  ---插入历史表                            
  insert into eChangeOrg_All(ID,Type,EZID,EID,Badge,Name,CompID,DepID,JobID,Status,JoinDate,ReportTo,WfReportTo,New_CompID,                    
    New_DepID,New_JobID,New_ReportTo,New_WfReportTo,EffectDate,orgchangetype,RegBy,orgchangeReason,RegDate,Initialized,               

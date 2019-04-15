@@ -466,6 +466,7 @@ and not exists (select 1 from ebg_qita where badge=a.Badge)
   IF @@Error <> 0                                                                                                  
  GOTO ErrM   
 
+
   --证券期货考试情况                 
  insert into ebg_zqqh(eid,badge,zqjczs,zqjy,jj,zqfx,zqtzzx,qhjczs,qhflfg)                  
 select eid,badge,N'证券基础知识',N'证券交易',N'基金',N'证券发行',N'证券投资咨询',N'期货基础知识',N'期货法律法规'                  
@@ -554,6 +555,15 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
  IF @@Error <> 0                                   
  GOTO ErrM  
 
+    -- 其他信息
+    insert into EBG_QITANEW(eid,badge)
+    select eid,badge
+    from eemployee a
+    where a.Badge=@badge
+    and not exists (select 1 from EBG_QITANEW where badge=a.Badge)
+    -- 异常流程
+    IF @@Error <> 0
+    GOTO ErrM
     -- 离职信息更新
     update eStatus
     set LeaDate=NULL
@@ -672,14 +682,24 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
     If @@Error<>0
     Goto ErrM
 
+    -- 五险一金调整
+    ---- 新员工添加至五险一金调整表
+    Insert Into pEMPInsHFChange_register(EID,CompID,DepID1st,DepID2nd,JobID,InsHFChangeType)
+    select @EID,a.CompID,dbo.eFN_getdepid1st(a.DepID),dbo.eFN_getdepid2nd(a.DepID),a.JobID,1
+    From eStaff_Register a
+    Where a.ID=@ID and dbo.eFN_getdeptype(a.DepID) in (1,4)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
 
  /*  10
  清除登记表数据
  */
- delete from estaff_register where id=@id                                                     
-
- IF @@Error <> 0
- Goto ErrM
+  delete from estaff_register where id=@id
+  -- 异常流程
+  IF @@Error <> 0
+  Goto ErrM
 
  --调整绩效表状态
  update a
@@ -687,10 +707,10 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
  from pEmployee a,eemployee b
  where a.EID=@EID and a.EID=b.EID
 
-  IF @@Error <> 0                                                                                                  
- Goto ErrM                         
-                         
-  update a                         
+  IF @@Error <> 0
+ Goto ErrM
+
+  update a
  set a.Status=b.Status                        
  from PEMPLOYEE_CHANGE a,eemployee b                        
  where a.EID=@EID and a.EID=b.EID                        

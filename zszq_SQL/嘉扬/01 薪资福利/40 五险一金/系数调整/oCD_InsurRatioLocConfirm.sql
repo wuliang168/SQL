@@ -18,14 +18,14 @@ As
 */
 Begin
 
-    -- 社保缴费年度为空，无法递交!
+    -- 缴费年度为空，无法递交!
     If Exists(Select 1 From oCD_InsuranceRatioLoc_register Where ID=@ID And InsuranceYear is NULL)
     Begin
         Set @RetVal = 950120
         Return @RetVal
     End
 
-    -- 社保缴费基数上下限为空，无法递交!
+    -- 缴费基数上下限为空，无法递交!
     If Exists(Select 1 From oCD_InsuranceRatioLoc_register Where ID=@ID 
     And (InsuranceBaseUpLimit is NULL or InsuranceBaseDownLimit is NULL))
     Begin
@@ -33,14 +33,14 @@ Begin
         Return @RetVal
     End
 
-    -- 社保缴费计算方式为空，无法递交!
+    -- 缴费计算方式为空，无法递交!
     If Exists(Select 1 From oCD_InsuranceRatioLoc_register Where ID=@ID And CalcMethod is NULL)
     Begin
         Set @RetVal = 950170
         Return @RetVal
     End
 
-    -- 社保缴费缴费比例为空，无法递交!
+    -- 缴费缴费比例为空，无法递交!
     If Exists(Select 1 From oCD_InsuranceRatioLoc_register Where ID=@ID 
     And (EndowInsRatioEMP is NULL) or (EndowInsRatioGRP is NULL) or (MedicalInsRatioEMP is NULL)
     or (MedicalInsRatioGRP is NULL) or (UnemployInsRatioEMP is NULL) or (UnemployInsRatioGRP is NULL)

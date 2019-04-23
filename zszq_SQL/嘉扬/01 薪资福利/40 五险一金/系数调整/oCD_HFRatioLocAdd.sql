@@ -26,7 +26,7 @@ Begin
     select a.Code,a.Place,a.Title,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
     a.HousingFundRatioEMP,a.HousingFundRatioPlusEMP,a.HousingFundRatioGRP,a.HousingFundRatioPlusGRP,a.CalcMethod
     From oCD_HousingFundRatioLoc a
-    Where a.Place=@Place
+    Where a.Place=@Place and ISNULL(a.IsDisabled,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

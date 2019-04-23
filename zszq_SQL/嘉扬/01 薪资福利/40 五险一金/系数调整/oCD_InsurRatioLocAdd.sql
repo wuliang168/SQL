@@ -28,7 +28,7 @@ Begin
     a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod
     From oCD_InsuranceRatioLoc a
-    Where a.Place=@Place
+    Where a.Place=@Place and ISNULL(a.IsDisabled,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

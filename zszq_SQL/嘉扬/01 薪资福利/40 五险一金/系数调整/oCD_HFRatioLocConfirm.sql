@@ -42,8 +42,7 @@ Begin
 
     -- 缴费缴费比例为空，无法递交!
     If Exists(Select 1 From oCD_HousingFundRatioLoc_register Where ID=@ID 
-    And (HousingFundRatioEMP is NULL) or (HousingFundRatioPlusEMP is NULL)
-    or (HousingFundRatioGRP is NULL) or (HousingFundRatioPlusGRP is NULL))
+    And (HousingFundRatioEMP is NULL) or (HousingFundRatioGRP is NULL))
     Begin
         Set @RetVal = 950180
         Return @RetVal

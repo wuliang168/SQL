@@ -62,8 +62,8 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI历史表项pEMPTrgtRspCntrKPIMM_all
-    insert into pEMPTrgtRspCntrKPIMM_all(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCActualValue,TRCAchRate,Remark)
-    select a.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,a.Remark
+    insert into pEMPTrgtRspCntrKPIMM_all(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCActualValue,TRCAchRate,SubmitSelf,SubmitRT,Remark)
+    select a.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,a.SubmitSelf,a.SubmitRT,a.Remark
     from pEMPTrgtRspCntrKPIMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0
     -- 异常流程

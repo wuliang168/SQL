@@ -20,7 +20,8 @@ Begin
 
     -- 插入业务考核新员工注册表项pEMPTrgtRspCntr_register
     insert into pEMPTrgtRspCntr_register(EID,CompID,DepID1st,DepID2nd,JobID,KPIID)
-    select a.EID,a.CompID,dbo.eFN_getdepid1st(a.DepID),dbo.eFN_getdepid2nd(a.DepID),a.JobID,Convert(varchar(5),EID)+Convert(varchar(8),GETDATE(),112)
+    select a.EID,a.CompID,dbo.eFN_getdepid1st(a.DepID),dbo.eFN_getdepid2nd(a.DepID),a.JobID,
+    substring(sys.fn_sqlvarbasetostr(HashBytes('MD5',Convert(varchar(5),EID)+Convert(varchar(19),GETDATE(),112))),3,32)
     from eEmployee a
     where EID=@EID
     -- 异常流程

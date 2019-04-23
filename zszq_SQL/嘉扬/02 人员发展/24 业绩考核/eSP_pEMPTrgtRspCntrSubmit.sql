@@ -26,9 +26,24 @@ Begin
         Return @RetVal
     End
 
+    -- 业务考核目标任务起始结束日期错误，无法递交！
+    IF Exists(select 1 from pEMPTrgtRspCntr_register where ID=@ID
+    and DATEDIFF(dd,TRCBeginDate,TRCEndDate)<0)
+    Begin
+        Set @RetVal=930515
+        Return @RetVal
+    End
+
     -- 业务考核目标任务考核内容为空，无法递交！
+    ---- 无业务考核目标任务
+    IF (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=(select KPIID from pEMPTrgtRspCntr_register where ID=@ID))=0
+    Begin
+        Set @RetVal=930520
+        Return @RetVal
+    End
+    ---- 业务考核目标任务内容存在未填写
     IF Exists(select 1 from pEMPTrgtRspCntr_KPI where KPIID=(select KPIID from pEMPTrgtRspCntr_register where ID=@ID)
-    and (KPI is NULL or Weight is NULL or TargetValue is NULL))
+    and (TRCKPI is NULL or TRCWeight is NULL or TRCTarget is NULL))
     Begin
         Set @RetVal=930520
         Return @RetVal

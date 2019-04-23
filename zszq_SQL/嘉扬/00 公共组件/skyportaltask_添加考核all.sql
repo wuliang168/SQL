@@ -211,16 +211,24 @@ WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,
 and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
 
 
-------------- 费用统计 ------------
---UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.550510'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
---N''',''营销费用统计反馈'')">请您完成2016年12月-2017年11月营销费用发放统计</a>' AS url, 
---a.SalaryContact AS approver, 1 AS id
---FROM pExpensesSummDep a,pExpensesSumm_Process b
---WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
---and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 
---AND a.SalaryContact is NOT NULL AND a.ExpensesSUMMTotal is NOT NULL
+------------- 业绩考核(月度) ------------
+---- 本人考核
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''业绩考核(月度)'')">请与15日前完成业绩考核。</a>' AS url, 
+a.EID AS approver, 1 AS id
+FROM pEMPTrgtRspCntrKPIMM a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and ISNULL(a.SubmitSelf,0)=0 AND a.SubmitSelf is not NULL
+---- 部门负责人考核
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570420'',''业绩考核(月度)'')">请完成部门业绩考核。</a>' AS url, 
+a.ReportTo AS approver, 1 AS id
+FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0
+and ISNULL(a.IsSubmit,0)=0
 
 
 ------------- 五险一金统计 ------------

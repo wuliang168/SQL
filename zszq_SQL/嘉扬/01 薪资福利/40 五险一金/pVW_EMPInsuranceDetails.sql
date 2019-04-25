@@ -18,8 +18,8 @@ when d.CalcMethod=6 Then CEILING(ISNULL(c.EMPEndowBase,c.EMPInsuranceBase)*d.End
 when d.CalcMethod=7 Then FLOOR(ISNULL(c.EMPEndowBase,c.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
 when d.CalcMethod=8 Then FLOOR(ISNULL(c.EMPEndowBase,c.EMPInsuranceBase)*d.EndowInsRatioEMP*10)/10
 when d.CalcMethod=9 Then FLOOR(ISNULL(c.EMPEndowBase,c.EMPInsuranceBase)*d.EndowInsRatioEMP)
-end ) 
-end ) 
+end )
+end )
 as EndowInsEMP,
 ------ 医疗保险(个人)
 (Case 

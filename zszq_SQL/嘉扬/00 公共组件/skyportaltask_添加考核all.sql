@@ -215,35 +215,44 @@ and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
 ---- 本人考核
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''业绩考核(月度)'')">请与15日前完成业绩考核。</a>' AS url, 
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''业绩考核(月度)'')">请您于本月15日前完成月度业绩考核。</a>' AS url, 
 a.EID AS approver, 1 AS id
-FROM pEMPTrgtRspCntrKPIMM a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and ISNULL(a.SubmitSelf,0)=0 AND a.SubmitSelf is not NULL
+FROM pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.SubmitSelf is NULL
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570420'',''业绩考核(月度)'')">请完成部门业绩考核。</a>' AS url, 
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570420'',''业绩考核(月度)'')">请您完成本月部门月度业绩考核。</a>' AS url, 
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0
-and ISNULL(a.IsSubmit,0)=0
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0
+and (select COUNT(ReportTo)-COUNT(SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n where m.EID=n.EID and a.ReportTo=n.ReportTo)=0
 
 
 ------------- 五险一金统计 ------------
 UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
+--N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
+--+ cast(datepart(dd, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
+--+ cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
+--a.DepInsHFContact AS approver, 1 AS id
+--FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
+--WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
+--AND a.DepInsHFContact is NOT NULL
+--AND DATEDIFF(DD,GETDATE(),(select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
+---- 临时调整
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
-N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
-+ cast(datepart(dd, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
+N''',''五险一金工资扣款统计'')">请于4月25日下班前递交' + c.DepAbbr
 + cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
 a.DepInsHFContact AS approver, 1 AS id
 FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
 AND a.DepInsHFContact is NOT NULL
-AND DATEDIFF(DD,GETDATE(),(select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
+AND DATEDIFF(DD,GETDATE(),'2019-4-25 0:0:0')>=0
 
 
 ------------- 月度费用统计 ------------

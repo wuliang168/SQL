@@ -59,7 +59,7 @@ Begin
 
     -- 添加至月度业务考核部门表项pTrgtRspCntrDep
     insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo)
-    select b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.ReportTo
+    select distinct b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.ReportTo
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and a.DepID1st=c.DepID1st 
     and ISNULL(a.DepID2nd,0)=ISNULL((select DepID2nd from pVW_TrgtRspCntrReportTo where EID=c.EID),0)
@@ -70,7 +70,7 @@ Begin
 
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM
     insert into pEMPTrgtRspCntrMM(TRCMonth,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
-    select b.TRCMonth,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID
+    select distinct b.TRCMonth,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr_KPI c
     where b.ID=@ID and a.KPIID=c.KPIID and ISNULL(c.TRCAchRate,0)<1
     -- 异常流程
@@ -78,8 +78,8 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI表项pEMPTrgtRspCntrKPIMM
-    insert into pEMPTrgtRspCntrKPIMM(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,SubmitSelf)
-    select b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,0
+    insert into pEMPTrgtRspCntrKPIMM(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue)
+    select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
     -- 异常流程

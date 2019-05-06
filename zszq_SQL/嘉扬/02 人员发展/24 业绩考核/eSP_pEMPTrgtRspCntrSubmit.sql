@@ -43,7 +43,7 @@ Begin
     End
     ---- 业务考核目标任务内容存在未填写
     IF Exists(select 1 from pEMPTrgtRspCntr_KPI where KPIID=(select KPIID from pEMPTrgtRspCntr_register where ID=@ID)
-    and (TRCKPI is NULL or TRCWeight is NULL or TRCTarget is NULL))
+    and (TRCKPI is NULL or TRCWeight is NULL or TRCTargetValue is NULL))
     Begin
         Set @RetVal=930520
         Return @RetVal
@@ -52,6 +52,15 @@ Begin
     Begin TRANSACTION
 
     -- 更新pEMPTrgtRspCntr_register
+    ---- 更新日期
+    update a
+    set a.TRCBeginDate=DATEADD(dd,-1,DATEADD(mm,1,a.TRCBeginDate)),a.TRCEndDate=DATEADD(dd,-1,DATEADD(mm,1,a.TRCEndDate))
+    from pEMPTrgtRspCntr_register a
+    where ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 更新递交状态
     update a
     set a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
     from pEMPTrgtRspCntr_register a
@@ -59,6 +68,7 @@ Begin
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+
 
     -- 添加至业务考核新员工项pEMPTrgtRspCntr
     insert into pEMPTrgtRspCntr(EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,Remark)
@@ -80,6 +90,9 @@ Begin
 
     -- 删除pEMPTrgtRspCntr_register
     delete from pEMPTrgtRspCntr_register where ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
 
     -- 递交

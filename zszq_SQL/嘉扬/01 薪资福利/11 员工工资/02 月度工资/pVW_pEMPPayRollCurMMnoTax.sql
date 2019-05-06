@@ -22,11 +22,12 @@ ISNULL((select ISNULL(FestivalFee,0) from pEMPFestivalFeePerMM where EID=a.EID a
 +ISNULL((select SUM(ISNULL(MonthExpense,0)) from pMonthExpensePerMM where EID=a.EID and MonthExpenseType in (8,9,10,11,12,13,14,15,20,21,22,23) and DATEDIFF(MM,Month,b.Date)=0),0)
 as FestivalFeeBTTotal,
 -- 其他奖金
-ISNULL((select SUM(ISNULL(MonthExpense,0)) from pMonthExpensePerMM where EID=a.EID and MonthExpenseType in (1,2,3,4,5,6,19) and DATEDIFF(MM,Month,b.Date)=0),0) as GeneralBonus,
+ISNULL((select SUM(ISNULL(MonthExpense,0)) from pMonthExpensePerMM where EID=a.EID and MonthExpenseType in (1,2,3,4,5,6,19) and DATEDIFF(MM,Month,b.Date)=0),0)
++ISNULL((select ISNULL(ProjectBonus,0) from pProjectBonusHRPerEMP where DATEDIFF(MM,PBDISMonth,b.Date)=0 and EID=a.EID and PBDISPayType=1),0) as GeneralBonus,
 -- 考核扣款总额
 ISNULL((select ISNULL(BTATPay,0) from pEMPBTATPayPerMM where EID=a.EID and BTATPayType in (13,14,15) and DATEDIFF(MM,Date,b.Date)=0),0) as DeductionBTTotal,
 -- 一次性奖金
-NULL as OneTimeAnnualBonus,
+ISNULL((select ISNULL(ProjectBonus,0) from pProjectBonusHRPerEMP where DATEDIFF(MM,PBDISMonth,b.Date)=0 and EID=a.EID and PBDISPayType=2),0) as OneTimeAnnualBonus,
 -- 公积金(个人)
 ISNULL((select HousingFundEMP from pEMPHousingFundPerMM where EID=a.EID and DATEDIFF(MM,Month,b.Date)=0),0)
 +ISNULL((select HousingFundEMP from pEMPHousingFundPerMM_all where EID=a.EID and DATEDIFF(MM,Month,b.Date)=0),0)  as HousingFundEMP,
@@ -63,6 +64,8 @@ ISNULL((select ISNULL(BTATPay,0) from pEMPBTATPayPerMM where EID=a.EID and BTATP
 ISNULL((select ISNULL(EmpPensionPerMMBTax,0)+ISNULL(EmpPensionPerMMATax,0) from pEmpPensionPerMM_register where EID=a.EID and DATEDIFF(MM,PensionMonth,b.Date)=0),0) as PensionEMP,
 -- 企业年金(个人)抵税额
 ISNULL((select ISNULL(EmpPensionPerMMBTax,0) from pEmpPensionPerMM_register where EID=a.EID and DATEDIFF(MM,PensionMonth,b.Date)=0),0) as PensionEMPBT,
+-- 捐款抵税额
+ISNULL((select ISNULL(BTATPay,0) from pEMPBTATPayPerMM where EID=a.EID and BTATPayType=24 and DATEDIFF(MM,Date,b.Date)=0),0) as DonationBT,
 -- 备注
 NULL as Remark
 from pVW_pEMPEmolu a,pSalaryPerMonth b

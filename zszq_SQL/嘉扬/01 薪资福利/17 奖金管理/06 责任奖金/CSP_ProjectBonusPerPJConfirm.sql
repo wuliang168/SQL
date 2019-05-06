@@ -78,6 +78,52 @@ Begin
         SET @YEARN=@YEARN+1
     END
 
+    -- pProjectBonusDepPerYear
+    -- 初始化起始年限
+    set @YEARN=1
+    ---- 添加责任奖金发放年度(ProjectBonusDISYear)和部门名称(DepID)
+    WHILE (@ProjectBonusYearMAXN>=@YEARN)
+	    BEGIN
+        insert into pProjectBonusDepPerYear
+            (ProjectBonusDISYear,DepID)
+        select DATEADD(yy,@YEARN-1,a.ProjectBonusYear) as ProjectBonusDISYear, a.DepID as DepID
+        from pVW_ProjectBonusPerPJ a
+        where a.ID=@ID 
+        and not Exists(select 1 from pProjectBonusDepPerYear where DepID=a.DepID and ProjectBonusDISYear=DATEADD(yy,@YEARN-1,a.ProjectBonusYear))
+        -- 异常流程
+        If @@Error<>0
+            Goto ErrM
+
+        SET @YEARN=@YEARN+1
+    END
+    -- 初始化起始年限
+    set @YEARN=1
+    ---- 更新奖金金额
+    WHILE (@ProjectBonusYearMAXN>=@YEARN)
+	    BEGIN
+        update b
+        set b.PBCTDISTTPY=ISNULL(b.PBCTDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusCT,0) else 0 end),
+        b.PBUTDISTTPY=ISNULL(b.PBUTDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusUTDIS1stYear,0) when @YEARN=2 then ISNULL(a.ProjectBonusUTDIS2ndYear,0) when @YEARN=3 then ISNULL(a.ProjectBonusUTDIS3thYear,0) else 0 end),
+        b.PBDSDISTTPY=ISNULL(b.PBDSDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusDSDIS1stYear,0) when @YEARN=2 then ISNULL(a.ProjectBonusDSDIS2ndYear,0) when @YEARN=3 then ISNULL(a.ProjectBonusDSDIS3thYear,0) else 0 end),
+        b.PBCSDISTTPY=ISNULL(b.PBCSDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusCSDIS1stYear,0) when @YEARN=2 then ISNULL(a.ProjectBonusCSDIS2ndYear,0) when @YEARN=3 then ISNULL(a.ProjectBonusCSDIS3thYear,0) else 0 end),
+        b.PBOTDISTTPY=ISNULL(b.PBOTDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusOTDIS1stYear,0) when @YEARN=2 then ISNULL(a.ProjectBonusOTDIS2ndYear,0) when @YEARN=3 then ISNULL(a.ProjectBonusOTDIS3thYear,0) else 0 end),
+        b.PBSPDISTTPY=ISNULL(b.PBSPDISTTPY,0)+(case when @YEARN=1 then ISNULL(a.ProjectBonusSP,0) else 0 end),
+        b.PBSSDISTTPY=ISNULL(b.PBSSDISTTPY,0)+(case when @YEARN=1 then ISNULL(ISNULL(a.ProjectBonusSSSub1DIS1stYear+a.ProjectBonusSSSub2DIS1stYear+a.ProjectBonusSSSub3DIS1stYear,a.ProjectBonusSSDIS1stYear),0)
+            when a.ProjectBonusSSYearN>@YEARN-1 and ISNULL(a.ProjectBonusSSSub1AVGY,0)+ISNULL(a.ProjectBonusSSSub2AVGY,0)+ISNULL(a.ProjectBonusSSSub3AVGY,0)=0 then a.ProjectBonusSSAVGY
+            when a.ProjectBonusSSYearN=@YEARN-1 and ISNULL(a.ProjectBonusSSSub1AVGY,0)+ISNULL(a.ProjectBonusSSSub2AVGY,0)+ISNULL(a.ProjectBonusSSSub3AVGY,0)=0 then a.ProjectBonusSS-a.ProjectBonusSSAVGY*(a.ProjectBonusSSYearN-1)
+            else 
+            (case when a.ProjectBonusSSSub1YearN>@YEARN-1 then a.ProjectBonusSSSub1AVGY when a.ProjectBonusSSSub1YearN=@YEARN-1 then a.ProjectBonusSSSub1-a.ProjectBonusSSSub1AVGY*(a.ProjectBonusSSSub1YearN-1) else 0 end)
+            +(case when a.ProjectBonusSSSub2YearN>@YEARN-1 then a.ProjectBonusSSSub2AVGY when a.ProjectBonusSSSub2YearN=@YEARN-1 then a.ProjectBonusSSSub2-a.ProjectBonusSSSub2AVGY*(a.ProjectBonusSSSub2YearN-1) else 0 end)
+            +(case when a.ProjectBonusSSSub3YearN>@YEARN-1 then a.ProjectBonusSSSub3AVGY when a.ProjectBonusSSSub3YearN=@YEARN-1 then a.ProjectBonusSSSub3-a.ProjectBonusSSSub3AVGY*(a.ProjectBonusSSSub3YearN-1) else 0 end) end)
+        from pVW_ProjectBonusPerPJ a,pProjectBonusDepPerYear b
+        where a.ID=@ID and DATEADD(yy,@YEARN-1,a.ProjectBonusYear)=b.ProjectBonusDISYear
+        -- 异常流程
+        If @@Error<>0
+            Goto ErrM
+
+        SET @YEARN=@YEARN+1
+    END
+
     -- 更新pProjectBonusPerPJ
     update a
     set a.IsConfirm=1,a.ConfirmURID=@URID,a.ConfirmDate=GETDATE()

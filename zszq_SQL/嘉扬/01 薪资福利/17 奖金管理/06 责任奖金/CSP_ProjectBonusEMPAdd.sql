@@ -7,13 +7,17 @@ GO
 ALTER  Procedure [dbo].[CSP_ProjectBonusEMPAdd]
     -- skydatarefresh CSP_ProjectBonusEMPAdd
     @EID int,
-    @PJDISYEAR smalldatetime,
+    @PJYEAR smalldatetime,
     @PJID int,
+    @PJTYPE int,
+    @PJDEPID int,
     @RetVal int=0 Output
 As
 /*
 -- Create By wuliang E004205
 -- 责任奖金员工新增
+-- ProjectBonusType:项目承揽奖金(1)、责任承做奖金(2)、综合支持奖金(3)、发行支持奖金(4)、持续督导奖金(5)、
+-- 特殊贡献奖金(6)、其他包销奖金(7)
 */
 Begin
 
@@ -29,11 +33,8 @@ Begin
     Begin TRANSACTION
 
     -- pProjectBonusPerEMP
-    insert into pProjectBonusPerEMP(ProjectBonusDISYear,)
-    update a
-    set a.IsConfirm=1,a.ConfirmURID=@URID,a.ConfirmDate=GETDATE()
-    from pProjectBonusPerPJ a
-    where a.ID=@ID and ISNULL(a.IsConfirm,0)=0
+    insert into pProjectBonusPerEMP(ProjectBonusDISYear,ProjectBonusType,EID,ProjectTitleID,ProjectBonusDepID)
+    values (@PJYEAR,@PJTYPE,@EID,@PJID,@PJDEPID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

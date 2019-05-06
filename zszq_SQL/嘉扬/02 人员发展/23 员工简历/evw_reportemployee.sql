@@ -1,7 +1,10 @@
 -- evw_reportemployee
 
 SELECT a.EID, a.Badge, a.Name, a.EName, c.BirthDay, c.partydate, c.BirthPlace, c.Address, c.TEL, c.Mobile, c.residentAddress, c.eMail_pers AS email, d.Photo, 
-e.Title AS jobtitle, 
+(CASE WHEN dbo.eFN_getdeptype(a.DepID)<>2 or (dbo.eFN_getdepgrade(a.DepID)=1 and dbo.eFN_getdeptype(a.DepID)=2) 
+THEN (SELECT DepAbbr + ' ' FROM oDepartment WHERE DepID = dbo.eFN_getdepid1st(a.DepID)) 
+WHEN dbo.eFN_getdepgrade(a.DepID)=2 and dbo.eFN_getdeptype(a.DepID)=2 THEN '' END)
++ISNULL((SELECT DepAbbr FROM dbo.oDepartment WHERE (DepID = dbo.eFN_getdepid2nd(a.DepID))),'')+' '+e.Title AS jobtitle, 
 b.ConBeginDate,b.ConEndDate, f.takedate, f.certid,
 (SELECT Title FROM dbo.eCD_Gender WHERE (ID = ISNULL(c.Gender, 0))) AS Gender,
 (SELECT Title FROM dbo.eCD_Nation WHERE (ID = ISNULL(c.Nation, 0))) AS Nation, 

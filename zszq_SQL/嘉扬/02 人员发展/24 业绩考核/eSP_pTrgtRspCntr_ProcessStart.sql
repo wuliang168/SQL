@@ -18,31 +18,31 @@ As
 */
 Begin
 
-    -- 上月度业绩考核未关闭，无法再次开启
+    -- 上季度业绩考核未关闭，无法再次开启！
     if exists (select 1 from pTrgtRspCntr_Process where id=@id-1 and isnull(Closed,0)=0)
     Begin
-        Set @RetVal=930530
+        Set @RetVal=930560
         Return @RetVal
     End
 
-    -- 本月度业绩考核已开启，无需重新开启！
+    -- 本季度业绩考核已开启，无需重新开启！
     if exists (select 1 from pTrgtRspCntr_Process where id=@id and isnull(Submit,0)=1)
     Begin
-        Set @RetVal=930540
+        Set @RetVal=930570
         Return @RetVal
     End
 
-    -- 业绩考核月度日期为空，无法重新开启！
+    -- 本季度业绩考核月度日期为空，无法重新开启！
     if exists (select 1 from pTrgtRspCntr_Process where id=@id and TRCMonth is NULL)
     Begin
-        Set @RetVal=930550
+        Set @RetVal=930580
         Return @RetVal
     end
 
-    -- 本月度业绩考核已封帐，无法重新开启！
+    -- 本季度业绩考核已封帐，无法重新开启！
     if exists (select 1 from pTrgtRspCntr_Process where id=@id and ISNULL(Closed,0)=1)
     Begin
-        Set @RetVal=930560
+        Set @RetVal=930590
         Return @RetVal
     end
 
@@ -58,13 +58,32 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核部门表项pTrgtRspCntrDep
-    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo)
-    select distinct b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.ReportTo
+    ---- 被考核人
+    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,1
+    from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
+    where b.ID=@ID
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 考核人 提交建议
+    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
+    (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,2
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
-    where b.ID=@ID and a.DepID1st=c.DepID1st 
-    and ISNULL(a.DepID2nd,0)=ISNULL((select DepID2nd from pVW_TrgtRspCntrReportTo where EID=c.EID),0)
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
     -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 考核人 提交反馈
+    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
+    (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,3
+    from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
     If @@Error<>0
     Goto ErrM
 
@@ -78,8 +97,8 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI表项pEMPTrgtRspCntrKPIMM
-    insert into pEMPTrgtRspCntrKPIMM(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue)
-    select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue
+    insert into pEMPTrgtRspCntrKPIMM(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCTarget)
+    select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
     -- 异常流程

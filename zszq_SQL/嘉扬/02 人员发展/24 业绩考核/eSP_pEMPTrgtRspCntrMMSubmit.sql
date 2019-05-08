@@ -17,7 +17,7 @@ As
 */
 Begin
 
-    -- 业务考核目标值为空，无法递交！
+    -- 业务考核财务实际值为空，无法递交！
     IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b
     where b.EID=@EID and a.KPIID=b.KPIID and b.SubmitSelf is NULL
     and a.TRCTargetValue is not NULL and a.TRCActualValue is NULL)
@@ -26,7 +26,16 @@ Begin
         Return @RetVal
     End
 
-    -- 业务考核目标达成率为空，无法递交！
+    -- 业务考核非财务实际值为空，无法递交！
+    IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b
+    where b.EID=@EID and a.KPIID=b.KPIID and b.SubmitSelf is NULL
+    and a.TRCTarget is not NULL and a.TRCActualTarget is NULL)
+    Begin
+        Set @RetVal=930535
+        Return @RetVal
+    End
+
+    -- 业务考核达成率为空，无法递交！
     IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b
     where b.EID=@EID and a.KPIID=b.KPIID and b.SubmitSelf is NULL
     and a.TRCTargetValue is NULL and a.TRCAchRate is NULL)
@@ -36,10 +45,20 @@ Begin
     End
 
     -- 业务考核评语为空，无法递交！
+    ---- 主管部门负责人考核意见
     IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b,pVW_TrgtRspCntrReportTo c
     where a.KPIID=b.KPIID and b.SubmitSelf=1 and b.SubmitRT is NULL
     and c.ReportTo=@EID and a.EID=c.EID
     and a.CommRT is NULL)
+    Begin
+        Set @RetVal=930550
+        Return @RetVal
+    End
+    ---- 主管部门负责人反馈意见
+    IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b,pVW_TrgtRspCntrReportTo c
+    where a.KPIID=b.KPIID and ISNULL(b.SubmitHR,0)=1 and b.SubmitRRT is NULL
+    and c.ReportTo=@EID and a.EID=c.EID
+    and a.CommRRT is NULL)
     Begin
         Set @RetVal=930550
         Return @RetVal
@@ -53,7 +72,15 @@ Begin
     update a
     set a.SubmitSelf=1,a.DateSelf=GETDATE()
     from pEMPTrgtRspCntrMM a
-    where a.EID=@EID and a.SubmitSelf is NULL
+    where a.EID=@EID and ISNULL(a.SubmitSelf,0)=0
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 本人业务考核递交
+    update a
+    set a.IsSubmit=1,a.SubmitTime=GETDATE()
+    from pTrgtRspCntrDep a
+    where a.ReportTo=@EID and a.TRCLev=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -61,24 +88,42 @@ Begin
     update a
     set a.SubmitRT=1,a.DateRT=GETDATE()
     from pEMPTrgtRspCntrMM a,pVW_TrgtRspCntrReportTo b
-    where b.ReportTo=@EID and a.EID=b.EID and a.SubmitSelf=1 and a.SubmitRT is NULL
+    where b.ReportTo=@EID and a.EID=b.EID and ISNULL(a.SubmitRT,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 部门业务考核递交
     update a
-    set a.IsSubmit=1
+    set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pTrgtRspCntrDep a
-    where a.ReportTo=@EID
+    where a.ReportTo=@EID and a.TRCLev=2
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 部门负责人业务考核反馈递交
+    update a
+    set a.SubmitRRT=1,a.DateRRT=GETDATE()
+    from pEMPTrgtRspCntrMM a,pVW_TrgtRspCntrReportTo b
+    where b.ReportTo=@EID and a.EID=b.EID and ISNULL(a.SubmitRRT,0)=0 and ISNULL(a.SubmitHR,0)=1
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 部门业务考核递交
+    update a
+    set a.IsSubmit=1,a.SubmitTime=GETDATE()
+    from pTrgtRspCntrDep a
+    where a.ReportTo=@EID and a.TRCLev=3
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 更新员工目标任务协议表项pEMPTrgtRspCntr_KPI
     update a
-    set a.TRCTarget=b.TRCTarget,a.TRCActualValue=b.TRCActualValue,a.TRCAchRate=b.TRCAchRate,a.TRCAchDate=b.TRCMonth
+    set a.TRCTarget=b.TRCTarget,a.TRCActualTarget=b.TRCActualTarget,a.TRCActualValue=b.TRCActualValue,
+    a.TRCAchRate=b.TRCAchRate,a.TRCAchDate=b.TRCMonth
     from pEMPTrgtRspCntr_KPI a,pEMPTrgtRspCntrKPIMM b
-    where a.KPIID=b.KPIID and a.TRCKPI=b.TRCKPI and b.EID=@EID and a.EID=b.EID
+    where a.KPIID=b.KPIID and a.TRCKPI=b.TRCKPI and b.EID=@EID and a.EID=b.EID 
+    and ISNULL(b.SubmitSelf,0)=1 and ISNULL(b.SubmitRT,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

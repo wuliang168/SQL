@@ -54,9 +54,9 @@ Begin
 
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM_all
     insert into pEMPTrgtRspCntrMM_all(TRCMonth,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,
-    SubmitSelf,DateSelf,SubmitRT,DateRT,Remark)
+    SubmitSelf,DateSelf,SubmitRT,DateRT,SubmitHR,SubmitRRT,DateRRT,Remark)
     select a.TRCMonth,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID,
-    a.SubmitSelf,a.DateSelf,a.SubmitRT,a.DateRT,a.Remark
+    a.SubmitSelf,a.DateSelf,a.SubmitRT,a.DateRT,a.SubmitHR,a.SubmitRRT,a.DateRRT,a.Remark
     from pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0
     -- 异常流程
@@ -64,10 +64,10 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI历史表项pEMPTrgtRspCntrKPIMM_all
-    insert into pEMPTrgtRspCntrKPIMM_all(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTarget,TRCTargetValue,TRCActualValue,TRCAchRate,
-    CommRT,CommHR,Remark)
-    select a.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTarget,a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,
-    a.CommRT,a.CommHR,a.Remark
+    insert into pEMPTrgtRspCntrKPIMM_all(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTarget,TRCActualTarget,TRCTargetValue,TRCActualValue,TRCAchRate,
+    CommRT,CommHR,CommRRT,CommRHR,Remark)
+    select a.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTarget,a.TRCActualTarget,a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,
+    a.CommRT,a.CommHR,a.CommRRT,a.CommRHR,a.Remark
     from pEMPTrgtRspCntrKPIMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0
     -- 异常流程

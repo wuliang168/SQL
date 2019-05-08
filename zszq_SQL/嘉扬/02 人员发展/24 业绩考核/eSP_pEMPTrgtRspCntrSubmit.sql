@@ -43,7 +43,7 @@ Begin
     End
     ---- 业务考核目标任务内容存在未填写
     IF Exists(select 1 from pEMPTrgtRspCntr_KPI where KPIID=(select KPIID from pEMPTrgtRspCntr_register where ID=@ID)
-    and (TRCKPI is NULL or TRCWeight is NULL or TRCTargetValue is NULL))
+    and (TRCKPI is NULL or TRCWeight is NULL or (TRCTargetValue is NULL and TRCTarget is NULL )))
     Begin
         Set @RetVal=930520
         Return @RetVal

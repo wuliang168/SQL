@@ -92,7 +92,7 @@ N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600067'',''绩效首页'')">您
 cast(datepart(m, mm) AS varchar(10)) + N'月工作日志空缺超过5天，请补充。</a>' AS url, 
 ISNULL(b.EID, 5256) AS approver, 7 AS id
 FROM pvw_Workrecord b
-WHERE datediff(m, mm, getdate()) < 2 AND workday - tianxieday >= 5
+WHERE diffdays >= 5
 
 
 ------------- 后备人才选拔 ------------
@@ -216,17 +216,32 @@ and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''业绩考核(月度)'')">请您于本月15日前完成月度业绩考核。</a>' AS url, 
-a.EID AS approver, 1 AS id
-FROM pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.SubmitSelf is NULL
+a.ReportTo AS approver, 1 AS id
+FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and a.TRCLev=1
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570420'',''业绩考核(月度)'')">请您完成本月部门月度业绩考核。</a>' AS url, 
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and DATEDIFF(mm,a.TRCMonth,b.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0
-and (select COUNT(ReportTo)-COUNT(SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n where m.EID=n.EID and a.ReportTo=n.ReportTo)=0
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=2
+and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo)
+---- 部门负责人考核反馈
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570430'',''业绩考核(月度)'')">请您完成本月部门月度业绩考核。</a>' AS url, 
+a.ReportTo AS approver, 1 AS id
+FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=3
+and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo)=(select COUNT(m.SubmitHR) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo)
 
 
 ------------- 五险一金统计 ------------

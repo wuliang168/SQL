@@ -48,24 +48,28 @@ a.ProjectBonusDS-ROUND(ROUND(a.ProjectBonusDS/(select PBAcc from oCD_ProjectBonu
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusDSDIS3thYear,
 ------ 综合及后督奖
 a.ProjectBonusSS as ProjectBonusSS,
-ROUND((case when a.ProjectBonusSSYearN=1 then ROUND(a.ProjectBonusSS/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSYearN,2) else NULL end)
+ROUND((case when a.ProjectBonusSSYearN=1 or ISNULL(a.ProjectBonusSSYearN,0)=0 then ROUND(a.ProjectBonusSS/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) else NULL end)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSDIS1stYear,
-ROUND(ROUND(a.ProjectBonusSS/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSYearN,2)
+ROUND(ROUND(a.ProjectBonusSS/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/
+(case when ISNULL(a.ProjectBonusSSYearN,0)=0 then 1 else a.ProjectBonusSSYearN end),2)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSAVGY,
 a.ProjectBonusSSSub1 as ProjectBonusSSSub1,
-ROUND((case when a.ProjectBonusSSSub1YearN=1 then ROUND(a.ProjectBonusSSSub1/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub1YearN,2) else NULL end)
+ROUND((case when a.ProjectBonusSSSub1YearN=1 or ISNULL(a.ProjectBonusSSSub1YearN,0)=0 then ROUND(a.ProjectBonusSSSub1/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) else NULL end)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub1DIS1stYear,
-ROUND(ROUND(a.ProjectBonusSSSub1/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub1YearN,2)
+ROUND(ROUND(a.ProjectBonusSSSub1/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/
+(case when ISNULL(a.ProjectBonusSSSub1YearN,0)=0 then 1 else a.ProjectBonusSSSub1YearN end),2)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub1AVGY,
 a.ProjectBonusSSSub2 as ProjectBonusSSSub2,
-ROUND((case when a.ProjectBonusSSSub2YearN=1 then ROUND(a.ProjectBonusSSSub2/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub2YearN,2) else NULL end)
+ROUND((case when a.ProjectBonusSSSub2YearN=1 or ISNULL(a.ProjectBonusSSSub2YearN,0)=0 then ROUND(a.ProjectBonusSSSub2/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) else NULL end)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub2DIS1stYear,
-ROUND(ROUND(a.ProjectBonusSSSub2/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub2YearN,2)
+ROUND(ROUND(a.ProjectBonusSSSub2/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/
+(case when ISNULL(a.ProjectBonusSSSub2YearN,0)=0 then 1 else a.ProjectBonusSSSub2YearN end),2)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub2AVGY,
 a.ProjectBonusSSSub3 as ProjectBonusSSSub3,
-ROUND((case when a.ProjectBonusSSSub3YearN=1 then ROUND(a.ProjectBonusSSSub3/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub3YearN,2) else NULL end)
+ROUND((case when a.ProjectBonusSSSub3YearN=1 or ISNULL(a.ProjectBonusSSSub3YearN,0)=0 then ROUND(a.ProjectBonusSSSub3/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) else NULL end)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub3DIS1stYear,
-ROUND(ROUND(a.ProjectBonusSSSub3/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/a.ProjectBonusSSSub3YearN,2)
+ROUND(ROUND(a.ProjectBonusSSSub3/(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc)/
+(case when ISNULL(a.ProjectBonusSSSub3YearN,0)=0 then 1 else a.ProjectBonusSSSub3YearN end),2)
 *(select PBAcc from oCD_ProjectBonusAcc where ID=a.ProjectBonusAcc),2) as ProjectBonusSSSub3AVGY,
 ------ 其他包销/分销/通道奖
 a.ProjectBonusOT as ProjectBonusOT,

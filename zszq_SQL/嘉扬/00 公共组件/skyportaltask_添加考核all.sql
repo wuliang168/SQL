@@ -39,7 +39,7 @@ WHERE a.EID = b.EID AND ISNULL(a.Initialized, 0) = 1 AND ISNULL(a.SUBMIT, 0) = 0
 
 -- 月工作计划与汇总(旧)
 UNION
-SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600020'',''绩效首页'')">请您于本月22日前制定' + 
+SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600020'',''绩效首页'')">请您于本月25日前制定' + 
 cast(month(a.period) AS varchar(10)) + N'月份工作计划</a>' AS url, 
 ISNULL(b.EID, 5256) AS approver,3 AS id
 FROM PEMPPROCESS_MONTH a, eemployee b
@@ -67,7 +67,7 @@ AND DATEPART(dd,GETDATE()) BETWEEN 1 AND 31
 
 -- 月工作计划评分(旧)
 UNION
-SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600021'',''月度计划评分'')">请您于本月28日前考核下属上月度工作完成情况</a>' AS url, 
+SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600021'',''月度计划评分'')">请您于本月31日前考核下属上月度工作完成情况</a>' AS url, 
 ISNULL(a.kpiReportTo, 5256) AS approver, 3 AS id
 FROM pEmpProcess_Month a
 WHERE ISNULL(a.Closed, 0)  = 0

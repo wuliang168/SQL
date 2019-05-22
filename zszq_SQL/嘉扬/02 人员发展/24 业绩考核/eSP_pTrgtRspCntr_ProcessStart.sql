@@ -64,6 +64,7 @@ Begin
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
     where b.ID=@ID
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
+    and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -74,6 +75,7 @@ Begin
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
+    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -84,6 +86,8 @@ Begin
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
+    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
+    -- 异常流程
     If @@Error<>0
     Goto ErrM
 
@@ -92,6 +96,7 @@ Begin
     select distinct b.TRCMonth,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr_KPI c
     where b.ID=@ID and a.KPIID=c.KPIID and ISNULL(c.TRCAchRate,0)<1
+    and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -101,6 +106,7 @@ Begin
     select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
+    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

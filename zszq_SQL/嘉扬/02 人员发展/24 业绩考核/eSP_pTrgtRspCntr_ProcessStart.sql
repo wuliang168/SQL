@@ -60,11 +60,11 @@ Begin
     -- 添加至月度业务考核部门表项pTrgtRspCntrDep
     ---- 被考核人
     insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select distinct b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,1
+    select b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,1
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
     where b.ID=@ID
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0
+    and ((DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -75,7 +75,7 @@ Begin
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
+    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -86,17 +86,18 @@ Begin
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
+    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM
     insert into pEMPTrgtRspCntrMM(TRCMonth,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
-    select distinct b.TRCMonth,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID
-    from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr_KPI c
-    where b.ID=@ID and a.KPIID=c.KPIID and ISNULL(c.TRCAchRate,0)<1
-    and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0
+    select a.TRCMonth,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID
+    from pTrgtRspCntr_Process a,pEMPTrgtRspCntr b
+    where a.ID=@ID 
+    and ((DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)<>0) or DATEDIFF(MM,a.TRCMonth,b.TRCEndDate)=0)
+    and exists (select 1 from pEMPTrgtRspCntr_KPI where KPIID=b.KPIID and ISNULL(TRCAchRate,0)<1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -106,7 +107,7 @@ Begin
     select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
-    and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0
+    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

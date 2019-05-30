@@ -219,7 +219,7 @@ N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''目标责任考核''
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
-and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and a.TRCLev=1
+and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=1
 and DATEDIFF(dd,GETDATE(),'2019-5-30 0:0:0')>0
 ---- 部门负责人考核
 UNION

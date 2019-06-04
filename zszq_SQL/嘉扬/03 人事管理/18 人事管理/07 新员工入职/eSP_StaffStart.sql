@@ -720,7 +720,9 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
 
   -- Update pEmployee_Register
   update a
-  set a.Status=b.Status,a.KPIDepID=b.DepID,a.pStatus=1
+  set a.Status=b.Status,a.KPIDepID=(case when dbo.eFN_getdeptype(b.DepID) in (2,3) then b.DepID 
+   when dbo.eFN_getdeptype(b.DepID) in (1,4) then dbo.eFN_getdepid1st(b.DepID) end),
+  a.pStatus=1
   from pEmployee_Register a,eemployee b
   where a.EID=@EID and a.EID=b.EID
   -- 异常处理

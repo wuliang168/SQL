@@ -23,6 +23,6 @@ where a.EID=b.EID and a.KPIDepID<>737
 UNION
 select a.EID as EID,b.Badge as Badge,B.Name as Name,b.CompID as CompID,
 dbo.eFN_getdepid1st(b.DepID) as DepID1st,dbo.eFN_getdepid2nd(b.DepID) as DepID2nd,a.KPIDepID as KPIDepID,a.jobid as JobID,
-dbo.eFN_getdepdirector(a.DepID) as KPIReportTo,a.pStatus as pStatus
+dbo.eFN_getdepdirector(a.KPIDepID) as KPIReportTo,a.pStatus as pStatus
 from pEmployee_Register a,pVW_Employee b
 where a.EID=b.EID and a.KPIDepID=737

@@ -5,23 +5,23 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER  Procedure [dbo].[eSP_ChangeOrgStart]  --eSP_ChangeOrgStart 2301,1                  
---skydatarefresh eSP_ChangeOrgStart                      
- @ID    int,                      
- @URID  int,                                  
- @RetVal  int=0 Output                                    
-As                     
-/*                     
--- Create By kayang                     
+ALTER  Procedure [dbo].[eSP_ChangeOrgStart]  --eSP_ChangeOrgStart 2301,1
+--skydatarefresh eSP_ChangeOrgStart
+ @ID    int,
+ @URID  int,
+ @RetVal  int=0 Output
+As
+/*
+-- Create By kayang
 -- 调动管理的处理程序                    
--- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取                    
-*/                    
-Begin           
-          
-Declare @badge varchar(20)                                
-                                  
- --数据还未确认!                                 
- If Exists(Select 1 From echangeorg_register                             
+-- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取
+*/
+Begin
+
+Declare @badge varchar(20)
+
+ --数据还未确认!
+ If Exists(Select 1 From echangeorg_register
     Where ID=@ID And Isnull(Initialized,0)=0)                                  
  Begin                                  
   Set @RetVal = 910020                                  
@@ -111,7 +111,9 @@ Declare @badge varchar(20)
 
    ----员工调动，考核关系需重新设置
    update a
-   set a.Initialized=0,a.InitializedTime=GETDATE(),a.KPIDEPID=b.new_depid
+   set a.Initialized=0,a.InitializedTime=GETDATE(),
+   a.KPIDEPID=(case when dbo.eFN_getdeptype(b.new_depid) in (2,3) then b.new_depid 
+   when dbo.eFN_getdeptype(b.new_depid) in (1,4) then dbo.eFN_getdepid1st(b.new_depid) end)
    from PEMPLOYEE_REGISTER a, echangeorg_Register b
    where a.eid=b.eid and b.id=@id
    -- 异常流程

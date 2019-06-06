@@ -38,6 +38,26 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 更新pEMPSalary(后续替代pEmployeeEmolu)
+    Update a
+    Set a.SalaryPerMM=ISNULL(b.SalaryPerMMCity,a.SalaryPerMM),
+    a.SponsorAllowance=ISNULL(b.SponsorAllowancetoModify,a.SponsorAllowance),a.CheckUpSalary=ISNULL(b.CheckUpSalarytoModify,a.CheckUpSalary),
+    a.SalaryPayID=b.SalaryPayID
+    From pEMPSalary a,pChangeMDSalaryPerMM_register b
+    Where a.EID=b.EID and b.ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    -- 更新pEMPAdminIDMD(后续替代pEmployeeEmolu)
+    Update a
+    Set a.MDID=ISNULL(b.MDIDtoModify,a.MDID)
+    From pEMPAdminIDMD a,pChangeMDSalaryPerMM_register b
+    Where a.EID=b.EID and b.ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
     -- 插入MD职级变更登记表pChangeMDSalaryPerMM_all
     insert into pChangeMDSalaryPerMM_all (EID,MDID,SalaryPerMM,SponsorAllowance,CheckUpSalary,
     MDIDtoModify,SalaryPerMMtoModify,SalaryPayID,MDSalaryModifyReason,WorkCityRatio,SalaryPerMMCity,SponsorAllowancetoModify,CheckUpSalarytoModify,

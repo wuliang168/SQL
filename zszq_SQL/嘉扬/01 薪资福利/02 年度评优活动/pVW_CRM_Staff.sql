@@ -1,6 +1,7 @@
 -- pVW_CRM_Staff
+
 select (select xOrder from oDepartment where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepxOrder,a.YYB,
-(case when right(a.SFZ,1)='x' then Convert(varchar(100),REPLACE(a.SFZ,'x','X')) else Convert(varchar(100),a.SFZ) end) as Identification,
+(case when right(LTRIM(RTRIM(a.SFZ)),1)='x' then Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')) else Convert(varchar(100),LTRIM(RTRIM(a.SFZ))) end) as Identification,
 a.RYXM as Name,11 as CompID,
 (select DepID from oDepartment where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepID,
 (select DepAbbr from oDepartment where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepAbbr,
@@ -15,5 +16,5 @@ convert(datetime,left(a.HTJSRQ,4)+'-'+right(left(a.HTJSRQ,6),2)+'-'+RIGHT(a.HTJS
 a.SJ as Mobile,a.DH as Telephone,
 convert(datetime,left(a.LZRQ,4)+'-'+right(left(a.LZRQ,6),2)+'-'+RIGHT(a.LZRQ,2)) as LeaDate
 from OPENQUERY(CRMDB, 'SELECT * FROM CRMII.VJJR_HR') a
-where a.ZHZT=N'正常执业' and a.SFZ is not NULL and a.JJRJB not like N'%虚拟%'
+where a.ZHZT=N'正常执业' and a.SFZ is not NULL and ISNULL(a.JJRJB,0) not like N'%虚拟%'
 order by DepxOrder

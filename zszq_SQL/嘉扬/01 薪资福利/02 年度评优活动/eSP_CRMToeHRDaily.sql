@@ -16,16 +16,15 @@ Begin
     insert into pCRMStaff
         (Identification,Name,DepID,DepAbbr,DepxOrder,JobTitle,Status,JoinDate,WorkDate,
         Party,ConBeginDate,ConEndDate,HighLevel,HighDegree,Mobile,Telephone,LeaDate)
-    select (case when LEN(Identification)=15 and ISNUMERIC(LEFT(Identification,1))=1 then dbo.eFN_CID18CheckSum(LEFT(Identification,6)+'19'+RIGHT(Identification,9)+'0') 
-        when LEN(Identification)=18 and ISNUMERIC(LEFT(Identification,1))=1 then dbo.eFN_CID18CheckSum(Identification)
-        else Identification end), Name, DepID, DepAbbr, DepxOrder, JobTitle, Status, JoinDate, WorkDate, Party,
+    select Identification, Name, DepID, DepAbbr, DepxOrder, JobTitle, Status, JoinDate, WorkDate, Party,
         ConBeginDate, ConEndDate, HighLevel, HighDegree, Mobile, Telephone, LeaDate
     from pVW_CRM_Staff
-    where (case when LEN(Identification)=15 and ISNUMERIC(LEFT(Identification,1))=1 then dbo.eFN_CID18CheckSum(LEFT(Identification,6)+'19'+RIGHT(Identification,9)+'0') 
-        when LEN(Identification)=18 and ISNUMERIC(LEFT(Identification,1))=1 then dbo.eFN_CID18CheckSum(Identification)
-        else Identification end) not in (select Identification
-        from pCRMStaff) and DepID is not NULL
-        and LEN(Identification)<=18
+    where Identification in (select Identification
+        from pVW_CRM_Staff
+        where LEN(Identification)<=18 and DepID is not NULL
+        except
+        select Identification
+        from pCRMStaff)
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM
@@ -38,15 +37,17 @@ Begin
     IF @@Error <> 0
         Goto ErrM
 
-    -- 如果pVW_CRM_Staff的Identification出现在pCRMStaff中，则更新该Identification
+    -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID或Status
     update a
-        set a.Name=b.Name,a.DepID=b.DepID,a.DepAbbr=b.DepAbbr,a.DepxOrder=b.DepxOrder,a.JobTitle=b.JobTitle,a.Status=b.Status,
-        a.JoinDate=b.JoinDate,a.WorkDate=b.WorkDate,a.Party=b.Party,a.ConBeginDate=b.ConBeginDate,a.ConEndDate=b.ConEndDate,
-        a.HighLevel=b.HighLevel,a.HighDegree=b.HighDegree,a.Mobile=b.Mobile,a.Telephone=b.Telephone,a.LeaDate=b.LeaDate
-        from pCRMStaff a, pVW_CRM_Staff b
-        where a.Identification=(case when LEN(b.Identification)=15 and ISNUMERIC(LEFT(b.Identification,1))=1 then dbo.eFN_CID18CheckSum(LEFT(b.Identification,6)+'19'+RIGHT(b.Identification,9)+'0') 
-        when LEN(b.Identification)=18 and ISNUMERIC(LEFT(b.Identification,1))=1 then dbo.eFN_CID18CheckSum(b.Identification)
-        else b.Identification end) and LEN(b.Identification)<=18 and (ISNULL(a.DepID,0)<>ISNULL(b.DepID,0) or ISNULL(a.Status,0)<>ISNULL(b.Status,0))
+        set a.DepID=(select DepID from pVW_CRM_Staff where Identification=a.Identification),
+        a.Status=(select Status from pVW_CRM_Staff where Identification=a.Identification)
+        from pCRMStaff a,
+        (select Identification,DepID,Status from pVW_CRM_Staff
+        where LEN(Identification)<=18 and DepID is not NULL
+        except
+        select Identification,DepID,Status
+        from pCRMStaff) b
+        where a.Identification=b.Identification
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM

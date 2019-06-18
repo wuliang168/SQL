@@ -247,28 +247,28 @@ where m.EID=n.EID and n.ReportTo=a.ReportTo)
 
 ------------- 五险一金统计 ------------
 UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
---N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
---+ cast(datepart(dd, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
---+ cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
---a.DepInsHFContact AS approver, 1 AS id
---FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
---WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
---and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
---AND a.DepInsHFContact is NOT NULL
---AND DATEDIFF(DD,GETDATE(),(select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
----- 临时调整
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
-N''',''五险一金工资扣款统计'')">请于5月31日下班前递交' + c.DepAbbr
+N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
++ cast(datepart(dd, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
 + cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
 a.DepInsHFContact AS approver, 1 AS id
 FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
 AND a.DepInsHFContact is NOT NULL
-AND DATEDIFF(DD,GETDATE(),'2019-5-31 23:59:59')>=0
+AND DATEDIFF(DD,GETDATE(),(select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
+---- 临时调整
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
+--N''',''五险一金工资扣款统计'')">请于5月31日下班前递交' + c.DepAbbr
+--+ cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
+--a.DepInsHFContact AS approver, 1 AS id
+--FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
+--WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
+--AND a.DepInsHFContact is NOT NULL
+--AND DATEDIFF(DD,GETDATE(),'2019-5-31 23:59:59')>=0
 
 
 ------------- 月度费用统计 ------------

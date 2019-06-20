@@ -37,7 +37,7 @@ begin
     ---- 仅仅下午未打卡
     insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
-    (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is null) begintime, null endtime, 
+    (select begintime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is null) begintime, null endtime, 
     N'下午' KQSJ, N'未打卡' YCKQNX
     from eemployee a
     where a.Status in (1,2,3) 
@@ -99,7 +99,31 @@ begin
     and DATEDIFF(dd,a.term,b.LeaveEndDate)>=0
     and b.ApprDirector=N'郑婷' and (b.LeaveType=7 and b.LeaveDays<=15 or b.LeaveType<>7) 
     and ISNULL(a.Initialized,0)=0
-
+    ---- 哺乳假
+    ------ 非分支机构员工
+    ------ 仅上午
+    -------- 产假单次
+    update a
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQJG=N'哺乳假'
+    from BS_YC_DK a,pEmpOALeave b
+    where b.LeaveType=4 and a.EID=b.EID
+    and DATEDIFF(DD,b.LeaveEndDate,GETDATE())<=365 and DATEDIFF(DD,b.LeaveEndDate,GETDATE())>=0
+    and (select dbo.eFN_getdeptype(DepID) from eEmployee where EID=a.EID)=1
+    and (select Gender from eDetails where EID=a.eid)=2
+    and a.YCKQNX=N'早退' and b.ApprDep=N'绩效管理室'
+    and (b.OAContent not like N'%流产%' and b.OAContent not like N'%小产%')
+    -------- 产假多次
+    ------ 仅下午
+    -------- 产假单次
+    update a
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQJG=N'哺乳假'
+    from BS_YC_DK a,pEmpOALeave b
+    where b.LeaveType=4 and a.EID=b.EID
+    and DATEDIFF(DD,b.LeaveEndDate,GETDATE())<=365 and DATEDIFF(DD,b.LeaveEndDate,GETDATE())>=0
+    and (select dbo.eFN_getdeptype(DepID) from eEmployee where EID=a.EID)=1
+    and (select Gender from eDetails where EID=a.eid)=2
+    and a.YCKQNX=N'迟到' and b.ApprDep=N'绩效管理室'
+    and (b.OAContent not like N'%流产%' and b.OAContent not like N'%小产%')
 
     -- 公司中层
     ---- 异常记录自动处理

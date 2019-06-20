@@ -16,6 +16,7 @@ begin
     select @time=GETDATE()
 
     -- 同步OA上班时间(最小打卡日期)
+    ---- 同步的时候时间未存在
     insert into BS_DK_time(term,termType,eid,badge,name,beginTime,remark)
     select qday, c.xType, EID, Badge, Name, qday+' '+MIN(qtime), 'OA_Begin_i'
     from skysecuser a, openquery(OA, 'select * from QIANDAO') b, lCalendar c
@@ -24,6 +25,7 @@ begin
     group by qday,EID,Badge,Name,c.xType
 
     -- 同步OA下班时间(最大打卡日期)
+    ---- 同步的时候时间未存在
     insert into BS_DK_time(term,termType,eid,badge,name,endTime,remark)
     select qday, c.xType, EID, Badge, Name, qday+' '+MAX(qtime), 'OA_END_i'
     from skysecuser a, openquery(OA, 'select * from QIANDAO') b, lCalendar c

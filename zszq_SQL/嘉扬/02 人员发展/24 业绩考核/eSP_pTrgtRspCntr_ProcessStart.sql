@@ -91,6 +91,7 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    ---- 被考核人
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM
     insert into pEMPTrgtRspCntrMM(TRCMonth,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
     select a.TRCMonth,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID

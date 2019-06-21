@@ -92,12 +92,12 @@ begin
     -- OA关联
     ---- OA请假记录自动处理
     update a
-    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQJG=N'情况属实，正常出勤'
-    from BS_YC_DK a,pEmpOALeave b
-    where a.eid=b.EID and b.LeaveBeginDate is not NULL and b.LeaveEndDate is not NULL
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,a.YCKQJG=c.Title
+    from BS_YC_DK a,pEmpOALeave b,oCD_LeaveType c
+    where a.eid=b.EID and b.LeaveBeginDate is not NULL and b.LeaveEndDate is not NULL and b.LeaveType=c.ID
     and DATEDIFF(dd,a.term,b.LeaveBeginDate)<=0
     and DATEDIFF(dd,a.term,b.LeaveEndDate)>=0
-    and b.ApprDirector=N'郑婷' and (b.LeaveType=7 and b.LeaveDays<=15 or b.LeaveType<>7) 
+    and b.ApprDep=N'绩效管理室' and ((b.LeaveType=7 and b.LeaveDays<=15) or b.LeaveType<>7) 
     and ISNULL(a.Initialized,0)=0
     ---- 哺乳假
     ------ 非分支机构员工

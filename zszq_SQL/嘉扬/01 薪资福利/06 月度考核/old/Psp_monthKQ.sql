@@ -8,37 +8,36 @@ ALTER proc [dbo].[Psp_monthKQ]
 	@id int,
 	@URID int,
 	@RetVal int=0 OutPut
+/*
+	pStatus状态
+	0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
+*/
 as
 begin
 
+	-- 声明@kpimonth和@pProcessid
 	declare @kpimonth smalldatetime,@pProcessid int
-
+	-- 定义@kpimonth和@pProcessid
 	select @kpimonth=kpimonth, @pProcessid=pProcessid
 	from pProcess_month
 	where id=@id
 
 	-- 上月未关闭，不可开启本月！
-	/*
-	If Exists(Select 1 From pProcess_month
-	Where DATEDIFF(MM,kpimonth,DATEADD(MM,-1,@kpimonth))=0 And Isnull(Submit,0)=0
-	)
+	If Exists(Select 1 From pProcess_month Where DATEDIFF(MM,kpimonth,DATEADD(MM,-1,@kpimonth))=0 And Isnull(Submit,0)=0)
 	Begin
 		Set @RetVal = 1000011
 		Return @RetVal
 	End
-	*/
 
-	--本月已开启，不用重复点击！
-	If Exists(Select 1
-	From pProcess_month
-	Where ISNULL(Initialized,0)=1 and isnull(id,0)=@id and begindate is not null)
+	-- 本月已开启，不用重复点击！
+	If Exists(Select 1 From pProcess_month Where ISNULL(Initialized,0)=1 and isnull(id,0)=@id and begindate is not null)
 	Begin
 		Set @RetVal = 1100043
 		Return @RetVal
 	End
 
-	--本考核期间KPI制定未关闭，不能开启月度流程!
 	/*
+	-- 本考核期间KPI制定未关闭，不能开启月度流程!
 	If Exists(Select 1 From pProcess_month a,pProcess b where a.id=@id and a.pProcessID=b.id and b.kpienddate is null)
 	Begin
 		Set @RetVal = 1000049
@@ -49,6 +48,7 @@ begin
 
 	Begin TRANSACTION
 
+	-- 开启月度考核流程
 	update a
 	set a.Initialized=1,a.InitializedTime=GETDATE(),begindate=GETDATE(),eid=@URID
 	from pProcess_month a
@@ -57,9 +57,9 @@ begin
 	IF @@Error <> 0
 	Goto ErrM
 
-	--插入员工 从pemployee插入才合理
+	-- 插入员工 从pemployee插入才合理
 	insert into pEmpProcess_Month (period,badge,name,depid,depid2,jobid,kpidepid,pegroup,pstatus,kpiReportTo,monthID)
-	select @kpimonth,a.badge,a.Name,b.DepID1st,b.DepID2nd,a.jobid,b.KPIDepID,NULL,2,b.KPIReportTo,@id
+	select @kpimonth,a.badge,a.Name,b.DepID1st,b.DepID2nd,a.jobid,b.KPIDepID,NULL,0,b.KPIReportTo,@id
 	from eEmployee a, pVW_pMonthKPIReportTo b
 	where a.Status in (1,2,3) and a.EID=b.EID and ISNULL(b.pStatus,0)<>2
 	and not exists (select 1

@@ -22,28 +22,35 @@ begin
 		Return @RetVal
 	End
 
-	--存在未完成员工不允许关闭！
+	-- 存在未完成员工不允许关闭！
 	If Exists(Select 1 From pEmpProcess_Month Where ISNULL(Closed,0)=0 and isnull(monthid,0)=@id)
 	Begin
 		Set @RetVal = 1000012
 		Return @RetVal
 	End
 
-	-- 0106begin
-	-- 部门负责人直接完成
-	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
-	update a
-	set a.Closed=1,a.ClosedTime=GETDATE(),a.pstatus=5
-	from pEmpProcess_Month a
-	where badge in (select badge from pVW_pMonthKPIReportTo)
-	-- 异常处理
-	IF @@Error <> 0
-	Goto ErrM
-	-- 0106end
-
 
 	Begin TRANSACTION
 
+	-- 关闭员工月度考核
+	update a
+	set a.Closed=1,a.ClosedTime=GETDATE()
+	from pEmpProcess_Month a
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 如果员工状态未达到5，则直接设置为6
+	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
+	update a
+	set a.pstatus=6
+	from pEmpProcess_Month a
+	where a.pstatus < 5
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 关闭月度考核流程
 	update a
 	set a.Submit=1,a.SubmitTime=GETDATE(),enddate=GETDATE(),eidclose=@URID
 	from pProcess_month a
@@ -51,39 +58,67 @@ begin
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
-	-- insert into PMONTH_ASS(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,badge,monthid)            
-	-- select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,badge,monthid            
-	-- from PMONTH_PLAN            
-	-- where monthid=@id     
-		
-	--  IF @@Error <> 0                                             
-	-- Goto ErrM                
-	--绩效节点数生成 Add By Jimmy                        
-	--declare @processid int                        
-	--select @processid=pProcessID from pProcess_month where id=@id                       
-					
-	--delete from SkyPAFormConfig where xyear=@processid and xtype=4                      
-							
-	--  IF @@Error <> 0                                                     
-	--  Goto ErrM                          
-								
-	--insert into SkyPAFormConfig(xyear,PID,id,XID,xorder,title,xtype,URL,remark,Condition,beforeorafter)                        
-	--select @processid,cast (c.EID as varchar),cast (@processid as varchar)+cast (EID as varchar)+cast (a.id as varchar),                        
-	--case when xid <> 0 then cast (@processid as varchar)+cast (EID as varchar)+cast (XID as varchar) else 0 end,                        
-	--a.xorder,a.title,a.xtype,a.URL,a.remark,'select {U_EID}',beforeorafter                        
-	--from pAFormConfig a,pEmpProcess_Month b,pEmployee c,pAForm_Role d                        
-	--where b.badge=c.Badge and a.xtype=4 and a.beforeorafter=2 and c.perole=d.Roleid and d.Formid=a.id                        
-	--and d.isUsed=1 and b.monthID=@id                   
-	--and cast (@processid as varchar)+cast (EID as varchar)+cast (a.id as varchar) not in (select id from SkyPAFormConfig)                  
-								
-	COMMIT TRANSACTION                                             
-	Set @RetVal=0                                                            
-	Return @RetVal                               
-									
-	ErrM:                                              
-	ROLLBACK TRANSACTION                                                      
-	If isnull(@RetVal,0)=0                                                           
-	Set @RetVal=-1                                                         
-	Return @RetVal                               
-                                
+
+	-- 将上月的考核总结pMonth_ASS拷贝到pMonth_ASS_all
+	insert into pMonth_ASS_all(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,monthscoop,grade,Scoreadjust,remark,
+	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,adjustsonce,badge,monthid)
+	select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,monthscoop,grade,Scoreadjust,remark,
+	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,adjustsonce,badge,monthid
+	from pMonth_ASS a
+	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=a.monthid),(select kpimonth from pProcess_month where id=@id))>0
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 删除上月的考核总结pMonth_ASS
+	delete from pMonth_ASS
+	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=a.monthid),(select kpimonth from pProcess_month where id=@id))>0
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 将pEmpProcess_Month拷贝到pEmpProcess_Month_all
+	insert into pEmpProcess_Month_all(period,EID,Badge,Name,DepID,DepID2,JobID,ReportTo,WFReportTo,KPIDepID,PeGroup,pStatus,
+	KPIReportTo,Remark,Initialized,InitializedTime,Submit,SubmitTime,Closed,ClosedTime,MonthID,Pingfen,Pingyu,PingfenDate)
+	select period,EID,Badge,Name,DepID,DepID2,JobID,ReportTo,WFReportTo,KPIDepID,PeGroup,pStatus,
+	KPIReportTo,Remark,Initialized,InitializedTime,Submit,SubmitTime,Closed,ClosedTime,MonthID,Pingfen,Pingyu,PingfenDate
+	from pEmpProcess_Month
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 删除本月的pEmpProcess_Month
+	delete from pEmpProcess_Month
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	--绩效节点数生成 Add By Jimmy
+	--declare @processid int
+	--select @processid=pProcessID from pProcess_month where id=@id
+
+	--delete from SkyPAFormConfig where xyear=@processid and xtype=4
+
+	--  IF @@Error <> 0
+	--  Goto ErrM
+
+	--insert into SkyPAFormConfig(xyear,PID,id,XID,xorder,title,xtype,URL,remark,Condition,beforeorafter)
+	--select @processid,cast (c.EID as varchar),cast (@processid as varchar)+cast (EID as varchar)+cast (a.id as varchar),
+	--case when xid <> 0 then cast (@processid as varchar)+cast (EID as varchar)+cast (XID as varchar) else 0 end,
+	--a.xorder,a.title,a.xtype,a.URL,a.remark,'select {U_EID}',beforeorafter
+	--from pAFormConfig a,pEmpProcess_Month b,pEmployee c,pAForm_Role d
+	--where b.badge=c.Badge and a.xtype=4 and a.beforeorafter=2 and c.perole=d.Roleid and d.Formid=a.id
+	--and d.isUsed=1 and b.monthID=@id
+	--and cast (@processid as varchar)+cast (EID as varchar)+cast (a.id as varchar) not in (select id from SkyPAFormConfig)
+
+	COMMIT TRANSACTION
+	Set @RetVal=0
+	Return @RetVal
+
+	ErrM:
+	ROLLBACK TRANSACTION
+	If isnull(@RetVal,0)=0
+	Set @RetVal=-1
+	Return @RetVal
+
 end

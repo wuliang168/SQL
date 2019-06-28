@@ -104,7 +104,7 @@ begin
     ------ 仅上午
     -------- 产假单次
     update a
-    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQJG=N'哺乳假'
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQSM=N'哺乳假',YCKQJG=N'情况属实，正常出勤'
     from BS_YC_DK a,pEmpOALeave b
     where b.LeaveType=4 and a.EID=b.EID
     and DATEDIFF(DD,b.LeaveEndDate,GETDATE())<=365 and DATEDIFF(DD,b.LeaveEndDate,GETDATE())>=0
@@ -116,7 +116,7 @@ begin
     ------ 仅下午
     -------- 产假单次
     update a
-    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQJG=N'哺乳假'
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,YCKQSM=N'哺乳假',YCKQJG=N'情况属实，正常出勤'
     from BS_YC_DK a,pEmpOALeave b
     where b.LeaveType=4 and a.EID=b.EID
     and DATEDIFF(DD,b.LeaveEndDate,GETDATE())<=365 and DATEDIFF(DD,b.LeaveEndDate,GETDATE())>=0

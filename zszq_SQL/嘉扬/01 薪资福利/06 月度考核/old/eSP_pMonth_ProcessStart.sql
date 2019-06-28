@@ -9,7 +9,7 @@ ALTER proc [dbo].[pSP_pMonth_ProcessStart]
 @URID int,
 @RetVal int=0 OutPut
 as
-begin           
+begin
 
     --本月已开启，不用重复点击！
     If Exists(Select 1 From pMonth_Process Where ISNULL(Initialized,0)=1 and isnull(id,0)=@id and begindate is not null)

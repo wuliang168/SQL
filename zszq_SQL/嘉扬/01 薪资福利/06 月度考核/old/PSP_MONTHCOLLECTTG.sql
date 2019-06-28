@@ -10,7 +10,7 @@ ALTER proc [dbo].[Psp_monthcollectTG]
 	@RetVal int=0 OutPut
 /*
 	pStatus状态
-	0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
+	0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
 */
 as
 begin
@@ -23,7 +23,7 @@ begin
 
 	Begin TRANSACTION
 
-	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
+	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
 	---- 1-已自评待审核 -> 5-已审批
 	update a
 	set a.ClosedTime=GETDATE(),a.Closed=1,a.pingfendate=GETDATE(),a.pstatus=5
@@ -40,7 +40,15 @@ begin
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
-	
+	---- 4-历史修改待审批 -> 5-已审批
+	update a
+	set a.ClosedTime=GETDATE(),a.Closed=1,a.pingfendate=GETDATE(),a.pstatus=5
+	from pEmpProcess_Month a
+	where id=@id and a.pstatus=4
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
 
 	COMMIT TRANSACTION
 	Set @RetVal=0

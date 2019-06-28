@@ -5,9 +5,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[Psp_monthcollectTH]
-@id int,
-@URID int,
-@RetVal int=0 OutPut
+	@id int,
+	@URID int,
+	@RetVal int=0 OutPut
+/*
+	pStatus状态
+	0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
+*/
 AS
 begin
 
@@ -28,7 +32,7 @@ begin
 	Begin TRANSACTION
 
 	-- 退回员工时，调整状态
-	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|5-已审批|6-已封账
+	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
 	---- 1-已自评待审核 -> 2-已审核被退回
 	update a
 	set a.InitializedTime=NULL,a.Initialized=0,a.pstatus=2

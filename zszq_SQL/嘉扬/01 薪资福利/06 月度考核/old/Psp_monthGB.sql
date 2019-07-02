@@ -22,12 +22,14 @@ begin
 		Return @RetVal
 	End
 
+	/*
 	-- 存在未完成员工不允许关闭！
 	If Exists(Select 1 From pEmpProcess_Month Where ISNULL(Closed,0)=0 and isnull(monthid,0)=@id)
 	Begin
 		Set @RetVal = 1000012
 		Return @RetVal
 	End
+	*/
 
 
 	Begin TRANSACTION
@@ -59,6 +61,22 @@ begin
 	IF @@Error <> 0
 	Goto ErrM
 
+	-- 将pMonth_Plan拷贝到pMonth_Plan_all
+	insert into pMonth_Plan_all(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,
+	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,badge,monthid)
+	select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,Initialized,InitializedTime,
+	Submit,SubmitTime,Closed,Closedtime,badge,monthid
+	from pMonth_Plan
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 删除本月的pMonth_Plan
+	delete from pMonth_Plan
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
 	-- 将上月的考核总结pMonth_ASS拷贝到pMonth_ASS_all
 	insert into pMonth_ASS_all(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,monthscoop,grade,Scoreadjust,remark,
 	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,adjustsonce,badge,monthid)
@@ -72,11 +90,12 @@ begin
 
 	-- 删除上月的考核总结pMonth_ASS
 	delete from pMonth_ASS
-	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=a.monthid),(select kpimonth from pProcess_month where id=@id))>0
+	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=monthid),(select kpimonth from pProcess_month where id=@id))>0
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
 
+	/*
 	-- 将pEmpProcess_Month拷贝到pEmpProcess_Month_all
 	insert into pEmpProcess_Month_all(period,EID,Badge,Name,DepID,DepID2,JobID,ReportTo,WFReportTo,KPIDepID,PeGroup,pStatus,
 	KPIReportTo,Remark,Initialized,InitializedTime,Submit,SubmitTime,Closed,ClosedTime,MonthID,Pingfen,Pingyu,PingfenDate)
@@ -92,6 +111,7 @@ begin
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
+	*/
 
 	--绩效节点数生成 Add By Jimmy
 	--declare @processid int

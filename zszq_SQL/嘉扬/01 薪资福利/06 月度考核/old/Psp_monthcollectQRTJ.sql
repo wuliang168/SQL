@@ -155,6 +155,7 @@ begin
 	end
 	--end20140527
 
+	/*
 	-- 删除已经存在本月的PMONTH_ASS,避免重复更新
 	delete from PMONTH_ASS
 	where monthid=(select monthid from pEmpProcess_Month where id=@id) 
@@ -162,32 +163,13 @@ begin
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
+	*/
 
 	-- 更新到下月度总结
 	insert into PMONTH_ASS(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,badge,monthid)
 	select monthtitle,pMonth_ASSID,begindate,enddate, xorder,datemodulus,remark,badge,monthid
 	from PMONTH_PLAN
 	where monthid=(select monthid from pEmpProcess_Month where id=@id) 
-	and badge=(select badge from pEmpProcess_Month where id=@id)
-	-- 异常处理
-	IF @@Error <> 0
-	Goto ErrM
-
-	-- 将pMonth_Plan拷贝到pMonth_Plan_all
-	insert into pMonth_Plan_all(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,
-	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,badge,monthid)
-	select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,Initialized,InitializedTime,
-	Submit,SubmitTime,Closed,Closedtime,badge,monthid
-	from pMonth_Plan
-	where monthid=(select monthid from pEmpProcess_Month where id=@id)
-	and badge=(select badge from pEmpProcess_Month where id=@id)
-	-- 异常处理
-	IF @@Error <> 0
-	Goto ErrM
-
-	-- 删除本月的pMonth_Plan
-	delete from pMonth_Plan
-	where monthid=(select monthid from pEmpProcess_Month where id=@id)
 	and badge=(select badge from pEmpProcess_Month where id=@id)
 	-- 异常处理
 	IF @@Error <> 0

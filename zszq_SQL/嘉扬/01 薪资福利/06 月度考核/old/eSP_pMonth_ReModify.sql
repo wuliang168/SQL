@@ -4,7 +4,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER proc [dbo].[eSP_pMonth_ReSubmit]
+ALTER proc [dbo].[eSP_pMonth_ReModify]
     @id int,
     @RetVal int=0 OutPut
 /*
@@ -13,6 +13,7 @@ ALTER proc [dbo].[eSP_pMonth_ReSubmit]
 */
 as
 begin
+
 
     -- 该月未开启评分，无法再次开启！
     If Exists(Select 1 From pEmpProcess_Month a
@@ -46,13 +47,14 @@ begin
         Return @RetVal
     End
 
+
     Begin TRANSACTION
 
     -- 更新pEmpProcess_Month
     -- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
     -- 5-已审批|6-已封账 -> 4-历史修改待审批
     update a
-    set a.Initialized=1,a.InitializedTime=GETDATE(),a.pStatus=4,a.Submit=NULL,a.Closed=NULL,a.IsReSubmit=1
+    set a.Initialized=NULL,a.InitializedTime=NULL
     from pEmpProcess_Month a
     where a.id=@id
     -- 异常处理

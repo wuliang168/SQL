@@ -4,8 +4,10 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER proc [dbo].[eSP_pMonth_ReSubmit]
+ALTER proc [dbo].[eSP_pMonth_ReAdd]
     @id int,
+    @badge varchar(50),
+    @monthid int,
     @RetVal int=0 OutPut
 /*
 	pStatus状态
@@ -13,6 +15,10 @@ ALTER proc [dbo].[eSP_pMonth_ReSubmit]
 */
 as
 begin
+
+    declare @period smalldatetime
+
+    set @period=(select period from pEmpProcess_Month where ID=@ID)
 
     -- 该月未开启评分，无法再次开启！
     If Exists(Select 1 From pEmpProcess_Month a
@@ -46,15 +52,16 @@ begin
         Return @RetVal
     End
 
+
     Begin TRANSACTION
 
     -- 更新pEmpProcess_Month
     -- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
     -- 5-已审批|6-已封账 -> 4-历史修改待审批
-    update a
-    set a.Initialized=1,a.InitializedTime=GETDATE(),a.pStatus=4,a.Submit=NULL,a.Closed=NULL,a.IsReSubmit=1
-    from pEmpProcess_Month a
-    where a.id=@id
+    insert into pMonth_ASS_all (xorder,begindate,enddate,badge,monthid)
+    values ((select count(1)+1 from PMONTH_ASS_ALL where BADGE=@badge and monthid=@monthid),
+    DATEADD(dd, 0, DATEADD(mm, DATEDIFF(m, 0, @period), 0)),
+    DATEADD(dd, -1, DATEADD(mm, DATEDIFF(m, 0, @period) + 1, 0)),@badge,@monthid)
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

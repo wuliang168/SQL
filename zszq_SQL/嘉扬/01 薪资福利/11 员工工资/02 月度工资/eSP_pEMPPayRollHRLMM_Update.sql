@@ -39,7 +39,8 @@ Begin
     a.SA_29,a.SA_09,a.OTHER_03,a.SA_27,a.SA_32,a.SA_33,a.SA_34,a.SA_35,
     a.OTHER_10001,a.OTHER_10002,a.OTHER_10003,a.OTHER_10004,a.OTHER_10005,a.OTHER_10006
     from HRL_V_PAYROLLHISINFO a
-    where a.pay_year>=2019 and a.pay_month>(select distinct MAX(MONTH(pay_date)) from pEMPPayRollHRLPerMM_all where YEAR(pay_date)=a.pay_year)
+    where a.pay_year>=2019 
+    and DATEDIFF(mm,(select MAX(pay_date) from pEMPPayRollHRLPerMM_all),CONVERT(datetime,CONVERT(varchar(4),pay_year)+'-'+CONVERT(varchar(2),pay_month)+'-1 0:0:0',101))>=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

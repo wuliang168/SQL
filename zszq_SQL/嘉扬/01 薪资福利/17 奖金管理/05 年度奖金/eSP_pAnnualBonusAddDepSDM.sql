@@ -7,7 +7,7 @@ GO
 ALTER  Procedure [dbo].[eSP_pAnnualBonusAddDepSDM]
 -- skydatarefresh eSP_pAnnualBonusAddDepSDM
     @leftid int, 
-    @Identification varchar(100), 
+    @bid int, 
     @RetVal int=0 Output
 As
 /*
@@ -28,10 +28,10 @@ Begin
     Begin TRANSACTION
 
     -- 更新pYear_AnnualBonus
-    insert into pYear_AnnualBonus(Year,Date,AnnualBonusDepID,EMPDepID,Identification)
+    insert into pYear_AnnualBonus(Year,Date,AnnualBonusDepID,EMPDepID,BID,Identification)
     select (select Year from pYear_AnnualBonusDep where AnnualBonusDepID=@leftid and ISNULL(IsClosed,0)=0),
     (select Date from pYear_AnnualBonusDep where AnnualBonusDepID=@leftid and ISNULL(IsClosed,0)=0),
-    @leftid,(select DepID from pVW_Employee where Identification=@Identification),@Identification
+    @leftid,(select DepID from pVW_Employee where BID=@bid),@bid,(select Identification from pVW_Employee where BID=@bid)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

@@ -91,7 +91,7 @@ Begin
     ---- 儿童节
     or (Month(b.Date)=6 and c.ID=9)
     ---- 高温费
-    or (Month(b.Date)=8 and c.ID=5)
+    or (Month(b.Date)=7 and c.ID=5)
     ---- 国庆节
     or (Month(b.Date)=10 and c.ID=8))
     -- 异常流程

@@ -1,6 +1,7 @@
 -- pVW_pYear_AppraiseStaff
+
 ---- 理顾
-select NULL as JobxOrder,NULL as EID,a.Identification as Identification,a.Name as Name,a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
+select NULL as JobxOrder,NULL as EID,BID as BID,a.Identification as Identification,a.Name as Name,a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
 NULL as KPIDepID,b.DepAbbr as DepTitle,NULL as DepProperty1,a.JobTitle as JobTitle,a.Status as Status,NULL as EmpGrade,NULL as CompPartTime,a.JoinDate as JoinDate
 from pCRMStaff a,oDepartment b
 where a.Status in (1) and a.DepID=b.DepID and a.JobTitle not in (N'经纪人',N'分支机构副总,总助（业务型）',N'客户服务部经理',N'机构业务部经理',N'综合服务人员',N'财富管理中心负责人')
@@ -9,7 +10,7 @@ and Datediff(MM,(select Convert(smalldatetime,CONVERT(varchar(4),Year(Date))+'-0
 
 ---- 非理顾
 UNION
-select c.xOrder as JobxOrder,a.EID as EID,NULL as Identification,a.Name as Name,a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
+select c.xOrder as JobxOrder,a.EID as EID,NULL as BID,NULL as Identification,a.Name as Name,a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
 e.kpiDepID as KPIDepID,d.DepAbbr as DepTitle,d.DepProperty1 as DepProperty1,c.Title as JobTitle,a.Status as Status,a.EmpGrade as EmpGrade,ISNULL(e.pegroup,e.perole) as CompPartTime,b.JoinDate as JoinDate
 from eEmployee a,eStatus b,oJob c,oDepartment d,pEmployee_register e
 where a.EID=b.EID and a.JobID=c.JobID and a.Status not in (4,5) and a.DepID=d.DepID

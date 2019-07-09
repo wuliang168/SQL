@@ -67,7 +67,7 @@ Begin
     insert into pPensionUpdatePerEmp(PensionYear,EID,IsPension,IsSubmit,IsClosed)
     select a.PensionYear,b.EID,1,1,NULL
     from pPensionUpdate a,eEmployee b,eStatus c
-    where a.ID=@ID and b.Status=5 and b.EID=c.EID 
+    where a.ID=@ID and b.Status=5 and b.EID=c.EID
     and DateDiff(yy,c.LeaDate,a.PensionYear)=0 and c.LeaType=4
     -- 异常流程
     If @@Error<>0
@@ -75,17 +75,17 @@ Begin
 
     -- 插入前台员工参与年金pPensionUpdatePerSDM
     ---- 在职
-    insert into pPensionUpdatePerSDM(PensionYear,Name,Gender,Identification,Status,CompID,SupDepID,DepID,JobID,JoinDate,IsPension,IsSubmit,IsClosed)
-    select a.PensionYear,b.Name,b.Gender,b.Identification,b.Status,b.CompID,b.SupDepID,b.DepID,b.JobID,b.JoinDate,NULL,NULL,NULL
-    from pPensionUpdate a,pSalesDepartMarketerEmolu b
+    insert into pPensionUpdatePerSDM(PensionYear,BID,Name,Identification,IsPension,IsSubmit,IsClosed)
+    select a.PensionYear,b.BID,b.Name,b.Identification,NULL,NULL,NULL
+    from pPensionUpdate a,pCRMStaff b
     where a.ID=@ID and b.Status not in (4,5) and DateDiff(yy,b.JoinDate,a.PensionYear)>=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 退休
-    insert into pPensionUpdatePerSDM(PensionYear,Name,Gender,Identification,Status,CompID,SupDepID,DepID,JobID,JoinDate,IsPension,IsSubmit,IsClosed)
-    select a.PensionYear,b.Name,b.Gender,b.Identification,b.Status,b.CompID,b.SupDepID,b.DepID,b.JobID,b.JoinDate,1,NULL,NULL
-    from pPensionUpdate a,pSalesDepartMarketerEmolu b
+    insert into pPensionUpdatePerSDM(PensionYear,BID,Name,Identification,IsPension,IsSubmit,IsClosed)
+    select a.PensionYear,b.BID,b.Name,b.Identification,1,NULL,NULL
+    from pPensionUpdate a,pCRMStaff b
     where a.ID=@ID and b.Status=5 and DateDiff(yy,b.JoinDate,a.PensionYear)>=0
     -- 异常流程
     If @@Error<>0

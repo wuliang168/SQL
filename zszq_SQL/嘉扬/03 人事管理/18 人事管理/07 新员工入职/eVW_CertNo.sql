@@ -1,4 +1,5 @@
 -- eVW_CertNo
+
 ---- 中国公民
 SELECT a.ID, a.Badge, a.Name, a.CompID, a.DepID, a.JobID, a.emptype, a.status, a.JoinDate, a.certno, a.Gender, a.Birthday, N'中国公民身份证不能为空' AS Remark
 FROM eStaff_Register a
@@ -29,11 +30,10 @@ WHERE a.country = '41' AND a.certno IS NOT NULL AND Len(a.certno) IN (15, 18) AN
 END)) <> 0
 ---- 身份证校验码判断
 UNION ALL
-SELECT a.ID, a.Badge, a.Name, a.CompID, a.DepID, a.JobID, a.emptype, a.status, a.JoinDate, a.certno, a.Gender, a.Birthday, N'与员工:' + c.Badge + '-' + c.Name + N' 身份证校验码错误' AS Remark
-FROM eStaff_Register a, eEmployee c, eDetails d
-WHERE c.EID = d .EID AND a.certno <> dbo.eFN_CID18CheckSum(a.certno)
-AND Len(a.certno) IN (18) AND Len(d.certno) IN (15, 18) AND a.certno IS NOT NULL AND 
-d.certno IS NOT NULL AND c.status NOT IN (4, 5)
+SELECT a.ID, a.Badge, a.Name, a.CompID, a.DepID, a.JobID, a.emptype, a.status, a.JoinDate, a.certno, a.Gender, a.Birthday, a.Name + N'的身份证校验码错误' AS Remark
+FROM eStaff_Register a
+WHERE a.certno <> dbo.eFN_CID18CheckSum(a.certno)
+AND Len(a.certno) IN (18) AND a.certno IS NOT NULL
 ---- 身份证重复判断
 UNION ALL
 SELECT a.ID, a.Badge, a.Name, a.CompID, a.DepID, a.JobID, a.emptype, a.status, a.JoinDate, a.certno, a.Gender, a.Birthday, N'与员工:' + c.Badge + '-' + c.Name + N' 重复' AS Remark

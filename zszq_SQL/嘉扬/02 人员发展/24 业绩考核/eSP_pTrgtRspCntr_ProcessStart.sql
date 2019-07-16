@@ -60,11 +60,22 @@ Begin
     -- 添加至月度业务考核部门表项pTrgtRspCntrDep
     ---- 被考核人
     insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,1
+    select b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,0
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
     where b.ID=@ID
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
     and ((DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 审核人 提交建议
+    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.PreviewTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.PreviewTo),
+    (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.PreviewTo),a.PreviewTo,1
+    from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
+    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

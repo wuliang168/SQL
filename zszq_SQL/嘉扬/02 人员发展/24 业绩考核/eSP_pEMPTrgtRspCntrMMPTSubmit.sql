@@ -4,8 +4,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER Procedure [dbo].[eSP_pEMPTrgtRspCntrMMRTSubmit]
--- skydatarefresh eSP_pEMPTrgtRspCntrMMRTSubmit
+ALTER Procedure [dbo].[eSP_pEMPTrgtRspCntrMMPTSubmit]
+-- skydatarefresh eSP_pEMPTrgtRspCntrMMPTSubmit
     @EID int,
     @RetVal int=0 Output
 As
@@ -18,11 +18,11 @@ As
 Begin
 
     -- 业务考核评语为空，无法递交！
-    ---- 主管部门负责人考核意见
+    ---- 主管部门审核人考核意见
     IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b,pVW_TrgtRspCntrReportTo c
-    where a.KPIID=b.KPIID and b.SubmitPT=1 and b.SubmitRT is NULL
+    where a.KPIID=b.KPIID and b.SubmitSelf=1 and b.SubmitPT is NULL
     and c.ReportTo=@EID and a.EID=c.EID
-    and a.CommRT is NULL)
+    and a.CommPT is NULL)
     Begin
         Set @RetVal=930550
         Return @RetVal
@@ -32,11 +32,11 @@ Begin
     Begin TRANSACTION
 
     -- 更新pEMPTrgtRspCntrKPIMM
-    ---- 部门负责人业务考核递交
+    ---- 部门审核人业务考核递交
     update a
-    set a.SubmitRT=1,a.DateRT=GETDATE()
+    set a.SubmitPT=1,a.DatePT=GETDATE()
     from pEMPTrgtRspCntrMM a,pVW_TrgtRspCntrReportTo b
-    where b.ReportTo=@EID and a.EID=b.EID and ISNULL(a.SubmitRT,0)=0
+    where b.PreviewTo=@EID and a.EID=b.EID and ISNULL(a.SubmitPT,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -44,7 +44,7 @@ Begin
     update a
     set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pTrgtRspCntrDep a
-    where a.ReportTo=@EID and a.TRCLev=2
+    where a.ReportTo=@EID and a.TRCLev=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM

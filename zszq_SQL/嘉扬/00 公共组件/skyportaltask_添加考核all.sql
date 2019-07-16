@@ -227,8 +227,19 @@ N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''目标责任考核''
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
-and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=1
+and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=0
 --and DATEDIFF(dd,GETDATE(),'2019-5-30 0:0:0')>0
+---- 部门审核人考核
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570415'',''目标责任考核'')">请您完成本月部门目标责任审核。</a>' AS url, 
+a.ReportTo AS approver, 1 AS id
+FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=1
+and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.PreviewTo=a.ReportTo)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.PreviewTo=a.ReportTo)
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT

@@ -21,7 +21,7 @@ where a.Status not in (4,5) and a.DepID=b.DepID and ISNULL(dbo.eFN_getdepid1st(a
 ------ 投资银行管理总部：683
 UNION
 select a.EID as EID,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
-NULL as PreviewTo,dbo.eFN_getdepdirector(683) as ReportTo,695 as ReportToDepID
+2218 as PreviewTo,dbo.eFN_getdepdirector(683) as ReportTo,695 as ReportToDepID
 from eEmployee a,oDepartment b
 where a.Status not in (4,5) and a.DepID=b.DepID and ISNULL(dbo.eFN_getdepadmin(dbo.eFN_getdepid1st(a.DepID)),0)=695
 
@@ -38,7 +38,7 @@ UNION
 ---- 网点运营管理总部(DepID:362)
 ------ 分支机构
 select a.EID as EID,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
-1308 as PreviewTo,dbo.eFN_getdepdirector(362) as ReportTo,362 as ReportToDepID
+1992 as PreviewTo,dbo.eFN_getdepdirector(362) as ReportTo,362 as ReportToDepID
 from eEmployee a,oDepartment b
 where a.Status not in (4,5) and a.DepID=b.DepID and a.EmpGrade in (9,5)
 and a.CompID=11 and dbo.eFN_getdeptype(a.DepID) in (2,3)
@@ -47,7 +47,7 @@ UNION
 ---- 网点运营管理总部(DepID:362)
 ------ 胡晶飚
 select a.EID as EID,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
-1308 as PreviewTo,dbo.eFN_getdepdirector(362) as ReportTo,362 as ReportToDepID
+1992 as PreviewTo,dbo.eFN_getdepdirector(362) as ReportTo,362 as ReportToDepID
 from eEmployee a,oDepartment b
 where a.Status not in (4,5) and a.DepID=b.DepID and a.CompID=11
 and a.Name=N'胡晶飚'

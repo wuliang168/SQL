@@ -45,7 +45,7 @@ ISNULL(b.EID, 5256) AS approver,3 AS id
 FROM PEMPPROCESS_MONTH a, eemployee b
 WHERE a.badge = b.Badge AND ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.Closed, 0) = 0 
 AND a.monthID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=0)
-AND DATEPART(dd,GETDATE()) BETWEEN 1 AND 15
+AND DATEPART(dd,GETDATE()) BETWEEN 1 AND 20
 
 -- 月工作计划与汇总(新)
 --UNION
@@ -238,8 +238,8 @@ FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
 and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=1
 and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.PreviewTo=a.ReportTo)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.PreviewTo=a.ReportTo)
+where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
@@ -248,9 +248,12 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
 and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=2
-and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo)
+and ((select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL)=(select SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL) or
+(select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL)=(select SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL))
 ---- 部门负责人考核反馈
 UNION
 SELECT DISTINCT

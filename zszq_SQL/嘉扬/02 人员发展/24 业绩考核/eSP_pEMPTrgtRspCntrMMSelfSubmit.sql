@@ -60,7 +60,7 @@ Begin
     update a
     set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pTrgtRspCntrDep a
-    where a.ReportTo=@EID and a.TRCLev=1
+    where a.ReportTo=@EID and a.TRCLev=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

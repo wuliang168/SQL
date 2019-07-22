@@ -44,13 +44,13 @@ begin
 
 	-- 如果员工状态未达到5，则直接设置为6
 	-- pStatus状态:0-未自评|1-已自评待审核|2-已审核被退回|3-已修改待审核|4-历史修改待审批|5-已审批|6-已封账
-	update a
-	set a.pstatus=6
-	from pEmpProcess_Month a
-	where a.pstatus < 5
+	--update a
+	--set a.pstatus=6
+	--from pEmpProcess_Month a
+	--where a.pstatus < 5
 	-- 异常处理
-	IF @@Error <> 0
-	Goto ErrM
+	--IF @@Error <> 0
+	--Goto ErrM
 
 	-- 关闭月度考核流程
 	update a

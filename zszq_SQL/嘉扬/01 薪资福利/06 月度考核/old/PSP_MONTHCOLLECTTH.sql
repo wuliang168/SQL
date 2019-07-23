@@ -39,7 +39,17 @@ begin
 	update a
 	set a.InitializedTime=NULL,a.Initialized=NULL,a.pstatus=2
 	from pEmpProcess_Month a
-	where id=@id and a.pstatus in (1,3,4)
+	where id=@id
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
+
+	-- 开启本月
+	update a
+	set a.InitializedTime=NULL,a.Initialized=NULL,a.IsReSubmit=1
+	from pEmpProcess_Month a
+	where DATEDIFF(mm,a.period,(select DATEADD(mm,1,period) from pEmpProcess_Month where id=@id))=0
+	and a.badge=(select badge from pEmpProcess_Month where id=@id)
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM

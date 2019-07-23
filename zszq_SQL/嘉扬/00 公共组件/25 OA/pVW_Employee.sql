@@ -6,7 +6,7 @@ a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.
 NULL as KPIDepID,b.DepAbbr as DepTitle,NULL as DepProperty1,a.JobTitle as JobTitle,a.Status as Status,NULL as EmpGrade,
 NULL as CompPartTime,a.JoinDate as JoinDate,a.LeaDate as LeaDate,NULL as WorkCity,a.Mobile as Mobile,NULL as eHR_PWD
 from pCRMStaff a,oDepartment b
-where a.Status=1 and a.DepID=b.DepID and a.JobTitle not in (N'经纪人',N'分支机构副总,总助（业务型）',N'客户服务部经理',N'机构业务部经理',N'综合服务人员',N'财富管理中心负责人')
+where a.Status=1 and a.DepID=b.DepID
 --and a.Identification not in (select a.Certno from eDetails a,eEmployee b where a.EID=b.EID and b.Status in (1,2,3))
 
 ---- 非理顾

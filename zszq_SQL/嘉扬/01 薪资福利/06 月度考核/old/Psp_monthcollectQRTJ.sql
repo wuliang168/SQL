@@ -90,6 +90,14 @@ begin
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
+	---- IsReSubmit为1，表示在本月自评上月小结(已审核被退回并做了调整)
+	update a
+	set a.InitializedTime=GETDATE(),a.Initialized=1
+	from pEmpProcess_Month a
+	where a.id=@id and ISNULL(a.IsReSubmit,0)=1
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
 
 	/*
 	update a
@@ -118,6 +126,18 @@ begin
 	IF @@Error <> 0
  	Goto ErrM
 	*/
+	
+	-- 更新到下月度总结
+	insert into PMONTH_ASS(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,badge,monthid)
+	select monthtitle,pMonth_ASSID,begindate,enddate, xorder,datemodulus,remark,badge,monthid
+	from PMONTH_PLAN a
+	where a.monthid=(select monthid from pEmpProcess_Month where id=@id) 
+	and a.badge=(select badge from pEmpProcess_Month where id=@id)
+	and a.InitializedTime is NULL and Initialized is NULL
+	and a.xorder not in (select xorder from PMONTH_ASS where monthid=a.monthid and badge=a.badge)
+	-- 异常处理
+	IF @@Error <> 0
+	Goto ErrM
 
 	-- 更新本月度工作考核计划状态
 	update a
@@ -125,6 +145,7 @@ begin
 	from PMONTH_PLAN a
 	where monthid=(select monthid from pEmpProcess_Month where id=@id) 
 	and badge=(select badge from pEmpProcess_Month where id=@id)
+	and a.InitializedTime is NULL and a.Initialized is NULL
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -135,6 +156,7 @@ begin
 	from PMONTH_ASS a
 	where monthid=(select id from pProcess_month where DATEDIFF(MM,kpimonth,DATEADD(MM,-1,@kpimonth))=0 and ISNULL(submit,0)=1)
 	and badge=(select badge from pEmpProcess_Month where id=@id)
+	and a.InitializedTime is NULL and a.Initialized is NULL
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -164,17 +186,6 @@ begin
 	IF @@Error <> 0
 	Goto ErrM
 	*/
-
-	-- 更新到下月度总结
-	insert into PMONTH_ASS(monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,badge,monthid)
-	select monthtitle,pMonth_ASSID,begindate,enddate, xorder,datemodulus,remark,badge,monthid
-	from PMONTH_PLAN
-	where monthid=(select monthid from pEmpProcess_Month where id=@id) 
-	and badge=(select badge from pEmpProcess_Month where id=@id)
-	-- 异常处理
-	IF @@Error <> 0
-	Goto ErrM
-
 
 	COMMIT TRANSACTION
 	Set @RetVal=0

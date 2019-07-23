@@ -1,4 +1,5 @@
 -- pVW_EmpInfoCN
+
 SELECT e.xorder AS 排序,
 a.Badge as 工号, a.Name as 姓名,(select CompAbbr from oCompany where CompID=a.CompID) as 公司, 
 (select DepAbbr from oDepartment where DepID=dbo.eFN_getdepid1st(a.DepID)) as 一级部门, (select DepAbbr from oDepartment where DepID=dbo.eFN_getdepid2nd(a.DepID)) as 二级部门, 

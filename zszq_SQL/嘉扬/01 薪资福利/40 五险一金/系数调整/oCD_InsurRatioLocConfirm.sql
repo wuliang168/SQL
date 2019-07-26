@@ -72,10 +72,10 @@ Begin
     Goto ErrM
 
     -- 添加社保缴费比例表项oCD_InsuranceRatioLoc
-    insert into oCD_InsuranceRatioLoc(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseDownLimit,
+    insert into oCD_InsuranceRatioLoc(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
     EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,MaternityInsRatioGRP,InjuryInsRatioGRP,
     MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod,Remark)
-    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseDownLimit,
+    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
     a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod,a.Remark
     From oCD_InsuranceRatioLoc_register a
@@ -85,10 +85,10 @@ Begin
     Goto ErrM
 
     -- 拷贝到社保缴费比例历史表oCD_InsuranceRatioLoc_all
-    insert into oCD_InsuranceRatioLoc_all(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseDownLimit,
+    insert into oCD_InsuranceRatioLoc_all(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
     EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,MaternityInsRatioGRP,InjuryInsRatioGRP,
     MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod,Remark,IsSubmit,SubmitBy,SubmitTime)
-    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseDownLimit,
+    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
     a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod,a.Remark,a.IsSubmit,a.SubmitBy,a.SubmitTime
     From oCD_InsuranceRatioLoc_register a

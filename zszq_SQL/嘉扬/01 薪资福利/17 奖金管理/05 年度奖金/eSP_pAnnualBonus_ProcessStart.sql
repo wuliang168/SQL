@@ -46,38 +46,38 @@ Begin
         Return @RetVal
     End
 
-    -- 上一次年度奖金流程未关闭!
-    --If Exists(Select 1 From pYear_AnnualBonus_Process Where @ID>1 and ID=@ID-1 And Isnull(Closed,0)=0)
-    --Begin
-    --    Set @RetVal = 930350
-    --    Return @RetVal
-    --End
+    -- 年度奖金流程类型未选择!
+    If Exists(Select 1 From pYear_AnnualBonus_Process Where ID=@ID and Isnull(AnnualBonusType,0)=0)
+    Begin
+        Set @RetVal = 930350
+        Return @RetVal
+    End
 
 
     Begin TRANSACTION
 
     -- 插入年度奖金流程的部门年度奖金流程表项pYear_AnnualBonusDep
     ---- 一级部门
-    insert into pYear_AnnualBonusDep(Year,Date,AnnualBonusDepID,Director,Remark)
-    select b.Year,b.Date,a.DepID,a.Director,b.Remark
+    insert into pYear_AnnualBonusDep(ProcessID,Year,Date,AnnualBonusDepID,Director,AnnualBonusType,Remark)
+    select b.ID,b.Year,b.Date,a.DepID,a.Director,b.AnnualBonusType,b.Remark
     from oDepartment a,pYear_AnnualBonus_Process b
     where b.ID=@ID and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999 and a.DepGrade=1 and a.DepType in (2,3)
-    and a.DepID not in (select AnnualBonusDepID from pYear_AnnualBonusDep where ISNULL(IsClosed,0)=0 and Year=b.Year and Date=b.Date)
+    and a.DepID not in (select AnnualBonusDepID from pYear_AnnualBonusDep where ISNULL(IsClosed,0)=0 and ProcessID=b.ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 二级部门 需要将IsSubmit置为NULL(0-开启|1-已递交|NULL-关闭)
-    insert into pYear_AnnualBonusDep(Year,Date,AnnualBonusDepID,Director,IsSubmit,Remark)
-    select b.Year,b.Date,a.DepID,a.Director,NULL,b.Remark
+    insert into pYear_AnnualBonusDep(ProcessID,Year,Date,AnnualBonusDepID,Director,AnnualBonusType,IsSubmit,Remark)
+    select b.ID,b.Year,b.Date,a.DepID,a.Director,b.AnnualBonusType,NULL,b.Remark
     from oDepartment a,pYear_AnnualBonus_Process b
     where b.ID=@ID and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999 and a.DepGrade=2 and a.DepType in (2,3)
-    and a.DepID not in (select AnnualBonusDepID from pYear_AnnualBonusDep where ISNULL(IsClosed,0)=0 and Year=b.Year and Date=b.Date)
+    and a.DepID not in (select AnnualBonusDepID from pYear_AnnualBonusDep where ISNULL(IsClosed,0)=0 and ProcessID=b.ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 总部(奖金由总部发放员工)
-    insert into pYear_AnnualBonusDep(Year,Date,AnnualBonusDepID,Director,IsSubmit,Remark)
-    select b.Year,b.Date,780,a.SalaryContact,NULL,b.Remark
+    insert into pYear_AnnualBonusDep(ProcessID,Year,Date,AnnualBonusDepID,Director,AnnualBonusType,IsSubmit,Remark)
+    select b.ID,b.Year,b.Date,780,a.SalaryContact,b.AnnualBonusType,NULL,b.Remark
     from oCD_SalaryPayType a,pYear_AnnualBonus_Process b
     where b.ID=@ID and ISNULL(a.IsDisabled,0)=0 and a.Title=N'总部'
     -- 异常流程

@@ -35,9 +35,10 @@ Begin
     Begin TRANSACTION
 
     -- 插入年度奖金流程的历史表项pYear_AnnualBonus_all
-    insert into pYear_AnnualBonus_all(Year,Date,AnnualBonusDepID,EMPDepID,EID,BID,Identification,AnnualBonusType,AnnualBonus,Lock,Remark)
-    select a.Year,a.Date,a.AnnualBonusDepID,a.EMPDepID,a.EID,a.BID,a.Identification,a.AnnualBonusType,a.AnnualBonus,a.Lock,a.Remark
-    from pYear_AnnualBonus a
+    insert into pYear_AnnualBonus_all(ProcessID,Year,Date,AnnualBonusDepID,EMPDepID,EID,BID,Identification,AnnualBonusType,AnnualBonus,Lock,Remark)
+    select a.ProcessID,a.Year,a.Date,a.AnnualBonusDepID,a.EMPDepID,a.EID,a.BID,a.Identification,a.AnnualBonusType,a.AnnualBonus,a.Lock,a.Remark
+    from pYear_AnnualBonus a,pYear_AnnualBonus_Process b
+    where a.ProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -46,7 +47,7 @@ Begin
     update b
     set b.IsClosed=1
     from pYear_AnnualBonus_Process a,pYear_AnnualBonusDep b
-    where a.ID=@ID and a.Year=b.Year and a.Date=b.Date and ISNULL(b.IsClosed,0)=0
+    where a.ID=@ID and a.ID=b.ProcessID and ISNULL(b.IsClosed,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -63,6 +64,7 @@ Begin
 
     -- 删除年度奖金统计表项
     delete from pYear_AnnualBonus
+    where ProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

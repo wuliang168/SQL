@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pAnnualBonusAddDepEMP]
 -- skydatarefresh eSP_pAnnualBonusAddDepEMP
-    @leftid int, 
+    @leftid varchar(20), 
     @EID int, 
     @RetVal int=0 Output
 As
@@ -16,6 +16,10 @@ As
 -- @leftid为DepID信息，表示部门ID
 */
 Begin
+
+    declare @DepID int,@ProcessID int
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @ProcessID=convert(int,SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
 
     -- 员工已存在，无法新增该员工!
     --If Exists(Select 1 From pYear_AnnualBonus Where AnnualBonusDepID=@leftid and EID=@EID)
@@ -28,10 +32,12 @@ Begin
     Begin TRANSACTION
 
     -- 更新pYear_AnnualBonus
-    insert into pYear_AnnualBonus(Year,Date,AnnualBonusDepID,EMPDepID,EID)
-    select (select Year from pYear_AnnualBonusDep where AnnualBonusDepID=@leftid and ISNULL(IsClosed,0)=0),
-    (select Date from pYear_AnnualBonusDep where AnnualBonusDepID=@leftid and ISNULL(IsClosed,0)=0),
-    @leftid,(select DepID from pVW_Employee where EID=@EID),@EID
+    insert into pYear_AnnualBonus(ProcessID,Year,Date,AnnualBonusDepID,EMPDepID,EID,AnnualBonusType)
+    select @ProcessID,
+    (select Year from pYear_AnnualBonusDep where AnnualBonusDepID=@DepID and ProcessID=@ProcessID and ISNULL(IsClosed,0)=0),
+    (select Date from pYear_AnnualBonusDep where AnnualBonusDepID=@DepID and ProcessID=@ProcessID and ISNULL(IsClosed,0)=0),
+    @DepID,(select DepID from pVW_Employee where EID=@EID),@EID,
+    (select AnnualBonusType from pYear_AnnualBonusDep where AnnualBonusDepID=@DepID and ProcessID=@ProcessID and ISNULL(IsClosed,0)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

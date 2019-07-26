@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pAnnualBonusDep1stBSSubmit]
 -- skydatarefresh eSP_pAnnualBonusDep1stBSSubmit
-    @leftid int,  
+    @leftid varchar(20),  
     @RetVal int=0 Output
 As
 /*
@@ -16,6 +16,10 @@ As
 */
 Begin
 
+    declare @DepID int,@ProcessID int
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @ProcessID=convert(int,SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+
     -- 员工年度奖金金额为空，无法递交!
     --If Exists(Select 1 From pYear_AnnualBonus Where dbo.eFN_getdepid1st(AnnualBonusDepID)=@leftid and AnnualBonus is NULL)
     --Begin
@@ -24,7 +28,7 @@ Begin
     --End
 
     -- 奖金分配员工总额大于奖金分配部门限额，无法递交!
-    If Exists(Select 1 From pVW_pAnnualBonusDep Where AnnualBonusDepID=@leftid and AnnualBonusDEP1stEMPRest<0 and ISNULL(IsClosed,0)=0)
+    If Exists(Select 1 From pVW_pAnnualBonusDep Where AnnualBonusDepID=@DepID and ProcessID=@ProcessID and AnnualBonusDEP1stEMPRest<0 and ISNULL(IsClosed,0)=0)
     Begin
         Set @RetVal = 930380
         Return @RetVal
@@ -48,9 +52,10 @@ Begin
     update a
     set a.AnnualBonusDepRest=b.AnnualBonusDEP1stEMPRest
     from pYear_AnnualBonusDep a,pVW_pAnnualBonusDep b
-    where a.AnnualBonusDepID=@leftid and a.AnnualBonusDepID=b.AnnualBonusDepID 
+    where a.AnnualBonusDepID=@DepID and a.AnnualBonusDepID=b.AnnualBonusDepID 
     and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0
     and ISNULL(b.IsSubmit,0)=0 and ISNULL(b.IsClosed,0)=0
+    and a.ProcessID=@ProcessID and a.ProcessID=b.ProcessID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -59,7 +64,8 @@ Begin
     update a
     set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pYear_AnnualBonusDep a
-    where a.AnnualBonusDepID=@leftid and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0
+    where a.AnnualBonusDepID=@DepID and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0
+    and a.ProcessID=@ProcessID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

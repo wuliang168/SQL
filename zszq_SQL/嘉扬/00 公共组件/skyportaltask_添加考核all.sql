@@ -325,11 +325,12 @@ AND a.DepSalaryContact is not NULL
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550420'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
-N''',''年度年终奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ N'年度年终奖金分配</a>' AS url, 
+'-' + cast(a.ProcessID AS nvarchar(5)) +
+N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
-WHERE DATEDIFF(mm,a.Year,b.Year)=0 and DATEDIFF(mm,a.Date,b.Date)=0 
+WHERE a.ProcessID=b.ID
 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0
 AND a.AnnualBonusDepID=c.DepID AND c.DepID=780
@@ -337,11 +338,12 @@ AND a.AnnualBonusDepID=c.DepID AND c.DepID=780
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550410'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
-N''',''年度年终奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ N'年度年终奖金分配</a>' AS url, 
+'-' + cast(a.ProcessID AS nvarchar(5)) +
+N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
-WHERE DATEDIFF(mm,a.Year,b.Year)=0 and DATEDIFF(mm,a.Date,b.Date)=0 
+WHERE a.ProcessID=b.ID
 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 AND ISNULL(a.AnnualBonusDep1stTotal,0)<>0
 AND a.AnnualBonusDepID=c.DepID AND c.DepGrade=1
@@ -349,11 +351,12 @@ AND a.AnnualBonusDepID=c.DepID AND c.DepGrade=1
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550410'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
-N''',''年度年终奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ N'年度年终奖金分配</a>' AS url, 
+'-' + cast(a.ProcessID AS nvarchar(5)) +
+N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
-WHERE DATEDIFF(mm,a.Year,b.Year)=0 and DATEDIFF(mm,a.Date,b.Date)=0 
+WHERE a.ProcessID=b.ID
 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and a.IsSubmit=0 AND ISNULL(a.IsClosed,0)=0
 AND a.AnnualBonusDepID=c.DepID AND c.DepGrade=2

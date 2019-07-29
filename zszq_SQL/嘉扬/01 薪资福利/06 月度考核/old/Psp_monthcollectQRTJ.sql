@@ -61,6 +61,14 @@ begin
 		return @retval
 	end
 
+	-- 已审核被退回月度考核未做修改
+	if exists (select 1 from pEmpProcess_Month where BADGE=@badge 
+	and monthID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,@kpimonth)=1) and pstatus=2)
+	begin
+		set @RetVal=1100054
+		return @retval
+	end
+
 	--没有KPI进度
 	/* if exists (select 1 from PMONTH_KPI where BADGE=@badge and KPIRATE is null
 	and MONTHID=@monthid)

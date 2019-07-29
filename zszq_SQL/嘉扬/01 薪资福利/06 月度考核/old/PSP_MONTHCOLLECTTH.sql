@@ -48,7 +48,7 @@ begin
 	update a
 	set a.InitializedTime=NULL,a.Initialized=NULL,a.IsReSubmit=1
 	from pEmpProcess_Month a
-	where DATEDIFF(mm,a.period,(select DATEADD(mm,1,period) from pEmpProcess_Month where id=@id))=0
+	where DATEDIFF(mm,a.period,(select period from pEmpProcess_Month where id=@id))=0
 	and a.badge=(select badge from pEmpProcess_Month where id=@id)
 	-- 异常处理
 	IF @@Error <> 0

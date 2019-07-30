@@ -251,9 +251,8 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
 and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=1
-and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)=(select COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)
+and (select COUNT(m.EID)-COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)=0
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
@@ -262,12 +261,10 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
 and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=2
-and ((select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL)=(select SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL) or
-(select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL)=(select SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL))
+and ((select COUNT(m.EID)-SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL)=0 or
+(select COUNT(m.EID)-SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL)=0)
 ---- 部门负责人考核反馈
 UNION
 SELECT DISTINCT
@@ -276,9 +273,8 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
 and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=3
-and (select COUNT(m.EID) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo)=(select COUNT(m.SubmitHR) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo)
+and (select COUNT(m.EID)-COUNT(m.SubmitHR) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
+where m.EID=n.EID and n.ReportTo=a.ReportTo)=0
 
 
 ------------- 五险一金统计 ------------

@@ -82,11 +82,11 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.600021'',''leftid^' + cast(a.MonthID AS nvarchar(15)) + 
 N''',''月度计划评分'')">请您于本月底前考核下属上月度工作完成情况</a>' AS url, 
 ISNULL(a.kpiReportTo, 5256) AS approver, 3 AS id
-FROM pEmpProcess_Month a
+FROM pvw_pEmpProcess_Month a
 WHERE (a.pstatus in (0,1) or (a.pstatus=3 and ISNULL(a.IsReSubmit,0)=1))
 AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=1)
 AND DATEPART(dd,GETDATE()) BETWEEN 16 AND 31
-AND ISNULL(a.kpiReportTo,0) <> 0
+AND ISNULL(a.kpiReportTo,0) <> 0 and a.EID is not NULL
 
 -- 月工作计划评分(历史)(旧)
 UNION

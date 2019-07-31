@@ -4,7 +4,7 @@
 ------ 非负责人
 SELECT b.EID, NULL AS xid, a.name AS title, 
 ISNULL(ISNULL(dbo.eFN_getdepdirector(b.DepID), dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(b.DepID))),dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID))) AS KPIReportTo, 
-a.monthID AS MonthID,a.pstatus as pStatus
+a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=1
 and b.EID<>dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) and b.EID<>ISNULL((select Director from oDepartment where DepID=b.DepID),0)
@@ -15,7 +15,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
 ISNULL(dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(b.DepID)),dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID))) AS KPIReportTo, 
-a.monthID AS MonthID,a.pstatus as pStatus
+a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=1
 and b.EID=ISNULL((select Director from oDepartment where DepID=b.DepID),0) and dbo.eFN_getdepid1st(b.DepID)<>b.DepID
@@ -25,7 +25,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
 dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) AS KPIReportTo, 
-a.monthID AS MonthID,a.pstatus as pStatus
+a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=1
 and b.EID=ISNULL((select Director from oDepartment where DepID=b.DepID),0) and dbo.eFN_getdepid1st(b.DepID)=b.DepID
@@ -36,7 +36,8 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 非负责人
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-ISNULL(dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(b.DepID)), dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID))) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+ISNULL(dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(b.DepID)), dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID))) AS KPIReportTo, a.monthID AS MonthID,
+a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=4
 and b.EID<>dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) and b.EID<>(select Director from oDepartment where DepID=dbo.eFN_getdepid1st(b.DepID))
@@ -45,7 +46,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 一级部门负责人
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=4
 and b.EID<>dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID)) and b.EID=(select Director from oDepartment where DepID=dbo.eFN_getdepid1st(b.DepID))
@@ -54,7 +55,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 资管部门分管领导
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(393)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+dbo.eFN_getdepdirector(dbo.eFN_getdepid1st(393)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID)=4 and b.CompID=13
 and b.EID=dbo.eFN_getdepdirector2(dbo.eFN_getdepid1st(b.DepID))
@@ -65,7 +66,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 非负责人
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-ISNULL(dbo.eFN_getdepdirector(b.DepID), dbo.eFN_getdepdirector2(b.DepID)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+ISNULL(dbo.eFN_getdepdirector(b.DepID), dbo.eFN_getdepdirector2(b.DepID)) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID) in (2,3)
 and b.EID<>(select Director from oDepartment where DepID=b.DepID) and b.EID<>(select Director from oDepartment where DepID=dbo.eFN_getdepid1st(b.DepID))
@@ -74,7 +75,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 二级营业部负责人
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-dbo.eFN_getdepdirector2(b.DepID) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+dbo.eFN_getdepdirector2(b.DepID) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID) in (2,3)
 and b.EID=(select Director from oDepartment where DepID=b.DepID) and b.EID<>(select Director from oDepartment where DepID=dbo.eFN_getdepid1st(b.DepID))
@@ -83,7 +84,7 @@ WHERE a.pstatus in (0,1,3,4) and ISNULL(a.Closed,0)=1
 ------ 一级营业部负责人
 UNION
 SELECT b.EID, NULL AS xid, a.name AS title, 
-dbo.eFN_getdepdirector2(b.DepID) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus
+dbo.eFN_getdepdirector2(b.DepID) AS KPIReportTo, a.monthID AS MonthID,a.pstatus as pStatus,a.IsReSubmit as IsReSubmit
 FROM dbo.pEmpProcess_Month AS a 
 INNER JOIN dbo.eEmployee AS b ON a.badge = b.Badge and (select DepType from oDepartment where DepID=b.DepID) in (2,3)
 and b.EID=(select Director from oDepartment where DepID=b.DepID) and b.EID=(select Director from oDepartment where DepID=dbo.eFN_getdepid1st(b.DepID))

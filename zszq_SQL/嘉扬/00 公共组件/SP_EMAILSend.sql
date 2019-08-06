@@ -4,7 +4,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER   Procedure [dbo].[SP_EMAILSend](
+ALTER Procedure [dbo].[SP_EMAILSend](
     @EID int,
     @ID int,
     @RetVal int=0 output 

@@ -16,6 +16,8 @@ AS
 */
 Begin
 
+    Begin TRANSACTION
+    
     -- 开启背景信息调动
     ---- eBG_Education_change
     update eBG_Education_change

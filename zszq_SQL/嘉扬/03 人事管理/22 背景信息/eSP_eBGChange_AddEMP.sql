@@ -27,9 +27,9 @@ Begin
 
     -- 插入背景信息调动调动登记表
     ---- eBG_Education_change
-    Insert Into eBG_Education_change(EID,BID,BeginDate,endDate,SchoolName,GradType,StudyType,EduType,DegreeType,DegreeName,Major,EduNo,
+    Insert Into eBG_Education_change(oldID,EID,BID,BeginDate,endDate,SchoolName,GradType,StudyType,EduType,DegreeType,DegreeName,Major,EduNo,
     EduNoDate,DegreeNo,DegreeNoDate,SchoolPlace,Reference,Tel,isout,remark,majortype,Initialized)
-    select a.EID,NULL,a.BeginDate,a.endDate,a.SchoolName,a.GradType,a.StudyType,a.EduType,a.DegreeType,a.DegreeName,a.Major,a.EduNo,
+    select a.ID,a.EID,NULL,a.BeginDate,a.endDate,a.SchoolName,a.GradType,a.StudyType,a.EduType,a.DegreeType,a.DegreeName,a.Major,a.EduNo,
     a.EduNoDate,a.DegreeNo,a.DegreeNoDate,a.SchoolPlace,a.Reference,a.Tel,a.isout,a.remark,a.majortype,1
     From eBG_Education a
     Where a.EID=@EID and @leftid=1
@@ -37,24 +37,24 @@ Begin
     If @@Error<>0
     Goto ErrM
     ---- eBG_Working_change
-    Insert Into eBG_Working_change(EID,BID,begindate,enddate,company,job,workplace,Reference,Tel,isout,remark,Wyear,institution,leavereason,Initialized)
-    select a.EID,NULL,a.begindate,a.enddate,a.company,a.job,a.workplace,a.Reference,a.Tel,a.isout,a.remark,a.Wyear,a.institution,a.leavereason,1
+    Insert Into eBG_Working_change(oldID,EID,BID,begindate,enddate,company,job,workplace,Reference,Tel,isout,remark,Wyear,institution,leavereason,Initialized)
+    select a.ID,a.EID,NULL,a.begindate,a.enddate,a.company,a.job,a.workplace,a.Reference,a.Tel,a.isout,a.remark,a.Wyear,a.institution,a.leavereason,1
     From eBG_Working a
     Where a.EID=@EID and @leftid=2
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
     ---- eBG_Family_change
-    Insert Into eBG_Family_change(EID,BID,Fname,relation,gender,Birthday,Company,Job,status,remark,tel,address,CERTID,IsSuppMedIns,isyj,OversResidNo,Initialized)
-    select a.EID,NULL,a.Fname,a.relation,a.gender,a.Birthday,a.Company,a.Job,a.status,a.remark,a.tel,a.address,a.CERTID,a.IsSuppMedIns,a.isyj,a.OversResidNo,1
+    Insert Into eBG_Family_change(oldID,EID,BID,Fname,relation,gender,Birthday,Company,Job,status,remark,tel,address,CERTID,IsSuppMedIns,isyj,OversResidNo,Initialized)
+    select a.ID,a.EID,NULL,a.Fname,a.relation,a.gender,a.Birthday,a.Company,a.Job,a.status,a.remark,a.tel,a.address,a.CERTID,a.IsSuppMedIns,a.isyj,a.OversResidNo,1
     From eBG_Family a
     Where a.EID=@EID and @leftid=3
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
     ---- eBG_Emergency_change
-    Insert Into eBG_Emergency_change(EID,BID,EmergencyName,Relation,Telephone,address,email,PostCode,Remark,Initialized)
-    select a.EID,NULL,a.EmergencyName,a.Relation,a.Telephone,a.address,a.email,a.PostCode,a.Remark,1
+    Insert Into eBG_Emergency_change(oldID,EID,BID,EmergencyName,Relation,Telephone,address,email,PostCode,Remark,Initialized)
+    select a.ID,a.EID,NULL,a.EmergencyName,a.Relation,a.Telephone,a.address,a.email,a.PostCode,a.Remark,1
     From eBG_Emergency a
     Where a.EID=@EID and @leftid=4
     -- 异常状态判断

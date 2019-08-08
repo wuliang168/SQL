@@ -29,7 +29,7 @@ Begin
 
     -- 更新pEmployeeEmolu的MDID、SalaryPerMM、SponsorAllowance、SalaryPayID和CheckUpSalary
     Update a
-    Set a.MDID=ISNULL(b.MDIDtoModify,a.MDID),a.SalaryPerMM=ISNULL(b.SalaryPerMMCity,a.SalaryPerMM),
+    Set a.MDID=(case when b.MDIDtoModify=10 then NULL else ISNULL(b.MDIDtoModify,a.MDID) end),a.SalaryPerMM=ISNULL(b.SalaryPerMMCity,a.SalaryPerMM),
     a.SponsorAllowance=ISNULL(b.SponsorAllowancetoModify,a.SponsorAllowance),a.CheckUpSalary=ISNULL(b.CheckUpSalarytoModify,a.CheckUpSalary),
     a.SalaryPayID=b.SalaryPayID
     From pEmployeeEmolu a,pChangeMDSalaryPerMM_register b
@@ -51,7 +51,7 @@ Begin
 
     -- 更新pEMPAdminIDMD(后续替代pEmployeeEmolu)
     Update a
-    Set a.MDID=ISNULL(b.MDIDtoModify,a.MDID)
+    Set a.MDID=(case when b.MDIDtoModify=10 then NULL else ISNULL(b.MDIDtoModify,a.MDID) end)
     From pEMPAdminIDMD a,pChangeMDSalaryPerMM_register b
     Where a.EID=b.EID and b.ID=@ID
     -- 异常流程

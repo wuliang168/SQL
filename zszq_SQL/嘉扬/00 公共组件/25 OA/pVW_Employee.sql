@@ -11,7 +11,7 @@ where a.Status=1 and a.DepID=b.DepID
 
 ---- 非理顾
 UNION
-select c.xOrder as JobxOrder,a.EID as EID,NULL as BID,a.HRLID as HRLID,a.Badge as Badge,NULL as Identification,NULL as CRMID,a.Name as Name,d.CompID as CompID,
+select c.xOrder as JobxOrder,a.EID as EID,NULL as BID,a.HRLID as HRLID,a.Badge as Badge,f.CertNo as Identification,NULL as CRMID,a.Name as Name,d.CompID as CompID,
 a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,d.DepType as DepType,
 e.kpiDepID as KPIDepID,d.DepAbbr as DepTitle,d.DepProperty1 as DepProperty1,c.Title as JobTitle,a.Status as Status,a.EmpGrade as EmpGrade,
 ISNULL(e.pegroup,e.perole) as CompPartTime,b.JoinDate as JoinDate,b.LeaDate as LeaDate,a.WorkCity as WorkCity,f.Mobile as Mobile,g.Account as Account

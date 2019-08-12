@@ -76,7 +76,7 @@ begin
     -- 外出登记
     ---- 外出登记异常记录自动处理
     update a 
-    set a.initialized=1 ,InitializedTime=@TIME,outid=b.id                         
+    set a.initialized=1 ,InitializedTime=@TIME,outid=b.id
     from BS_YC_DK a,aOut_register b 
     where a.eid=b.eid and b.Initialized=1 and isnull(a.Initialized,0)=0
     and DATEDIFF(day,a.term,b.beginTime)<=0

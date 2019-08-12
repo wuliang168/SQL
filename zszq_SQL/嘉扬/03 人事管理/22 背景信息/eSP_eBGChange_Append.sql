@@ -20,7 +20,7 @@ Begin
 
     -- 开启背景信息调动
     ---- eBG_Education_change
-    if @leftid=1
+    if @leftid=1 and @EID is not NULL
     Begin
         insert into eBG_Education_change(EID)
         values (@EID)
@@ -29,7 +29,7 @@ Begin
         Goto ErrM
     End
     ---- eBG_Working_change
-    if @leftid=2
+    if @leftid=2 and @EID is not NULL
     Begin
         insert into eBG_Working_change(EID)
         values (@EID)
@@ -38,7 +38,7 @@ Begin
         Goto ErrM
     End
     ---- eBG_Family_change
-    if @leftid=3
+    if @leftid=3 and @EID is not NULL
     Begin
         insert into eBG_Family_change(EID)
         values (@EID)
@@ -47,7 +47,7 @@ Begin
         Goto ErrM
     End
     ---- eBG_Emergency_change
-    if @leftid=4
+    if @leftid=4 and @EID is not NULL
     Begin
         insert into eBG_Emergency_change(EID)
         values (@EID)

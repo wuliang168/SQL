@@ -24,17 +24,8 @@ Begin
     ---- 分支机构后台员工
     Update a
     Set a.IsSubmit=1
-    From pPensionUpdatePerEmp a,eEmployee b
-    Where a.EID=b.EID and b.DepID=@leftid and ISNULL(a.IsClosed,0)=0
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    ---- 分支机构前台员工
-    Update a
-    Set a.IsSubmit=1
-    From pPensionUpdatePerSDM a
-    Where ISNULL(a.DepID,a.SupDepID)=@leftid and ISNULL(a.IsClosed,0)=0
+    From pPensionUpdatePerEmp a,pVW_eEmployee b
+    Where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and b.DepID=@leftid and ISNULL(a.IsClosed,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

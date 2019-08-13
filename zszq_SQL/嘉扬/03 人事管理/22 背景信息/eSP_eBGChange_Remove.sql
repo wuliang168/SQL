@@ -52,22 +52,26 @@ Begin
     
     -- 删除原项
     ---- eBG_Education
-    delete from eBG_Education where ID=(select oldID from eBG_Education_Change where ID=@ID and @leftid=1 and IsSubmit=1 and Initialized=0)
+    delete from eBG_Education 
+    where ID=(select oldID from eBG_Education_Change where oldID is not NULL and ID=@ID and @leftid=1 and IsSubmit=1 and Initialized=0)
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
     ---- eBG_Working
-    delete from eBG_Working where ID=(select oldID from eBG_Working_Change where ID=@ID and @leftid=2 and IsSubmit=1 and Initialized=0)
+    delete from eBG_Working 
+    where ID=(select oldID from eBG_Working_Change where oldID is not NULL and ID=@ID and @leftid=2 and IsSubmit=1 and Initialized=0)
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
     ---- eBG_Family
-    delete from eBG_Family where ID=(select oldID from eBG_Family_Change where ID=@ID and @leftid=3 and IsSubmit=1 and Initialized=0)
+    delete from eBG_Family 
+    where ID=(select oldID from eBG_Family_Change where oldID is not NULL and ID=@ID and @leftid=3 and IsSubmit=1 and Initialized=0)
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
     ---- eBG_Emergency
-    delete from eBG_Emergency where ID=(select oldID from eBG_Emergency_Change where ID=@ID and @leftid=4 and IsSubmit=1 and Initialized=0)
+    delete from eBG_Emergency 
+    where ID=(select oldID from eBG_Emergency_Change where oldID is not NULL and ID=@ID and @leftid=4 and IsSubmit=1 and Initialized=0)
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
@@ -80,7 +84,7 @@ Begin
     select a.oldID,a.EID,a.BID,a.BeginDate,a.endDate,a.SchoolName,a.GradType,a.StudyType,a.EduType,a.DegreeType,a.DegreeName,a.Major,a.EduNo,
     a.EduNoDate,a.DegreeNo,a.DegreeNoDate,a.SchoolPlace,a.Reference,a.Tel,a.isout,a.remark,a.majortype,a.Initialized,a.IsSubmit,a.SubmitBy,a.SubmitTime
     From eBG_Education_Change a
-    where a.ID=@ID and @leftid=1 and a.IsSubmit=1 and a.Initialized=0
+    where a.ID=@ID and @leftid=1 and a.IsSubmit=1 and a.Initialized=0 and oldID is not NULL
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
@@ -90,7 +94,7 @@ Begin
     select a.oldID,a.EID,a.BID,a.begindate,a.enddate,a.company,a.job,a.workplace,a.Reference,a.Tel,a.isout,a.remark,a.Wyear,
     a.institution,a.leavereason,a.Initialized,a.IsSubmit,a.SubmitBy,a.SubmitTime
     from eBG_Working_Change a
-    where a.ID=@ID and @leftid=2 and a.IsSubmit=1 and a.Initialized=0
+    where a.ID=@ID and @leftid=2 and a.IsSubmit=1 and a.Initialized=0 and oldID is not NULL
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
@@ -100,7 +104,7 @@ Begin
     select a.oldID,a.EID,a.BID,a.Fname,a.relation,a.gender,a.Birthday,a.Company,a.Job,a.status,a.remark,a.tel,a.address,a.CERTID,
     a.IsSuppMedIns,a.isyj,a.OversResidNo,a.Initialized,a.IsSubmit,a.SubmitBy,a.SubmitTime
     from eBG_Family_Change a
-    where a.ID=@ID and @leftid=3 and a.IsSubmit=1 and a.Initialized=0
+    where a.ID=@ID and @leftid=3 and a.IsSubmit=1 and a.Initialized=0 and oldID is not NULL
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM
@@ -110,7 +114,7 @@ Begin
     select a.oldID,a.EID,a.BID,a.EmergencyName,a.Relation,a.Telephone,a.address,a.email,a.PostCode,
     a.Remark,a.Initialized,a.IsSubmit,a.SubmitBy,a.SubmitTime
     from eBG_Emergency_Change a
-    where a.ID=@ID and @leftid=4 and a.IsSubmit=1 and a.Initialized=0
+    where a.ID=@ID and @leftid=4 and a.IsSubmit=1 and a.Initialized=0 and oldID is not NULL
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM

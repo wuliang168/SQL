@@ -29,7 +29,7 @@ Begin
 
     -- 工作经历信息填写不完整，无法递交！
     IF Exists(Select 1 From eBG_Working_Change Where EID=@EID and @leftid=2 and ISNULL(Initialized,0)=0
-    and (begindate is NULL or company is NULL or job is NULL or workplace is NULL or institution is NULL
+    and (begindate is NULL or company is NULL or job is NULL or institution is NULL
     -- or enddate is NULL or Reference is NULL or Tel is NULL or isout is NULL or Wyear is NULL or leavereason is NULL
     ))
     Begin
@@ -102,6 +102,46 @@ Begin
     set a.EmergencyName=b.EmergencyName,a.Relation=b.Relation,a.Telephone=b.Telephone,a.address=b.address,a.email=b.email,a.PostCode=b.PostCode,a.Remark=b.Remark
     from eBG_Emergency a,eBG_Emergency_Change b
     where a.ID=b.oldID and b.EID=@EID and @leftid=4 and b.Initialized is NULL
+    -- 异常状态判断
+    If @@Error<>0
+    Goto ErrM
+
+    -- 新增员工背景信息
+    ---- eBG_Education
+    insert into eBG_Education(EID,Badge,BeginDate,endDate,SchoolName,GradType,StudyType,EduType,DegreeType,DegreeName,Major,EduNo,
+    EduNoDate,DegreeNo,DegreeNoDate,SchoolPlace,Reference,Tel,isout,remark,majortype,Initialized)
+    select a.EID,(select Badge from eEmployee where EID=a.EID),a.BeginDate,a.endDate,a.SchoolName,a.GradType,a.StudyType,a.EduType,a.DegreeType,a.DegreeName,
+    a.Major,a.EduNo,a.EduNoDate,a.DegreeNo,a.DegreeNoDate,a.SchoolPlace,a.Reference,a.Tel,a.isout,a.remark,a.majortype,1
+    from eBG_Education_Change a
+    where a.EID=@EID and @leftid=1 and a.oldID is NULL
+    -- 异常状态判断
+    If @@Error<>0
+    Goto ErrM
+    ---- eBG_Working
+    insert into eBG_Working(EID,Badge,begindate,enddate,company,job,workplace,Reference,Tel,isout,remark,Wyear,
+    institution,leavereason,Initialized)
+    select a.EID,(select Badge from eEmployee where EID=a.EID),a.begindate,a.enddate,a.company,a.job,a.workplace,a.Reference,a.Tel,a.isout,a.remark,a.Wyear,
+    a.institution,a.leavereason,1
+    from eBG_Working_Change a
+    where a.EID=@EID and @leftid=2 and a.oldID is NULL
+    -- 异常状态判断
+    If @@Error<>0
+    Goto ErrM
+    ---- eBG_Family
+    insert into eBG_Family(EID,Badge,Fname,relation,gender,Birthday,Company,Job,status,remark,tel,address,CERTID,
+    IsSuppMedIns,isyj,OversResidNo,Initialized)
+    select a.EID,(select Badge from eEmployee where EID=a.EID),a.Fname,a.relation,a.gender,a.Birthday,a.Company,a.Job,a.status,a.remark,a.tel,a.address,a.CERTID,
+    a.IsSuppMedIns,a.isyj,a.OversResidNo,1
+    from eBG_Family_Change a
+    where a.EID=@EID and @leftid=3 and a.oldID is NULL
+    -- 异常状态判断
+    If @@Error<>0
+    Goto ErrM
+    ---- eBG_Emergency
+    insert into eBG_Emergency(EID,Badge,EmergencyName,Relation,Telephone,address,email,PostCode,Remark,Initialized)
+    select a.EID,(select Badge from eEmployee where EID=a.EID),a.EmergencyName,a.Relation,a.Telephone,a.address,a.email,a.PostCode,a.Remark,1
+    from eBG_Emergency_Change a
+    where a.EID=@EID and @leftid=4 and a.oldID is NULL
     -- 异常状态判断
     If @@Error<>0
     Goto ErrM

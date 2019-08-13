@@ -24,7 +24,7 @@ Begin
     b.FestivalFee1=ISNULL(a.FestivalFee1,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType1)),
     b.FestivalFee2=ISNULL(a.FestivalFee2,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType2)),
     b.FestivalFee3=ISNULL(a.FestivalFee3,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType3)),
-    b.BenefitsInKind=ISNULL(a.BenefitsInKind,b.BenefitsInKind),
+    --b.BenefitsInKind=ISNULL(a.BenefitsInKind,b.BenefitsInKind),
     b.FestivalFeeTotal=ISNULL(ISNULL(a.FestivalFee1,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType1)),0)
     +ISNULL(ISNULL(a.FestivalFee2,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType2)),0)
     +ISNULL(ISNULL(a.FestivalFee3,(select Fee from oCD_FestivalFeeType where Title=a.FestivalFeeType3)),0),b.Remark=a.Remark

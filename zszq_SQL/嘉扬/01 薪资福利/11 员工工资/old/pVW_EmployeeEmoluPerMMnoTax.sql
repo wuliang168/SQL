@@ -12,9 +12,9 @@ ISNULL(f.BackPayTotal,0) as BackPayTotal,
 -- 税前补贴
 ISNULL(g.AllowanceBTTotal,0) as AllowanceBTTotal,
 -- 过节费
-ISNULL(e.FestivalFeeTotal,0) as FestivalFeeTotal,
+ISNULL(e.FestivalFee,0) as FestivalFeeTotal,
 -- 实物福利
-ISNULL(e.BenefitsInKind,0) as BenefitsInKind,
+--ISNULL(e.BenefitsInKind,0) as BenefitsInKind,
 -- 奖金
 ISNULL(d.GeneralBonus,0) as GeneralBonus,
 -- 税前扣款
@@ -23,7 +23,7 @@ ISNULL(h.DeductionBTTotal,0) as DeductionBTTotal,
 ((CASE When ISNULL(a.IsAppraised,0)=0 or DATEDIFF(mm,a.AppraisedDate,GETDATE())<1 
 then (ISNULL(a.SalaryPerMM,0)-ISNULL(a.CheckUpSalary,0))*0.8+ISNULL(a.CheckUpSalary,0)
 else ISNULL(a.SalaryPerMM,0) end)+ISNULL(a.SponsorAllowance,0)+ISNULL(g.SponsorAllowanceBT,0)+ISNULL(f.BackPayTotal,0)+ISNULL(g.AllowanceBTTotal,0)
-+ISNULL(e.FestivalFeeTotal,0)+ISNULL(d.GeneralBonus,0)-ISNULL(h.DeductionBTTotal,0)) as TotalPayAmount,
++ISNULL(e.FestivalFee,0)+ISNULL(d.GeneralBonus,0)-ISNULL(h.DeductionBTTotal,0)) as TotalPayAmount,
 -- 一次性奖金
 ISNULL(d.OneTimeAnnualBonus,0) as OneTimeAnnualBonus,
 -- 公积金(个人)
@@ -62,7 +62,7 @@ from pEmployeeEmolu a
 left join pEmployeePension as b on a.EID=b.EID
 inner join pEmployeeEmoluFundIns as c on a.EID=c.EID
 left join pEmployeeEmoluBonus as d on a.EID=d.EID
-left join pEmployeeEmoluFestivalFee as e on a.EID=e.EID
+left join pEMPFestivalFeePerMM as e on a.EID=e.EID
 left join pEmployeeEmoluBackPay as f on a.EID=f.EID
 left join pEmployeeEmoluAllowanceBT as g on a.EID=g.EID
 left join pEmployeeEmoluDeductionBT as h on a.EID=h.EID

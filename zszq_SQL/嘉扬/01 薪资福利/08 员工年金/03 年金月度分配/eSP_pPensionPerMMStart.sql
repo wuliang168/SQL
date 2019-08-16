@@ -44,26 +44,10 @@ Begin
 
 
     -- 插入部门年金月度表项pDepPensionPerMM
-    insert into pDepPensionPerMM(PensionMonth,SupDepID,DepID,Status,SalaryPayID,PensionContact,IsSubmit)
-    select a.PensionMonth,b.SupDepID,b.DepID,b.Status,b.SalaryPayID,b.PensionContact,1
-    from pPensionPerMM a,pVW_DepPensionContact b
-    where a.ID=@ID
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 更新营业部中后台和投理顾递交标记
-    update a
-    set a.IsEmpSubmit=1,a.IsSDMSubmit=1
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth
-
-
-    ---- 更新年金填写说明信息
-    update a
-    set a.Remark=b.Instruction
-    from pDepPensionPerMM a,pPensionInfo b,pPensionPerMM c
-    where b.ID=1 and c.ID=@ID and a.PensionMonth=c.PensionMonth
+    insert into pDepPensionPerMM(PensionMonth,SupDepID,DepID,Status,SalaryPayID,PensionContact,Remark)
+    select a.PensionMonth,b.SupDepID,b.DepID,b.Status,b.SalaryPayID,b.PensionContact,c.Instruction
+    from pPensionPerMM a,pVW_DepPensionContact b,pPensionInfo c
+    where a.ID=@ID and c.ID=1 and b.Status<>5
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -71,120 +55,19 @@ Begin
 
     -- 插入后台人员年金月度分配注册表pEmpPensionPerMM_register
     -- 薪酬类型非营业部;
-    insert into pEmpPensionPerMM_register(PensionMonth,EID,GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.EID,b.GrpPensionYearRest,b.GrpPensionYearRest,b.EmpPensionYearRest,b.EmpPensionYearRest,d.PensionContact
-    from pPensionPerMM a,pEmployeeEmolu b,eEmployee c,oCD_SalaryPayType d
-    where a.ID=@ID and ISNULL(b.GrpPensionYearRest,0)>0 and b.eid=c.eid and ISNULL(b.GrpPensionYearRest,0)<>0 and c.status not in (4)
-    and b.SalaryPayID=d.ID and b.SalaryPayID not in (6) and b.GrpPensionYearRest>0.03
-    and b.EID not in (select EID from pEmpPensionPerMM_register)
+    insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
+    select a.PensionMonth,b.EID,b.BID,b.EmpPensionYearRest,b.EmpPensionYearRest,
+    (case when BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
+    then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID))) 
+    when (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
+    then (select PensionContact from oCD_SalaryPayType where ID=(select SalaryPayID from pEMPSalary where EID=b.EID)) end)
+    from pPensionPerMM a,pEMPPension b
+    where a.ID=@ID and ISNULL(b.EmpPensionYearRest,0)>0
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEmpPensionPerMM_register)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
-    -- 薪酬类型营业部;
-    insert into pEmpPensionPerMM_register(PensionMonth,EID,GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.EID,b.GrpPensionYearRest,b.GrpPensionYearRest,b.EmpPensionYearRest,b.EmpPensionYearRest,d.DepPensionContact
-    from pPensionPerMM a,pEmployeeEmolu b,eEmployee c,odepartment d
-    where a.ID=@ID and ISNULL(b.GrpPensionYearRest,0)>0 and b.eid=c.eid and ISNULL(b.GrpPensionYearRest,0)<>0 and c.status not in (4)
-    and c.DepID=d.DepID and b.SalaryPayID in (6) and b.GrpPensionYearRest>0.03
-    and b.EID not in (select EID from pEmpPensionPerMM_register)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 插入投理顾人员年金月度分配注册表pSDMarketerPensionPerMM_register
-    insert into pSDMarketerPensionPerMM_register(PensionMonth,Name,Status,SupDepID,DepID,JobID,SalaryPayID,Gender,Identification,
-    JoinDate,LeaveDate,IsPension,GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.Name,b.Status,b.SupDepID,b.DepID,b.JobID,b.SalaryPayID,b.Gender,b.Identification,
-    b.JoinDate,b.LeaveDate,b.IsPension,b.GrpPensionYearRest,b.GrpPensionYearRest,b.EmpPensionYearRest,b.EmpPensionYearRest,c.DepPensionContact
-    from pPensionPerMM a,pSalesDepartMarketerEmolu b,odepartment c
-    where a.ID=@ID and ISNULL(b.GrpPensionYearRest,0)>0 and c.DepID=ISNULL(b.DepID,b.SupDepID) and ISNULL(b.GrpPensionYearRest,0)<>0 
-    and b.status not in (4) and b.GrpPensionYearRest>0.03
-    and b.Identification not in (select Identification from pSDMarketerPensionPerMM_register)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-
-    -- 开启无企业年金分配员工的部门pDepPensionPerMM
-    ---- 薪酬类型非营业部
-    ------ 总部
-    update a
-    set a.IsSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is NULL
-    and a.SalaryPayID in (select 1 from pEmployeeEmolu where EID in (select EID from pEmpPensionPerMM_register) and SalaryPayID in (1,2,3,10,11,12,13,14,15,16))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ------ 资管
-    update a
-    set a.IsSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is NULL
-    and a.SalaryPayID in (select 4 from pEmployeeEmolu where EID in (select EID from pEmpPensionPerMM_register) and SalaryPayID in (4,5))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ------ 资本
-    update a
-    set a.IsSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is NULL
-    and a.SalaryPayID in (select 7 from pEmployeeEmolu where EID in (select EID from pEmpPensionPerMM_register) and SalaryPayID in (7))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ------ 退休
-    update a
-    set a.IsSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is NULL
-    and a.SalaryPayID in (select 8 from pEmployeeEmolu where EID in (select EID from pEmpPensionPerMM_register) and SalaryPayID in (8))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    --- 薪酬类型营业部
-    ---- 开启中后台
-    update a
-    set a.IsSubmit=NULL,a.IsEmpSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is not NULL
-    and a.PensionContact in (select PensionContact from pEmpPensionPerMM_register 
-    where ISNULL(SupDepID,0)=ISNULL(a.SupDepID,0) and ISNULL(DepID,0)=ISNULL(a.DepID,0))
-    and ISNULL(a.DepID,a.SupDepID) in (select b.DepID from pEmpPensionPerMM_register a,eEmployee b where a.EID=b.EID)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ---- 开启投理顾
-    update a
-    set a.IsSubmit=NULL,a.IsSDMSubmit=NULL
-    from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and a.PensionMonth=b.PensionMonth and ISNULL(a.DepID,a.SupDepID) is not NULL
-    and a.PensionContact in (select PensionContact from pSDMarketerPensionPerMM_register 
-    where ISNULL(SupDepID,0)=ISNULL(a.SupDepID,0) and ISNULL(DepID,0)=ISNULL(a.DepID,0))
-    and ISNULL(a.DepID,a.SupDepID) in (select ISNULL(DepID,SupDepID) from pSDMarketerPensionPerMM_register)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 更新月度工资年金数据到月度年金分配数据
-    ---- 月度工资已开启并未关闭
-    update a
-    set a.EmpPensionPerMMBTax=b.PensionEMPBT,a.EmpPensionPerMMATax=b.PensionEMPAT
-    from pEmpPensionPerMM_register a,pEmployeePension b
-    where a.EID=b.EID and DATEDIFF(mm,b.Date,a.PensionMonth)=0
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ---- 月度工资已开启并已关闭
-    update a
-    set a.EmpPensionPerMMBTax=b.PensionEMPBT,a.EmpPensionPerMMATax=b.PensionEMPAT
-    from pEmpPensionPerMM_register a,pEmployeePension_all b
-    where a.EID=b.EID and DATEDIFF(mm,b.Date,a.PensionMonth)=0
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
     
     -- 更新年金月度表项pPensionPerMM
     Update a

@@ -53,7 +53,7 @@ Begin
     GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,Remark,PensionContact,Submit,SubmitBy,SubmitTime)
     select a.PensionMonth,a.EID,a.BID,b.SalaryPayID,c.DepID,a.GrpPensionPerMM,a.EmpPensionPerMMBTax,a.EmpPensionPerMMATax,a.GrpPensionMonthTotal,
     a.GrpPensionMonthRest,a.EmpPensionMonthTotal,a.EmpPensionMonthRest,a.Remark,a.PensionContact,a.Submit,a.SubmitBy,a.SubmitTime
-    from pEmpPensionPerMM_register a,pEMPAdminIDMD b,pVW_Employee c
+    from pEmpPensionPerMM_register a,pEMPSalary b,pVW_Employee c
     where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and ISNULL(a.EID,a.BID)=ISNULL(c.EID,c.BID) 
     -- 异常流程
     If @@Error<>0

@@ -42,15 +42,7 @@ Begin
     update a
     set a.IsClosed=1
     from pPensionUpdatePerEmp a,pPensionUpdate b
-    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ------ 前台员工
-    update a
-    set a.IsClosed=1
-    from pPensionUpdatePerSDM a,pPensionUpdate b
-    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0
+    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0 and b.ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -58,7 +50,7 @@ Begin
     update a
     set a.IsClosed=1
     from pPensionUpdatePerDep a,pPensionUpdate b
-    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0
+    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0 and b.ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -66,7 +58,6 @@ Begin
     ---- 企业年金参与人员总人数
     update a
     set a.PensionTotalNum=(select COUNT(IsPension) from pPensionUpdatePerEmp where DATEDIFF(yy,PensionYear,a.PensionYear)=0)
-    +(select COUNT(IsPension) from pPensionUpdatePerSDM where DATEDIFF(yy,PensionYear,a.PensionYear)=0)
     from pPensionUpdate a
     Where a.ID=@ID
     -- 异常流程

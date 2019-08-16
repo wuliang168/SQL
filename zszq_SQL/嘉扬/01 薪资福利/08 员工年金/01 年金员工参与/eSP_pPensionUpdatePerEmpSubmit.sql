@@ -4,7 +4,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER  Procedure [dbo].[eSP_pPensionUpdatePerEmpSubmit]
+ALTER Procedure [dbo].[eSP_pPensionUpdatePerEmpSubmit]
 -- skydatarefresh eSP_pPensionUpdatePerEmpSubmit
     @EID int,
     @RetVal int=0 Output
@@ -25,7 +25,7 @@ Begin
     update a
     set a.IsSubmit=1
     from pPensionUpdatePerEmp a
-    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0
+    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and EID=@EID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

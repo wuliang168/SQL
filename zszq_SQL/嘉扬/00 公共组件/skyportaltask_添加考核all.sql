@@ -174,15 +174,16 @@ WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit
 
 ------------- 年金参与员工分配 ------------
 -- 营业部;
---UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +
---N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
---+ cast(YEAR(a.PensionYear) AS varchar(4)) + N'年度年金分配人员</a>' AS url, 
---a.PensionContact AS approver, 1 AS id
---FROM pPensionUpdatePerDep a,pPensionUpdate b
---where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0
---and YEAR(a.PensionYear)=YEAR(b.PensionYear) and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +
+N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
++ cast(YEAR(a.PensionYear) AS varchar(4)) + N'年度年金分配人员</a>' AS url, 
+a.PensionContact AS approver, 1 AS id
+FROM pPensionUpdatePerDep a,pPensionUpdate b
+where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0
+and YEAR(a.PensionYear)=YEAR(b.PensionYear) and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and a.PensionContact=4521
 
 
 --------------- 月度工资 ------------

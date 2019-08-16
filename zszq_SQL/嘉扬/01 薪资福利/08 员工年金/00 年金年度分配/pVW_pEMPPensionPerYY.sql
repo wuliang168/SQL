@@ -1,6 +1,7 @@
 -- pVW_pEMPPensionPerYY
 
-select a.PensionYear,a.EID as EID,a.BID as BID,a.Badge,a.Name,b.Identification as CertNo,a.IsPension,a.JoinDate,a.LeaDate,a.PostModulusPerYY,a.PostMonthPerYY,
+select a.PensionYear as PensionYear,a.EID as EID,a.BID as BID,a.Badge as Badge,a.Name as Name,b.Identification as Identification,
+a.IsPension as IsPension,a.JoinDate as JoinDate,a.LeaDate as LeaDate,a.Status as Status,a.PostModulusPerYY as PostModulusPerYY,a.PostMonthPerYY as PostMonthPerYY,
 a.PostModulusPerYY*a.PostMonthPerYY as PostModulusPerMM,d.PensionYearTotal,
 ROUND(d.PensionYearTotal*a.PostModulusPerYY*a.PostMonthPerYY/e.ModulusTotalYY,2) as GrpPensionPerYY,
 (case when DATEDIFF(YY,ISNULL(a.LeaDate,dateAdd(yy,1,CONVERT(char(5),a.PensionYear, 120) + '12-31')),a.PensionYear)<0 and a.Status<>5 

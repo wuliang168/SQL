@@ -14,7 +14,7 @@ GO
 exec sp_addlogin @loginame = 'HRSYS' 
      ,  @passwd =   0x0100CE1D490E08B06C0A91F446F14C3E3955F66E2E27CF35B4809D92696BF50B72FE6A845C688C0E26B4FB312C95 
      ,  @defdb =  'master'  
-     ,  @deflanguage =  'us_english'  
+     ,  @deflanguage =  'us_english' 
      ,  @encryptopt=  'skip_encryption' 
 
 --CREATE LOGIN [HRSYS] WITH PASSWORD=0x01006F5FAD0247BC628B52781B313979D1E2BAFFB1E5F306E5C500, DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF

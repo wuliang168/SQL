@@ -49,12 +49,12 @@ Begin
 
     -- 插入年金月度历史数据表项
     -- 插入后台人员月度历史数据表项pEmpPensionPerMM_all
-    insert pEmpPensionPerMM_all(PensionMonth,EID,GrpPensionPerMM,EmpPensionPerMMBTax,EmpPensionPerMMATax,GrpPensionMonthTotal,
-    GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,Remark,PensionContact,Submit,SubmitBy,SubmitTime)
-    select a.PensionMonth,a.EID,a.GrpPensionPerMM,a.EmpPensionPerMMBTax,a.EmpPensionPerMMATax,a.GrpPensionMonthTotal,
-    a.GrpPensionMonthRest,a.EmpPensionMonthTotal,a.EmpPensionMonthRest,a.Remark,a.PensionContact,
-    a.Submit,a.SubmitBy,a.SubmitTime
-    from pEmpPensionPerMM_register a
+    insert pEmpPensionPerMM_all(PensionMonth,EID,BID,SalaryPayID,DepID,GrpPensionPerMM,EmpPensionPerMMBTax,EmpPensionPerMMATax,
+    GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,Remark,PensionContact,Submit,SubmitBy,SubmitTime)
+    select a.PensionMonth,a.EID,a.BID,b.SalaryPayID,c.DepID,a.GrpPensionPerMM,a.EmpPensionPerMMBTax,a.EmpPensionPerMMATax,a.GrpPensionMonthTotal,
+    a.GrpPensionMonthRest,a.EmpPensionMonthTotal,a.EmpPensionMonthRest,a.Remark,a.PensionContact,a.Submit,a.SubmitBy,a.SubmitTime
+    from pEmpPensionPerMM_register a,pEMPAdminIDMD b,pVW_Employee c
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and ISNULL(a.EID,a.BID)=ISNULL(c.EID,c.BID) 
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -75,7 +75,9 @@ Begin
     set a.Status=b.Status,a.LeaveDate=b.LeaveDate
     from pSalesDepartMarketerEmolu a,pSDMarketerPensionPerMM_register b
     where a.Identification=b.Identification and b.Status=4
-
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 将月度年金分配的企业年金、个人年金和企业剩余年金添加到员工公司年金累计中
     ---- 中后台员工

@@ -28,74 +28,25 @@ Begin
         Set @RetVal = 930064
         Return @RetVal
     End
+    
+    -- 年度年金计划分配已关闭!
+    If Exists(Select 1 From pPensionPerYY Where ID=@ID and ISNULL(Closed,0)=1)
+    Begin
+        Set @RetVal = 930063
+        Return @RetVal
+    End
+    
 
     Begin TRANSACTION
 
     -- 插入员工年金年度分配详细数据表项
     ---- 后台员工年金年度分配详细数据表项
-    insert into pEMPPensionPerYY(PensionYear,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,
+    insert into pEMPPensionPerYY(PensionYear,EID,BID,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,Status,
     PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder)
-    select PensionYear,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,
+    select PensionYear,EID,BID,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,Status,
     PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder
     from pVW_pEMPPensionPerYY
     where Year(PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ---- 投理顾员工年金年度分配详细数据表项
-    insert into pSDMarketerPensionPerYY(PensionYear,Identification,Name,IsPension,JoinDate,LeaDate,
-    PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder)
-    select PensionYear,Identification,Name,IsPension,JoinDate,LeaDate,
-    PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder
-    from pVW_pSDMarketerPensionPerYY
-    where Year(PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    
-    -- 更新后台员工的年度企业年金剩余
-    update a
-    set a.GrpPensionYearRest=ISNULL(a.GrpPensionYearRest,0)
-    +(select SUM(GrpPensionPerYY) from pEMPPensionPerYY where badge=(select badge from eemployee where eid=a.EID) and YEAR(PensionYear)=YEAR(@PensionYear)),
-    a.EmpPensionYearRest=ISNULL(a.EmpPensionYearRest,0)
-    +(select SUM(EmpPensionPerYY) from pEMPPensionPerYY where badge=(select badge from eemployee where eid=a.EID) and YEAR(PensionYear)=YEAR(@PensionYear))
-    from pEmployeeEmolu a,eEmployee b
-    where a.EID=b.EID and b.Badge in (select Badge from pEMPPensionPerYY where YEAR(PensionYear)=YEAR(@PensionYear))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    -- 更新后台员工转投理顾员工企业年金剩余
-    update a
-    set a.GrpPensionYearRest=ISNULL(a.GrpPensionYearRest,0)
-    +(select SUM(GrpPensionPerYY) from pEMPPensionPerYY where CertNo=a.Identification and YEAR(PensionYear)=YEAR(@PensionYear)),
-    a.EmpPensionYearRest=ISNULL(a.EmpPensionYearRest,0)
-    +(select SUM(EmpPensionPerYY) from pEMPPensionPerYY where CertNo=a.Identification and YEAR(PensionYear)=YEAR(@PensionYear))
-    from pSalesDepartMarketerEmolu a
-    where a.Identification in (select CertNo from pEMPPensionPerYY where YEAR(PensionYear)=YEAR(@PensionYear))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 更新后台员工转投理顾员工年金剩余数值(企业年金分配和审批通过期间)
-    update a
-    set a.GrpPensionYearRest=ISNULL(a.GrpPensionYearRest,0)
-    +(select SUM(GrpPensionPerYY) from pSDMarketerPensionPerYY where Identification=a.Identification  and YEAR(PensionYear)=YEAR(@PensionYear)),
-    a.EmpPensionYearRest=ISNULL(a.EmpPensionYearRest,0)
-    +(select SUM(EmpPensionPerYY) from pSDMarketerPensionPerYY where Identification=a.Identification  and YEAR(PensionYear)=YEAR(@PensionYear))
-    from pSalesDepartMarketerEmolu a
-    where a.Identification in (select Identification from pSDMarketerPensionPerYY where YEAR(PensionYear)=YEAR(@PensionYear))
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    -- 更新投理顾员工转后台员工年金剩余数值(企业年金分配和审批通过期间)
-    update a
-    set a.GrpPensionYearRest=ISNULL(a.GrpPensionYearRest,0)
-    +(select SUM(GrpPensionPerYY) from pSDMarketerPensionPerYY where Identification=(select CertNo from eDetails where eid=a.EID) and YEAR(PensionYear)=YEAR(@PensionYear)),
-    a.EmpPensionYearRest=ISNULL(a.EmpPensionYearRest,0)
-    +(select SUM(EmpPensionPerYY) from pSDMarketerPensionPerYY where Identification=(select CertNo from eDetails where eid=a.EID) and YEAR(PensionYear)=YEAR(@PensionYear))
-    from pEmployeeEmolu a,eEmployee b
-    where a.EID=b.EID and (select CertNo from eDetails where eid=a.EID) in (select Identification from pSDMarketerPensionPerYY where YEAR(PensionYear)=YEAR(@PensionYear))
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -103,8 +54,7 @@ Begin
     
     ---- 更新实际分配总额
     Update a
-    Set a.PensionYearCalcTotal=(select SUM(GrpPensionPerYY) from pEMPPensionPerYY where Year(PensionYear)=YEAR(a.PensionYear))+
-    (select SUM(GrpPensionPerYY) from pSDMarketerPensionPerYY where Year(PensionYear)=YEAR(a.PensionYear))
+    Set a.PensionYearCalcTotal=(select SUM(GrpPensionPerYY) from pEMPPensionPerYY where Year(PensionYear)=YEAR(a.PensionYear))
     From pPensionPerYY a
     Where a.ID=@ID
     -- 异常流程

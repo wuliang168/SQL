@@ -45,10 +45,12 @@ Begin
 
     -- 插入后台员工参与年金pPensionUpdatePerEmp
     ---- 在职
-    insert into pPensionUpdatePerEmp(PensionYear,EID,IsPension)
-    select a.PensionYear,b.EID,1
-    from pPensionUpdate a,pVW_Employee b,eStatus c
+    insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
+    select a.PensionYear,b.EID,d.LastYearAdminID,d.LastYearMDID,c.JoinDate,c.LeaDate,1
+    from pPensionUpdate a,pVW_Employee b,eStatus c,pEMPAdminIDMD d
     where a.ID=@ID and b.Status in (1,2,3) and b.EID=c.EID and b.EID is not NULL and DATEDIFF(yy,c.JoinDate,a.PensionYear)>=0
+    and b.EID not in (select EID from pPensionUpdatePerEmp where PensionYear=a.PensionYear)
+    and b.EID=d.EID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -57,15 +59,15 @@ Begin
     set b.IsPension=1
     from pPensionUpdate a,pPensionUpdatePerEmp b
     where a.ID=@ID and DATEDIFF(YY,a.PensionYear,b.PensionYear)=0
-    AND b.EID in (select EID from pPensionUpdatePerEmp 
+    AND b.EID in (select EID from pPensionUpdatePerEmp
 	where DATEDIFF(yy,PensionYear,(select MIN(PensionYear) from pPensionUpdate where ISNULL(Closed,0)=0))=1 and EID is not NULL and ISNULL(IsPension,0)=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 退休
-    insert into pPensionUpdatePerEmp(PensionYear,EID,IsPension)
-    select a.PensionYear,b.EID,1
-    from pPensionUpdate a,pVW_Employee b,eStatus c
+    insert into pPensionUpdatePerEmp(PensionYear,EID,IsPension,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
+    select a.PensionYear,b.EID,1,d.LastYearAdminID,d.LastYearMDID,c.JoinDate,c.LeaDate,5
+    from pPensionUpdate a,pVW_Employee b,eStatus c,pEMPAdminIDMD d
     where a.ID=@ID and b.Status=5 and b.EID=c.EID and DateDiff(yy,c.LeaDate,a.PensionYear)<=0
     -- 异常流程
     If @@Error<>0
@@ -80,6 +82,7 @@ Begin
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+    
 
     -- 更新年金月度表项pPensionUpdate
     Update a

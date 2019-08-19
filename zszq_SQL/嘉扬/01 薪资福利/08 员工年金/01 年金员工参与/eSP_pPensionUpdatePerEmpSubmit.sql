@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER Procedure [dbo].[eSP_pPensionUpdatePerEmpSubmit]
 -- skydatarefresh eSP_pPensionUpdatePerEmpSubmit
-    @EID int,
+    @ID int,
     @RetVal int=0 Output
 As
 /*
@@ -25,7 +25,7 @@ Begin
     update a
     set a.IsSubmit=1
     from pPensionUpdatePerEmp a
-    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and EID=@EID
+    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

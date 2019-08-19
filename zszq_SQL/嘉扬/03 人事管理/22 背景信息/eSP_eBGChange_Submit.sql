@@ -17,7 +17,7 @@ AS
 Begin
 
     -- 教育背景信息填写不完整，无法递交！
-    IF Exists(Select 1 From eBG_Education_Change Where EID=@EID and @leftid=1 and ISNULL(Initialized,0)=0
+    IF Exists(Select 1 From eBG_Education_Change Where EID=@EID and @leftid=1 and Initialized is NULL
     and (BeginDate is NULL or SchoolName is NULL or GradType is NULL or StudyType is NULL
     -- or endDate is NULL or EduType is NULL or DegreeType is NULL or DegreeName is NULL or Major is NULL or EduNo is NULL or EduNoDate is NULL
     -- or DegreeNo is NULL or DegreeNoDate is NULL or SchoolPlace is NULL or Reference is NULL or Tel is NULL or majortype is NULL
@@ -28,7 +28,7 @@ Begin
     End
 
     -- 工作经历信息填写不完整，无法递交！
-    IF Exists(Select 1 From eBG_Working_Change Where EID=@EID and @leftid=2 and ISNULL(Initialized,0)=0
+    IF Exists(Select 1 From eBG_Working_Change Where EID=@EID and @leftid=2 and Initialized is NULL
     and (begindate is NULL or company is NULL or job is NULL or institution is NULL
     -- or enddate is NULL or Reference is NULL or Tel is NULL or isout is NULL or Wyear is NULL or leavereason is NULL
     ))
@@ -38,7 +38,7 @@ Begin
     End
 
     -- 家庭背景信息填写不完整，无法递交！
-    IF Exists(Select 1 From eBG_Family_Change Where EID=@EID and @leftid=3 and ISNULL(Initialized,0)=0
+    IF Exists(Select 1 From eBG_Family_Change Where EID=@EID and @leftid=3 and Initialized is NULL
     and (Fname is NULL or relation is NULL or gender is NULL or Birthday is NULL or CERTID is NULL
     -- or Company is NULL or Job is NULL or status is NULL or remark is NULL or tel is NULL or address is NULL 
     -- or IsSuppMedIns is NULL or isyj is NULL or OversResidNo is NULL
@@ -49,7 +49,7 @@ Begin
     End
 
     -- 身份证编号输入错误，请再次填写确认!
-    IF Exists(Select 1 from eBG_Family_Change WHERE EID=@EID and @leftid=3 and ISNULL(Initialized,0)=0 
+    IF Exists(Select 1 from eBG_Family_Change WHERE EID=@EID and @leftid=3 and Initialized is NULL 
     and ((CERTID<>dbo.eFN_CID18CheckSum(CERTID) AND Len(CERTID)=18) or Len(CERTID)<>18 or CERTID IS NULL))
     Begin
         Set @RetVal=920033
@@ -57,7 +57,7 @@ Begin
     End
 
     -- 紧急联系人信息填写不完整，无法递交！
-    IF Exists(Select 1 From eBG_Emergency_Change Where EID=@EID and @leftid=4 and ISNULL(Initialized,0)=0
+    IF Exists(Select 1 From eBG_Emergency_Change Where EID=@EID and @leftid=4 and Initialized is NULL
     and (EmergencyName is NULL or Relation is NULL or Telephone is NULL 
     -- or address is NULL or email is NULL or PostCode is NULL
     ))

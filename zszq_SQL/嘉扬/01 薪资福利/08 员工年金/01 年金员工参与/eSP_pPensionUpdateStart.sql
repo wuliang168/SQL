@@ -45,8 +45,9 @@ Begin
 
     -- 插入后台员工参与年金pPensionUpdatePerEmp
     ---- 在职
+    ------ MD和AdminID为最新的
     insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
-    select a.PensionYear,b.EID,d.LastYearAdminID,d.LastYearMDID,c.JoinDate,c.LeaDate,1
+    select a.PensionYear,b.EID,d.AdminID,d.MDID,c.JoinDate,c.LeaDate,1
     from pPensionUpdate a,pVW_Employee b,eStatus c,pEMPAdminIDMD d
     where a.ID=@ID and b.Status in (1,2,3) and b.EID=c.EID and b.EID is not NULL and DATEDIFF(yy,c.JoinDate,a.PensionYear)>=0
     and b.EID not in (select EID from pPensionUpdatePerEmp where PensionYear=a.PensionYear)
@@ -66,7 +67,7 @@ Begin
     Goto ErrM
     ---- 退休
     insert into pPensionUpdatePerEmp(PensionYear,EID,IsPension,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
-    select a.PensionYear,b.EID,1,d.LastYearAdminID,d.LastYearMDID,c.JoinDate,c.LeaDate,5
+    select a.PensionYear,b.EID,1,d.AdminID,d.MDID,c.JoinDate,c.LeaDate,5
     from pPensionUpdate a,pVW_Employee b,eStatus c,pEMPAdminIDMD d
     where a.ID=@ID and b.Status=5 and b.EID=c.EID and DateDiff(yy,c.LeaDate,a.PensionYear)<=0
     -- 异常流程

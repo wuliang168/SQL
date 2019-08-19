@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pPensionUpdateAddCRM]
 -- skydatarefresh eSP_pPensionUpdateAddCRM
-    @leftid int,
+    @leftid varchar(50),
     @BID int,
     @RetVal int=0 Output
 As
@@ -18,8 +18,12 @@ As
 */
 Begin
 
+    declare @DepID int,@YEAR int
+    set @DepID=SUBSTRING(@leftid,0,CHARINDEX('-',@leftid))
+    set @YEAR=REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+
     -- 员工已经存在，不可重复添加
-    If Exists(Select 1 From pPensionUpdatePerEmp Where BID=@BID AND ISNULL(IsClosed,0)=0)
+    If Exists(Select 1 From pPensionUpdatePerEmp Where BID=@BID AND YEAR(PensionYear)=@YEAR AND ISNULL(IsClosed,0)=0)
     Begin
         Set @RetVal = 1100001
         Return @RetVal
@@ -31,7 +35,8 @@ Begin
 
     -- 新增前台员工
     insert into pPensionUpdatePerEmp(PensionYear,BID)
-    values ((select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@leftid and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),
+    values ((select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@leftid AND YEAR(PensionYear)=@YEAR
+    and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),
     @BID)
     -- 异常流程
     If @@Error<>0

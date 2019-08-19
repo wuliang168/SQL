@@ -70,6 +70,7 @@ Begin
     select a.PensionYear,b.EID,1,d.AdminID,d.MDID,c.JoinDate,c.LeaDate,5
     from pPensionUpdate a,pVW_Employee b,eStatus c,pEMPAdminIDMD d
     where a.ID=@ID and b.Status=5 and b.EID=c.EID and DateDiff(yy,c.LeaDate,a.PensionYear)<=0
+    and b.EID=d.EID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

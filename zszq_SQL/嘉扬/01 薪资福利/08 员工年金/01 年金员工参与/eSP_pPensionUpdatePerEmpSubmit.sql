@@ -12,7 +12,7 @@ As
 /*
 -- Create By wuliang E004205
 -- 年金后台员工确认程序
--- @EID 为年金参与员工EID
+-- @ID 为年金参与员工ID
 */
 Begin
 

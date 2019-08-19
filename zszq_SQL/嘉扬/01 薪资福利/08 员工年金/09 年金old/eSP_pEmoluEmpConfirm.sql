@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pEmoluEmpConfirm]
 -- skydatarefresh eSP_pEmoluEmpConfirm
-    @EID int,
+    @ID int,
     @RetVal int=0 Output
 As
 /*
@@ -16,14 +16,6 @@ As
 */
 Begin
 
-    -- 员工行政职级已确认!
-    ---- 后台员工
-    If Exists(Select 1 From pEmployeeEmolu a Where a.EID=@EID And Isnull(a.IsConfirm,0)=1)
-    Begin
-        Set @RetVal = 930071
-        Return @RetVal
-    End
-
 
     Begin TRANSACTION
 
@@ -31,8 +23,8 @@ Begin
     ---- 后台员工
     Update a
     Set a.IsConfirm=1
-    From pEmployeeEmolu a
-    Where a.EID=@EID
+    From pPensionUpdatePerEmp a
+    Where a.ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

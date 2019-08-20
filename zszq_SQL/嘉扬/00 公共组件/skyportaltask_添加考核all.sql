@@ -155,7 +155,7 @@ AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0 AND ISNULL(a.IsClosed,0)=0
 -- 薪酬类型非营业部;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530010'',''leftid^' + cast(a.SalaryPayID AS nvarchar(15)) + 
+N'<a href="#" onclick="moveTo(''1.0.530010'',''leftid^' +cast(a.SalaryPayID AS nvarchar(15)) + 
 N''',''年金计划分配反馈'')">请您完成' + cast(datepart(yy, a.PensionMonth) AS varchar(10)) + 
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.Title + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
@@ -164,7 +164,7 @@ WHERE a.SalaryPayID=b.ID AND a.SalaryPayID<>6 AND ISNULL(IsSubmit,0)=0 and a.Pen
 -- 薪酬类型为营业部;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530020'',''leftid^' + cast(b.DepID AS nvarchar(15)) + 
+N'<a href="#" onclick="moveTo(''1.0.530020'',''leftid^' + cast(b.DepID AS nvarchar(15)) +
 N''',''年金计划分配反馈'')">请您完成' + cast(datepart(yy, a.PensionMonth) AS varchar(10)) + 
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.DepAbbr + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
@@ -176,7 +176,7 @@ WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit
 -- 营业部;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +
+N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(YEAR(a.PensionYear) AS varchar(4)) +
 N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
 + cast(YEAR(a.PensionYear) AS varchar(4)) + N'年度年金分配人员</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
@@ -309,7 +309,7 @@ UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550400'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
 N''',''月度费用统计'')">请您完成' + cast(datepart(yy, b.Month) AS varchar(10)) + N'年' + 
-cast(datepart(mm, b.Month) AS varchar(10)) + N'月' + c.DepAbbr + N'直管人员费用统计</a>' AS url, 
+cast(datepart(mm, b.Month) AS varchar(10)) + N'月工资' + c.DepAbbr + N'直管人员费用统计</a>' AS url, 
 a.DepSalaryContact AS approver, 1 AS id
 FROM pMonthExpenseDep a,pMonthExpense_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Month,b.Month)=0 AND ISNULL(a.DepID2nd,a.DepID1st)=c.DepID

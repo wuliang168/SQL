@@ -19,8 +19,8 @@ As
 Begin
 
     declare @DepID int,@YEAR int
-    set @DepID=SUBSTRING(@leftid,0,CHARINDEX('-',@leftid))
-    set @YEAR=REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @YEAR=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     -- 员工已经存在，不可重复添加
     If Exists(Select 1 From pPensionUpdatePerEmp Where BID=@BID AND YEAR(PensionYear)=@YEAR AND ISNULL(IsClosed,0)=0)
@@ -35,7 +35,7 @@ Begin
 
     -- 新增前台员工
     insert into pPensionUpdatePerEmp(PensionYear,BID)
-    values ((select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@leftid AND YEAR(PensionYear)=@YEAR
+    values ((select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@DepID AND YEAR(PensionYear)=@YEAR
     and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),
     @BID)
     -- 异常流程

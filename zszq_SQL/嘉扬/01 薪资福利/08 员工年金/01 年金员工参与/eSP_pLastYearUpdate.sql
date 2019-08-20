@@ -4,7 +4,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER  Procedure [dbo].[eSP_pLastYearUpdate]
+ALTER Procedure [dbo].[eSP_pLastYearUpdate]
 -- skydatarefresh eSP_pLastYearUpdate
     @URID int,
     @EID int,

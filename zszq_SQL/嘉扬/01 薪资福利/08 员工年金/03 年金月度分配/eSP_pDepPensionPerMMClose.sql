@@ -36,44 +36,6 @@ Begin
     Goto ErrM
 
 
-    -- 更新后台人员年金月度分配注册表pEmpPensionPerMM_register
-    -- 薪酬类型非营业部;
-    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID not in (6) and ID=@ID)
-    BEGIN
-        update a
-        set a.Submit=1
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,pEmployeeEmolu c
-        where b.ID=@ID and b.SalaryPayID=c.SalaryPayID and a.EID=c.EID 
-    END
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 薪酬类型营业部;
-    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID in (6) and ID=@ID)
-    BEGIN
-        update a
-        set a.Submit=1
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,eemployee c
-        where b.ID=@ID and a.EID=c.EID and b.DepID=c.DepID
-    END
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-    -- 更新投理顾人员年金月度分配注册表pSDMarketerPensionPerMM_register
-    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID in (6) and ID=@ID)
-    BEGIN
-        update a
-        set a.Submit=1
-        from pSDMarketerPensionPerMM_register a,pDepPensionPerMM b,pSalesDepartMarketerEmolu c
-        where b.ID=@ID and a.Identification=c.Identification and ISNULL(b.DepID,b.SupDepID)=ISNULL(c.DepID,c.SupDepID)
-    END
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
-
     -- 递交
     COMMIT TRANSACTION
 

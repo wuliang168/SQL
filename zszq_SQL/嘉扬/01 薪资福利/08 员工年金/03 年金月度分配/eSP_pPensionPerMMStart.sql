@@ -19,7 +19,7 @@ As
 Begin
     
     -- 月度年金计划分配已开启!
-    If Exists(Select 1 From pPensionPerMM Where ID=@ID And Isnull(Submit,0)=1)
+    If Exists(Select 1 From pPensionPerMM Where ID=@ID And ISNULL(Submit,0)=1)
     Begin
         Set @RetVal = 930065
         Return @RetVal
@@ -52,18 +52,30 @@ Begin
     If @@Error<>0
     Goto ErrM
 
-
-    -- 插入后台人员年金月度分配注册表pEmpPensionPerMM_register
+    -- 插入人员年金月度分配注册表pEmpPensionPerMM_register
     -- 薪酬类型非营业部;
-    insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.EID,b.BID,b.EmpPensionYearRest,b.EmpPensionYearRest,
+    insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,DepID,SalaryPayID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
+    select a.PensionMonth,b.EID,b.BID,c.DepID,(case when BID is not NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),b.EmpPensionPerYYRST,b.EmpPensionPerYYRST,
     (case when BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
     then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID))) 
-    when (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
+    when (select SalaryPayID from pEMPSalary where EID=b.EID)<>6 
     then (select PensionContact from oCD_SalaryPayType where ID=(select SalaryPayID from pEMPSalary where EID=b.EID)) end)
-    from pPensionPerMM a,pEMPPension b
-    where a.ID=@ID and ISNULL(b.EmpPensionYearRest,0)>0
+    from pPensionPerMM a,pVW_pPensionPerMM b,pVW_employee c
+    where a.ID=@ID and ISNULL(b.EmpPensionPerYYRST,0)>0 and ISNULL(b.EID,b.BID)=ISNULL(c.EID,c.BID)
     and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEmpPensionPerMM_register)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    -- 更新部门年金月度表项pDepPensionPerMM
+    ---- 如无任何需要递交的员工，则直接关闭该部门
+    update a
+    set a.IsClosed=1
+    from pDepPensionPerMM a,pPensionPerMM b
+    where b.ID=@ID and DATEDIFF(YY,a.PensionMonth,b.PensionMonth)=0
+    and ((a.SalaryPayID=6 and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and DepID=ISNULL(a.DepID,a.SupDepID))=0)
+    or ((a.SalaryPayID in (4,5) or a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16) or a.SalaryPayID=7)
+    and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and a.SalarypayID=SalarypayID)=0))
     -- 异常流程
     If @@Error<>0
     Goto ErrM

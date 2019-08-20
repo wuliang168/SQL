@@ -40,13 +40,23 @@ Begin
     Begin TRANSACTION
 
     -- 插入员工年金年度分配详细数据表项
-    ---- 后台员工年金年度分配详细数据表项
+    ---- 员工年金年度分配详细数据表项
     insert into pEMPPensionPerYY(PensionYear,EID,BID,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,Status,
     PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder)
     select PensionYear,EID,BID,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,Status,
     PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder
     from pVW_pEMPPensionPerYY
     where Year(PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    ---- 员工年金年度分配详细数据表项
+    update a
+    set a.EmpPensionPerYYRST=b.EmpPensionPerYY
+    from pPensionUpdatePerEmp a,pEMPPensionPerYY b
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and DATEDIFF(YY,a.PensionYear,b.PensionYear)=0
+    and Year(a.PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

@@ -34,10 +34,11 @@ Begin
 
 
     -- 新增前台员工
-    insert into pPensionUpdatePerEmp(PensionYear,BID)
-    values ((select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@DepID AND YEAR(PensionYear)=@YEAR
-    and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),
-    @BID)
+    insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
+    select (select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@DepID AND YEAR(PensionYear)=@YEAR
+    and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status
+    from pVW_employee a
+    where a.BID=@BID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

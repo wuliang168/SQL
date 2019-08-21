@@ -34,7 +34,7 @@ then MONTH(g.LeaDate)-MONTH(g.JoinDate)+1
 else MONTH(g.LeaDate)-MONTH(g.JoinDate) end)
 end) as PostMonthPerYY
 from pPensionPerYY as a
-inner join pPensionUpdatePerEmp as g on DATEDIFF(YY,a.PensionYear,g.PensionYear)=0 and ISNULL(g.IsSubmit,0)=1
+inner join pPensionUpdatePerEmp as g on DATEDIFF(YY,a.PensionYear,g.PensionYear)=0 and ISNULL(g.IsConfirm,0)=1
 inner join pVW_employee as f on ISNULL(g.EID,g.BID)=ISNULL(f.eid,f.BID)
 left join oCD_AdminType as d on g.AdminIDYY=d.ID
 left join oCD_MDType as e on g.MDIDYY=e.ID

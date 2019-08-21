@@ -55,8 +55,8 @@ Begin
     -- 插入人员年金月度分配注册表pEmpPensionPerMM_register
     -- 薪酬类型非营业部;
     insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,DepID,SalaryPayID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.EID,b.BID,c.DepID,(case when BID is not NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),b.EmpPensionPerYYRST,b.EmpPensionPerYYRST,
-    (case when BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
+    select a.PensionMonth,b.EID,b.BID,c.DepID,(case when b.BID is not NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),b.EmpPensionPerYYRST,b.EmpPensionPerYYRST,
+    (case when b.BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
     then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID))) 
     when (select SalaryPayID from pEMPSalary where EID=b.EID)<>6 
     then (select PensionContact from oCD_SalaryPayType where ID=(select SalaryPayID from pEMPSalary where EID=b.EID)) end)

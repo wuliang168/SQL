@@ -37,7 +37,7 @@ Begin
     ---- 营业部发薪员工
     If Exists(Select 1 From pEmpPensionPerMM_register a,pVW_employee b
     Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0 And ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
-    and @SalaryPayID=6 and b.DepID=@DepID)
+    and (@SalaryPayID=6 or a.BID is not NULL) and b.DepID=@DepID)
     Begin
         Set @RetVal = 930085
         Return @RetVal

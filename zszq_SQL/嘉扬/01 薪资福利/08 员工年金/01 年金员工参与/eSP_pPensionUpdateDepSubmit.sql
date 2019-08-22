@@ -17,8 +17,8 @@ As
 Begin
 
     declare @DepID int,@YEAR int
-    set @DepID=SUBSTRING(@leftid,0,CHARINDEX('-',@leftid))
-    set @YEAR=REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @YEAR=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     Begin TRANSACTION
 

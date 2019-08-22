@@ -46,6 +46,14 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 更新个人年度剩余
+    update a
+    set a.EmpPensionPerYYRST=b.EmpPensionPerYYRST_new
+    from pPensionUpdatePerEmp a,pVW_pPensionPerYYDis b
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and DATEDIFF(YY,a.PensionYear,b.PensionYear)=0
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 插入年金月度历史数据表项
     -- 插入后台人员月度历史数据表项pEmpPensionPerMM_all

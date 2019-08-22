@@ -25,19 +25,19 @@ Begin
 
     -- 个人年金分配额超过个人年金分配剩余！
     ---- 非营业部发薪员工
-    If Exists(Select 1 From pEmpPensionPerMM_register a,pEmpSalary b
-    Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0 And a.EID=b.EID AND @DepID=0
-    And ((b.SalaryPayID in (1,2,3,10,11,12,13,14,15,16) and @SalaryPayID=1)
-    or (b.SalaryPayID in (4,5) and @SalaryPayID=4)
-    or (b.SalaryPayID in (7) and @SalaryPayID=7)))
+    If Exists(Select 1 From pEmpPensionPerMM_register a
+    Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0 AND @DepID=0
+    And ((a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16) and @SalaryPayID=1)
+    or (a.SalaryPayID in (4,5) and @SalaryPayID=4)
+    or (a.SalaryPayID=7 and @SalaryPayID=7)))
     Begin
         Set @RetVal = 930085
         Return @RetVal
     End
     ---- 营业部发薪员工
-    If Exists(Select 1 From pEmpPensionPerMM_register a,pVW_employee b
-    Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0 And ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
-    and (@SalaryPayID=6 or a.BID is not NULL) and b.DepID=@DepID)
+    If Exists(Select 1 From pEmpPensionPerMM_register a
+    Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0
+    and (a.SalaryPayID=6 or a.BID is not NULL) and a.DepID=@DepID)
     Begin
         Set @RetVal = 930085
         Return @RetVal

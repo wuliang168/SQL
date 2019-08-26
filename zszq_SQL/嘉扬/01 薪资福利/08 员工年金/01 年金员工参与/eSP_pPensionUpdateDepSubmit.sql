@@ -16,29 +16,19 @@ As
 */
 Begin
 
-    declare @DepID int,@YEAR int
+    declare @DepID int,@pPensionUpdateID int
     set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
-    set @YEAR=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
+    set @pPensionUpdateID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     Begin TRANSACTION
 
 
     -- 更新员工年金确认状态
-    ---- 分支机构后台员工
-    Update a
-    Set a.IsSubmit=1
-    From pPensionUpdatePerEmp a,pVW_Employee b
-    Where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and ISNULL(a.IsClosed,0)=0
-    and b.DepID=@DepID and YEAR(a.PensionYear)=@YEAR
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-
     ---- 分支机构
     Update a
     Set a.IsSubmit=1
     From pPensionUpdatePerDep a
-    Where ISNULL(a.DepID,a.SupDepID)=@DepID and YEAR(a.PensionYear)=@YEAR 
+    Where ISNULL(a.DepID,a.SupDepID)=@DepID and a.pPensionUpdateID=@pPensionUpdateID 
     and ISNULL(a.IsClosed,0)=0
     -- 异常流程
     If @@Error<>0

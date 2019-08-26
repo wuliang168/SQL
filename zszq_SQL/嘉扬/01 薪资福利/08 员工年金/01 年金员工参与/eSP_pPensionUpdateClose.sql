@@ -37,12 +37,53 @@ Begin
 
 
     -- 设置年金参与数据
+    -- 插入后台员工参与年金pPensionUpdatePerEmp
+    ---- 在职
+    ------ MD和AdminID为去年年度的
+    insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.PensionYear,b.EID,d.LastYearAdminID,d.LastYearMDID,b.JoinDate,b.LeaDate,1,1
+    from pPensionPerYY a,pVW_Employee b,pEMPAdminIDMD d
+    where a.ID=@ID and b.Status in (1,2,3) and b.EID is not NULL 
+    and DATEDIFF(yy,b.JoinDate,a.PensionYear)>=0
+    and b.EID in (select EID from pPensionUpdatePerEmp_register 
+    where pPensionUpdateID=(select ID from pPensionUpdate where 
+    DATEDIFF(YY,a.PensionYear,PensionYearBegin)<=0 and DATEDIFF(YY,a.PensionYear,PensionYearEnd)>=0 and ISNULL(IsClosed,0)=1) 
+    and EID is not NULL and ISNULL(IsPension,0)=1)
+    and b.EID=d.EID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 退休
+    insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.PensionYear,b.EID,d.LastYearAdminID,d.LastYearMDID,b.JoinDate,b.LeaDate,5,1
+    from pPensionPerYY a,pVW_Employee b,pEMPAdminIDMD d
+    where a.ID=@ID and b.Status=5 and DateDiff(yy,b.LeaDate,a.PensionYear)<=0
+    and b.EID=d.EID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 前台员工
+    -- 新增前台员工
+    insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.PensionYear,b.BID,30,NULL,b.JoinDate,b.LeaDate,b.Status,1
+    from pPensionPerYY a,pVW_Employee b
+    where a.ID=@ID and b.Status in (1,2,3) and b.BID is not NULL
+    and DATEDIFF(yy,b.JoinDate,a.PensionYear)>=0
+    and b.BID in (select BID from pPensionUpdatePerEmp_register 
+    where pPensionUpdateID=(select ID from pPensionUpdate where 
+    DATEDIFF(YY,a.PensionYear,PensionYearBegin)<=0 and DATEDIFF(YY,a.PensionYear,PensionYearEnd)>=0 and ISNULL(IsClosed,0)=1) 
+    and BID is not NULL and ISNULL(IsPension,0)=1)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+
     ---- 更新参与人员状态
     ------ 后台员工
     update a
     set a.IsClosed=1
-    from pPensionUpdatePerEmp a,pPensionUpdate b
-    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0 and b.ID=@ID
+    from pPensionUpdatePerEmp_register a,pPensionUpdate b
+    where b.ID=@ID and a.pPensionUpdateID=b.ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -50,14 +91,14 @@ Begin
     update a
     set a.IsClosed=1
     from pPensionUpdatePerDep a,pPensionUpdate b
-    where DATEDIFF(yy,a.PensionYear,b.PensionYear)=0 and b.ID=@ID
+    where b.ID=@ID and a.pPensionUpdateID=b.ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     ---- 企业年金参与人员总人数
     update a
-    set a.PensionTotalNum=(select COUNT(IsPension) from pPensionUpdatePerEmp where DATEDIFF(yy,PensionYear,a.PensionYear)=0)
+    set a.PensionTotalNum=(select COUNT(IsPension) from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
     from pPensionUpdate a
     Where a.ID=@ID
     -- 异常流程

@@ -24,7 +24,7 @@ Begin
     ------ 后台员工
     update a
     set a.IsSubmit=1
-    from pPensionUpdatePerEmp a
+    from pPensionUpdatePerEmp_register a
     where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and ID=@ID
     -- 异常流程
     If @@Error<>0

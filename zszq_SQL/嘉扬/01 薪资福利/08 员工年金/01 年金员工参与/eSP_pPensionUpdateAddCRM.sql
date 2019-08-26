@@ -18,12 +18,12 @@ As
 */
 Begin
 
-    declare @DepID int,@YEAR int
+    declare @DepID int,@pPensionUpdateID int
     set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
-    set @YEAR=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
+    set @pPensionUpdateID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     -- 员工已经存在，不可重复添加
-    If Exists(Select 1 From pPensionUpdatePerEmp Where BID=@BID AND YEAR(PensionYear)=@YEAR AND ISNULL(IsClosed,0)=0)
+    If Exists(Select 1 From pPensionUpdatePerEmp_register Where BID=@BID AND pPensionUpdateID=@pPensionUpdateID)
     Begin
         Set @RetVal = 1100001
         Return @RetVal
@@ -34,11 +34,8 @@ Begin
 
 
     -- 新增前台员工
-    insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status)
-    select (select PensionYear from pPensionUpdatePerDep where ISNULL(DepID,SupDepID)=@DepID AND YEAR(PensionYear)=@YEAR
-    and ISNULL(IsClosed,0)=0 and ISNULL(IsSubmit,0)=0),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status
-    from pVW_employee a
-    where a.BID=@BID
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,BID,IsPension)
+    values (@pPensionUpdateID,@BID,1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

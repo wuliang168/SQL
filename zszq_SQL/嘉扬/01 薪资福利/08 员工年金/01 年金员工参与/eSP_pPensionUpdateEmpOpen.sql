@@ -23,7 +23,7 @@ Begin
     ---- 前台员工
     Update a
     Set a.IsSubmit=NULL
-    From pPensionUpdatePerEmp a
+    From pPensionUpdatePerEmp_register a
     Where ID=@ID
     -- 异常流程
     If @@Error<>0

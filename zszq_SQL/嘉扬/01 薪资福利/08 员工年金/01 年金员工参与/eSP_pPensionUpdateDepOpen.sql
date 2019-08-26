@@ -22,7 +22,7 @@ Begin
     -- 更新员工年金确认状态
     ---- 前台员工
     Update a
-    Set a.IsSubmit=NULL,a.IsEmpSubmit=NULL,a.IsSDMSubmit=NULL
+    Set a.IsSubmit=NULL
     From pPensionUpdatePerDep a
     Where ID=@ID
     -- 异常流程

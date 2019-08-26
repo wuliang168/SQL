@@ -9,6 +9,6 @@ then ROUND(d.PensionYearTotal*a.PostModulusPerYY*a.PostMonthPerYY/e.ModulusTotal
 B.JobxOrder as jobxorder
 from pVW_pEMPPostModulusPerYY as a
 inner join pVW_Employee as b on ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
-inner join pPensionPerYY as d on DATEDIFF(yy,a.PensionYear,d.PensionYear)=0
+inner join pPensionPerYY as d on DATEDIFF(yy,a.PensionYear,d.PensionYear)=0 and ISNULL(d.Closed,0)=0
 inner join (select PensionYear,SUM(PostModulusPerYY*PostMonthPerYY) as ModulusTotalYY from pVW_pEMPPostModulusPerYY where ISNULL(IsPension,0)=1 group by PensionYear) as e on DATEDIFF(yy,a.PensionYear,e.PensionYear)=0
 where ISNULL(a.IsPension,0)=1

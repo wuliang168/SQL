@@ -1,7 +1,7 @@
 -- pVW_pEMPPostModulusPerYY
 
-select a.PensionYear as PensionYear,g.EID as EID,g.BID as BID,f.badge as Badge,f.Name as Name,g.IsPension as IsPension,g.JoinDate as JoinDate,g.LeaDate as LeaDate,
-g.Status as Status,g.MDIDYY as LastYearMDID,g.AdminIDYY as LastYearAdminID,
+select a.PensionYear as PensionYear,g.EID as EID,g.BID as BID,f.badge as Badge,f.Name as Name,f.Identification as Identification,g.IsPension as IsPension,
+g.JoinDate as JoinDate,g.LeaDate as LeaDate,g.Status as Status,g.MDIDYY as LastYearMDID,g.AdminIDYY as LastYearAdminID,f.JobxOrder as JobxOrder,
 /* 入职日期大于或者退休日期小于年金分配日期 */
 (case when YEAR(g.JoinDate)>YEAR(a.PensionYear) OR YEAR(ISNULL(g.LeaDate,dateAdd(yy,1,CONVERT(char(5), a.PensionYear, 120) + '12-31')))<YEAR(a.PensionYear) 
 then 0 

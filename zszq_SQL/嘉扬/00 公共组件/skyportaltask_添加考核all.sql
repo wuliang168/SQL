@@ -173,6 +173,16 @@ WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit
 
 
 ------------- 年金参与员工分配 ------------
+-- 总部、子公司;
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.530110'',''leftid^' + cast(a.EID AS nvarchar(10)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
+N''',''企业年金分配参与员工'')">请您确认' + N'参加'+ cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) 
++ N'年度企业年金分配</a>' AS url, 
+a.EID AS approver, 1 AS id
+FROM pPensionUpdatePerEmp_Register a,pPensionUpdate b
+where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
+and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 -- 营业部;
 UNION
 SELECT DISTINCT

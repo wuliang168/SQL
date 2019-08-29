@@ -241,6 +241,16 @@ a.SalaryContact AS approver, 1 AS id
 FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
+---- 新统计功能
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.550320'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 
+--N''',''月度工资统计反馈'')">请您完成' + cast(datepart(yy, b.Date) AS varchar(10)) + N'年' + 
+--cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + c.DepAbbr + N'员工工资统计(新)</a>' AS url, 
+--a.SalaryContact AS approver, 1 AS id
+--FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
+--WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
 
 
 ------------- 业绩考核(月度) ------------
@@ -292,14 +302,14 @@ UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
 N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
-+ cast(datepart(dd, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
++ cast(datepart(dd, (select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
 + cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
 a.DepInsHFContact AS approver, 1 AS id
 FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
 AND a.DepInsHFContact is NOT NULL
-AND DATEDIFF(DD,GETDATE(),(select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
+AND DATEDIFF(DD,GETDATE(),(select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
 ---- 临时调整
 --SELECT DISTINCT
 --N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 

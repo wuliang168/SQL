@@ -19,7 +19,7 @@ Begin
 
     declare @DepID int,@ProcessID int
     set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
-    set @ProcessID=convert(int,SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+    set @ProcessID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     -- 员工已存在，无法新增该员工!
     --If Exists(Select 1 From pYear_AnnualBonus Where AnnualBonusDepID=@leftid and EID=@EID)

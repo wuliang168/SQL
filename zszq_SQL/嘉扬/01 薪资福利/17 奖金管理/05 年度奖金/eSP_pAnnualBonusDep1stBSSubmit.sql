@@ -18,7 +18,7 @@ Begin
 
     declare @DepID int,@ProcessID int
     set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
-    set @ProcessID=convert(int,SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid))))
+    set @ProcessID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     -- 员工年度奖金金额为空，无法递交!
     --If Exists(Select 1 From pYear_AnnualBonus Where dbo.eFN_getdepid1st(AnnualBonusDepID)=@leftid and AnnualBonus is NULL)

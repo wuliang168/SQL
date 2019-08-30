@@ -51,8 +51,8 @@ Begin
     Begin TRANSACTION
 
     -- 插入月度工资统计流程的部门月度工资统计流程表项pSalaryPerMMSummDep
-    insert into pSalaryPerMMSummDep(Date,DepID,SalaryContact)
-    select b.Date,a.DepID,a.DepSalaryContact
+    insert into pSalaryPerMMSummDep(ProcessID,Date,DepID,SalaryContact)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact
     from oDepartment a,pSalaryPerMMSumm_Process b
     where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
     and a.DepID not in (select DepID from pSalaryPerMMSummDep where DATEDIFF(MONTH,DATE,b.Date)=0)
@@ -61,42 +61,100 @@ Begin
     Goto ErrM
     
     -- 插入月度工资统计的表格
+    -- 本月统计数据
     ---- 中后台员工
-    insert into pSalaryPerMMSumm_register(Date,DepID,SalaryContact,EMPType,xOrder)
-    select b.Date,a.DepID,a.DepSalaryContact,N'中后台员工',1
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact,1,N'中后台员工',1
     from oDepartment a,pSalaryPerMMSumm_Process b
     where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
-    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'中后台员工')
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'中后台员工' and PerMMSummType=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 投资顾问
-    insert into pSalaryPerMMSumm_register(Date,DepID,SalaryContact,EMPType,xOrder)
-    select b.Date,a.DepID,a.DepSalaryContact,N'投资顾问',2
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact,1,N'投资顾问',2
     from oDepartment a,pSalaryPerMMSumm_Process b
     where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
-    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'投资顾问')
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'投资顾问' and PerMMSummType=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 理财顾问
-    insert into pSalaryPerMMSumm_register(Date,DepID,SalaryContact,EMPType,xOrder)
-    select b.Date,a.DepID,a.DepSalaryContact,N'理财顾问',3
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact,1,N'理财顾问',3
     from oDepartment a,pSalaryPerMMSumm_Process b
     where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
-    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'理财顾问')
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'理财顾问' and PerMMSummType=1)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 机构专员
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact,1,N'机构专员',4
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'机构专员' and PerMMSummType=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 小计
-    insert into pSalaryPerMMSumm_register(Date,DepID,SalaryContact,EMPType,xOrder)
-    select b.Date,a.DepID,a.DepSalaryContact,N'小计',4
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,b.Date,a.DepID,a.DepSalaryContact,1,N'小计',9
     from oDepartment a,pSalaryPerMMSumm_Process b
     where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
-    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'小计')
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'小计' and PerMMSummType=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+
+    -- 下月预算数据
+    ---- 中后台员工
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,DATEADD(mm,1,b.Date),a.DepID,a.DepSalaryContact,2,N'中后台员工',1
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'中后台员工' and PerMMSummType=2)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 投资顾问
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,DATEADD(mm,1,b.Date),a.DepID,a.DepSalaryContact,2,N'投资顾问',2
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'投资顾问' and PerMMSummType=2)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 理财顾问
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,DATEADD(mm,1,b.Date),a.DepID,a.DepSalaryContact,2,N'理财顾问',3
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'理财顾问' and PerMMSummType=2)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 机构专员
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,DATEADD(mm,1,b.Date),a.DepID,a.DepSalaryContact,2,N'机构专员',4
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'机构专员' and PerMMSummType=2)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- 小计
+    insert into pSalaryPerMMSumm_register(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,xOrder)
+    select b.ID,DATEADD(mm,1,b.Date),a.DepID,a.DepSalaryContact,2,N'小计',9
+    from oDepartment a,pSalaryPerMMSumm_Process b
+    where b.ID=@ID and a.DepType in (2,3) and ISNULL(a.IsDisabled,0)=0 and a.xOrder<>9999999999999
+    and a.DepID not in (select DepID from pSalaryPerMMSumm_register where EMPType=N'小计' and PerMMSummType=2)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
 
     -- 更新月度工资统计流程状态
     update pSalaryPerMMSumm_Process

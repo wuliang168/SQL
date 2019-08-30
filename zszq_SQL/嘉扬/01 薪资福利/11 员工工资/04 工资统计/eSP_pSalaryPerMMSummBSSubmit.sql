@@ -19,15 +19,27 @@ Begin
     Begin TRANSACTION
 
     -- 更新pSalaryPerMMSumm_register
+    ---- 统计
     update a
-    set a.EMPNum=(select SUM(EMPNum) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID),
-    a.EMPSalary=(select SUM(EMPSalary) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID),
-    a.EMPPerf=(select SUM(EMPPerf) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID),
-    a.EMPWelfare=(select SUM(EMPWelfare) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID),
-    a.EMPPerfLY=(select SUM(EMPPerfLY) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID),
-    a.EMPSUMMTotal=(select SUM(EMPSUMMTotal) from pSalaryPerMMSumm_register where xOrder in (1,2,3) and DepID=a.DepID)
+    set a.EMPNum=(select SUM(EMPNum) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1),
+    a.EMPSalary=(select SUM(EMPSalary) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1),
+    a.EMPPerf=(select SUM(EMPPerf) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1),
+    a.EMPWelfare=(select SUM(EMPWelfare) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1),
+    a.EMPPerfLY=(select SUM(EMPPerfLY) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1),
+    a.EMPSUMMTotal=(select SUM(EMPSUMMTotal) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=1)
     from pSalaryPerMMSumm_register a 
-    where a.DepID=@leftid and a.xOrder in (4)
+    where a.DepID=@leftid and a.xOrder=9 and a.PerMMSummType=1
+
+    ---- 预算
+    update a
+    set a.EMPNum=(select SUM(EMPNum) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=2),
+    a.EMPSalary=(select SUM(EMPSalary) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=2),
+    a.EMPPerf=b.EMPPerfSumm,a.EMPWelfare=b.EMPWelfareSumm,
+    a.EMPSUMMTotal=(select SUM(EMPSUMMTotal) from pSalaryPerMMSumm_register where xOrder<>9 and DepID=a.DepID and PerMMSummType=2)
+    from pSalaryPerMMSumm_register a,pVW_pSalaryPerMMPWSumm b
+    where a.DepID=@leftid and a.DepID=b.DepID and a.PerMMSummType=b.PerMMSummType and a.PerMMSummType=2
+    and a.xOrder=9
+
 
     -- 更新pSalaryPerMMSummDep
     update a

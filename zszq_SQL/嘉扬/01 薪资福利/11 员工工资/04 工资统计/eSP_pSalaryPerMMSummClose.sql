@@ -35,12 +35,23 @@ Begin
     Begin TRANSACTION
 
     -- 插入月度工资统计流程的历史表项pSalaryPerMMSumm_all
-    insert into pSalaryPerMMSumm_all(Date,DepID,SalaryContact,EMPType,EMPNum,EMPSalary,EMPPerf,EMPWelfare,EMPPerfLY,EMPSummTotal,xOrder)
-    select a.Date,a.DepID,a.SalaryContact,a.EMPType,a.EMPNum,a.EMPSalary,a.EMPPerf,a.EMPWelfare,a.EMPPerfLY,a.EMPSummTotal,a.xOrder
+    insert into pSalaryPerMMSumm_all(ProcessID,Date,DepID,SalaryContact,PerMMSummType,EMPType,EMPNum,EMPSalary,
+    EMPPerf,EMPWelfare,EMPPerfLY,EMPSummTotal,xOrder)
+    select a.ProcessID,a.Date,a.DepID,a.SalaryContact,a.PerMMSummType,a.EMPType,a.EMPNum,a.EMPSalary,
+    a.EMPPerf,a.EMPWelfare,a.EMPPerfLY,a.EMPSummTotal,a.xOrder
     from pSalaryPerMMSumm_register a
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+
+    -- 插入月度工资统计流程的历史表项pSalaryPerMMPWSumm_all
+    insert into pSalaryPerMMPWSumm_all(ProcessID,DepID,SalaryContact,PerMMSummType,EMPType,EMPPerfWelYear,EMPPerfWelType,EMPPerfWelSumm)
+    select a.ProcessID,a.DepID,a.SalaryContact,a.PerMMSummType,a.EMPType,a.EMPPerfWelYear,a.EMPPerfWelType,a.EMPPerfWelSumm
+    from pSalaryPerMMPWSumm a
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
 
     -- 更新pSalaryPerMMSummDep
     update b

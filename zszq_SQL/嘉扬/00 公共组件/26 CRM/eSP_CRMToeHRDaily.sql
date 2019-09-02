@@ -38,14 +38,27 @@ Begin
         Goto ErrM
 
     -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID或Status
+    ---- DepID变动
     update a
-        set a.DepID=(select DepID from pVW_CRM_Staff where Identification=a.Identification),
-        a.Status=(select Status from pVW_CRM_Staff where Identification=a.Identification)
+        set a.DepID=b.DepID
         from pCRMStaff a,
-        (select Identification,DepID,Status from pVW_CRM_Staff
+        (select Identification,DepID from pVW_CRM_Staff_all
         where LEN(Identification)<=18 and DepID is not NULL
         except
-        select Identification,DepID,Status
+        select Identification,DepID
+        from pCRMStaff) b
+        where a.Identification=b.Identification
+    -- 异常处理
+    IF @@Error <> 0
+        Goto ErrM
+    ---- Status变动
+    update a
+        set a.Status=b.Status,a.LeaDate=b.LeaDate
+        from pCRMStaff a,
+        (select Identification,Status,LeaDate from pVW_CRM_Staff_all
+        where LEN(Identification)<=18 and LeaDate is not NULL
+        except
+        select Identification,Status,LeaDate
         from pCRMStaff) b
         where a.Identification=b.Identification
     -- 异常处理

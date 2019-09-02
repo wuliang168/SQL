@@ -98,7 +98,8 @@ Begin
     insert into pPensionUpdatePerDep(pPensionUpdateID,SupDepID,DepID,PensionContact)
     select a.ID,b.SupDepID,b.DepID,b.PensionContact
     from pPensionUpdate a,pVW_DepPensionContact b
-    where a.ID=@ID and b.SupDepID is not NULL and b.PensionContact is not NULL
+    where a.ID=@ID and b.SupDepID is not NULL
+    and ISNULL(b.DepID,b.SupDepID) not in (select ISNULL(DepID,SupDepID) from pPensionUpdatePerDep where pPensionUpdateID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

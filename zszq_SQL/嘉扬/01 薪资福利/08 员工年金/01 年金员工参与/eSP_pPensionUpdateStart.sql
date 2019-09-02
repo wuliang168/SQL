@@ -54,9 +54,9 @@ Begin
     ----在职后台员工报名表pPensionUpdatePerEmp_register
     insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID)
     select a.ID,b.EID
-    from pPensionUpdate a,pVW_Employee b,eStatus c
-    where a.ID=@ID and b.Status in (1,2,3) and b.EID=c.EID and b.EID is not NULL 
-    and DATEDIFF(yy,c.JoinDate,a.PensionYearEnd)>=0
+    from pPensionUpdate a,pVW_Employee b
+    where a.ID=@ID and b.Status in (1,2,3) and b.EID is not NULL 
+    and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
     and b.EID not in (select EID from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
     -- 异常流程
     If @@Error<>0
@@ -78,6 +78,17 @@ Begin
     from pPensionUpdate a,pPensionUpdatePerEmp_register b,pVW_employee c
     where a.ID=@ID and a.ID=b.pPensionUpdateID and ISNULL(b.IsPension,0)=1
     and b.EID=c.EID and c.DepType in (1,4)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    
+    ---- 插入退休员工
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,IsPension,IsSubmit)
+    select a.ID,b.EID,1,1
+    from pPensionUpdate a,pVW_Employee b
+    where a.ID=@ID and b.Status=5 and b.EID is not NULL 
+    and DATEDIFF(yy,b.LeaDate,a.PensionYearBegin)<=0
+    and b.EID not in (select EID from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

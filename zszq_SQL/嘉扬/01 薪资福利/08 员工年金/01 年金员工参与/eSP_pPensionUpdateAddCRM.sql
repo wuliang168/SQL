@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pPensionUpdateAddCRM]
 -- skydatarefresh eSP_pPensionUpdateAddCRM
-    @leftid varchar(50),
+    @pPensionUpdateID int,
     @BID int,
     @RetVal int=0 Output
 As
@@ -17,10 +17,6 @@ As
 -- @BID 为年金参与前台员工的ID
 */
 Begin
-
-    declare @DepID int,@pPensionUpdateID int
-    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
-    set @pPensionUpdateID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     -- 员工已经存在，不可重复添加
     If Exists(Select 1 From pPensionUpdatePerEmp_register Where BID=@BID AND pPensionUpdateID=@pPensionUpdateID)

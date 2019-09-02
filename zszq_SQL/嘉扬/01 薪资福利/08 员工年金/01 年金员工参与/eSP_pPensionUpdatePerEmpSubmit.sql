@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER Procedure [dbo].[eSP_pPensionUpdatePerEmpSubmit]
 -- skydatarefresh eSP_pPensionUpdatePerEmpSubmit
-    @ID int,
+    @leftid varchar(20), 
     @RetVal int=0 Output
 As
 /*
@@ -15,6 +15,10 @@ As
 -- @ID 为年金参与员工ID
 */
 Begin
+
+    declare @EID int,@pPensionUpdateID int
+    set @EID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @pPensionUpdateID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     Begin TRANSACTION
 
@@ -25,7 +29,7 @@ Begin
     update a
     set a.IsSubmit=1
     from pPensionUpdatePerEmp_register a
-    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and ID=@ID
+    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and EID=@EID and pPensionUpdateID=@pPensionUpdateID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

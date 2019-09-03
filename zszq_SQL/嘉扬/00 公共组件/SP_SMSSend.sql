@@ -16,16 +16,19 @@ Begin
     declare @Mobile varchar(30),@SMS nvarchar(200)
 
     -- 定义短信发送手机号码
-    select @Mobile=Mobile
-    from eDetails
-    where EID=@EID
-    -- 定义短信发送内容
-    select @SMS=a.SMS
-    from pSMSInfo a
-    where a.ID=@ID
+    IF @EID is not NULL
+    Begin
+        select @Mobile=Mobile
+        from eDetails
+        where EID=@EID
+        -- 定义短信发送内容
+        select @SMS=a.SMS
+        from pSMSInfo a
+        where a.ID=@ID
 
-    -- 短信内容发送
-    INSERT OPENQUERY(ORCL, 'SELECT MOBILE, CONTENT FROM HRIS.QUEUES') VALUES(@Mobile,@SMS)
+        -- 短信内容发送
+        INSERT OPENQUERY(ORCL, 'SELECT MOBILE, CONTENT FROM HRIS.QUEUES') VALUES(@Mobile,@SMS)
+    End
 
     Begin TRANSACTION
 

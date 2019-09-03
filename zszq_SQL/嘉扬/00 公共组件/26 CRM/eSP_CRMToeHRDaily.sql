@@ -38,11 +38,11 @@ Begin
         Goto ErrM
 
     -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID或Status
-    ---- DepID变动
+    ---- DepID变动 仅仅关注在职人员
     update a
         set a.DepID=b.DepID
         from pCRMStaff a,
-        (select Identification,DepID from pVW_CRM_Staff_all
+        (select Identification,DepID from pVW_CRM_Staff
         where LEN(Identification)<=18 and DepID is not NULL
         except
         select Identification,DepID
@@ -51,16 +51,12 @@ Begin
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM
-    ---- Status变动
+    ---- Status变动 需要对历史上的记录进行过滤
     update a
         set a.Status=b.Status,a.LeaDate=b.LeaDate
-        from pCRMStaff a,
-        (select Identification,Status,LeaDate from pVW_CRM_Staff_all
-        where LEN(Identification)<=18 and LeaDate is not NULL
-        except
-        select Identification,Status,LeaDate
-        from pCRMStaff) b
-        where a.Identification=b.Identification
+        from pCRMStaff a,pVW_CRM_Staff_all b
+        where a.Identification=b.Identification and a.Status=1 and b.Status=4
+        and a.JoinDate=b.JoinDate and a.ConBeginDate=b.ConBeginDate
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM

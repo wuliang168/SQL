@@ -57,7 +57,7 @@ Begin
     from pPensionUpdate a,pVW_Employee b
     where a.ID=@ID and b.Status in (1,2,3) and b.EID is not NULL 
     and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
-    and b.EID not in (select EID from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
+    and b.EID not in (select EID from pPensionUpdatePerEmp_register where pPensionUpdateID=@ID and EID is not NULL)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

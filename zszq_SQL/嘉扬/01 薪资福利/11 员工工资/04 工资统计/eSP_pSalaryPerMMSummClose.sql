@@ -55,9 +55,9 @@ Begin
 
     -- 更新pSalaryPerMMSummDep
     update b
-    set b.IsSubmit=1
+    set b.IsClosed=1
     from pSalaryPerMMSumm_Process a,pSalaryPerMMSummDep b
-    where a.ID=@ID and a.Date=b.Date and ISNULL(b.IsSubmit,0)=0
+    where a.ID=@ID and a.Date=b.Date
 
     -- 更新月度工资流程状态
     update a
@@ -70,6 +70,11 @@ Begin
 
     -- 删除月度工资统计表项
     delete from pSalaryPerMMSumm_register
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    -- 删除月度工资明细统计表项
+    delete from pSalaryPerMMPWSumm
     -- 异常流程
     If @@Error<>0
     Goto ErrM

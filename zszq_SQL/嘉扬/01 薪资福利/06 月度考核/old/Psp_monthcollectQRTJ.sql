@@ -61,6 +61,20 @@ begin
 		return @retval
 	end
 
+	-- 月度工作小结超过150字上限
+	if exists (select 1 from PMONTH_ASS where BADGE=@badge and LEN(MONTHSCOOP)>150 and MONTHID=@monthid)
+	begin
+		set @RetVal=1100054
+		return @retval
+	end
+
+	-- 月度工作小结超150字上限
+	if exists (select 1 from PMONTH_PLAN where BADGE=@badge and LEN(monthtitle)>150 and MONTHID=@monthid)
+	begin
+		set @RetVal=1100055
+		return @retval
+	end
+
 	-- 已审核被退回月度考核未做修改
 	if exists (select 1 from pEmpProcess_Month where BADGE=@badge 
 	and monthID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,@kpimonth)=1) and pstatus=2)

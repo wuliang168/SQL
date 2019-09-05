@@ -37,7 +37,20 @@ Begin
     IF @@Error <> 0
         Goto ErrM
 
-    -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID或Status
+    -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID、Status或JoinDate
+    ---- JoinDate变动 仅仅关注在职人员
+    update a
+        set a.JoinDate=b.JoinDate
+        from pCRMStaff a,
+        (select Identification,JoinDate from pVW_CRM_Staff
+        where LEN(Identification)<=18 and JoinDate is not NULL
+        except
+        select Identification,JoinDate
+        from pCRMStaff) b
+        where a.Identification=b.Identification
+    -- 异常处理
+    IF @@Error <> 0
+        Goto ErrM
     ---- DepID变动 仅仅关注在职人员
     update a
         set a.DepID=b.DepID

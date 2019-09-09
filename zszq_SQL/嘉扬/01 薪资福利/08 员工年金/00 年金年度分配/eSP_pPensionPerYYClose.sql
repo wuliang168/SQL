@@ -72,7 +72,7 @@ Begin
     Goto ErrM
     ---- 更新分配差值
     Update a
-    Set a.PensionYearDiff=a.PensionYearCalcTotal-a.PensionYearTotal
+    Set a.PensionYearDiff=a.PensionYearCalcTotal-a.PensionYearTotal-a.PensionYearPlus
     From pPensionPerYY a
     Where a.ID=@ID
     -- 异常流程

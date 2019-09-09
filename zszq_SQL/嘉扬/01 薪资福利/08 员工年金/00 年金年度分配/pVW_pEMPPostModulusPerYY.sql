@@ -1,4 +1,5 @@
 -- pVW_pEMPPostModulusPerYY
+---- 不关注是否在职状态，仅关注日期
 
 select a.PensionYear as PensionYear,g.EID as EID,g.BID as BID,f.badge as Badge,f.Name as Name,f.Identification as Identification,g.IsPension as IsPension,
 g.JoinDate as JoinDate,g.LeaDate as LeaDate,g.Status as Status,g.MDIDYY as LastYearMDID,g.AdminIDYY as LastYearAdminID,f.JobxOrder as JobxOrder,

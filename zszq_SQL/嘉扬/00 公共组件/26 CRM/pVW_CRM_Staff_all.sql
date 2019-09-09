@@ -4,11 +4,11 @@ select (select xOrder
     from oDepartment
     where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepxOrder, a.YYB,
     (case when right(LTRIM(RTRIM(a.SFZ)),1)='x' then 
-(case when LEN(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  )=15 and ISNUMERIC(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  ,1))=1 
-then dbo.eFN_CID18CheckSum(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  ,6)+'19'+RIGHT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  ,9)+'0') 
-    when LEN(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  )=18 and ISNUMERIC(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  ,1))=1 
-    then dbo.eFN_CID18CheckSum(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))  )
-    else Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X'))   end)
+(case when LEN(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')))=15 and ISNUMERIC(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),1))=1 
+then dbo.eFN_CID18CheckSum(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),6)+'19'+RIGHT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),9)+'0') 
+    when LEN(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')))=18 and ISNUMERIC(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),1))=1 
+    then dbo.eFN_CID18CheckSum(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')))
+    else Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')) end)
     else (case when LEN(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))))=15 and ISNUMERIC(LEFT(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))),1))=1 
     then dbo.eFN_CID18CheckSum(LEFT(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))),6)+'19'+RIGHT(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))),9)+'0') 
         when LEN(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))))=18 and ISNUMERIC(LEFT(Convert(varchar(100),LTRIM(RTRIM(a.SFZ))),1))=1 

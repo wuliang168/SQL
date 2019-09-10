@@ -30,8 +30,10 @@ Begin
 
 
     -- 新增前台员工
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,BID,IsPension)
-    values (@pPensionUpdateID,@BID,1)
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,BID,Status,JoinDate,LeaDate,IsPension)
+    select @pPensionUpdateID,a.BID,a.Status,a.JoinDate,a.LeaDate,1
+    from pVW_employee a
+    where BID=@BID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

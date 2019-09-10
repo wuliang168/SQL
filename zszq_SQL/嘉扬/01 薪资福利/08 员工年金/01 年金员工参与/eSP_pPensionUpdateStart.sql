@@ -52,8 +52,8 @@ Begin
 
     -- 插入后台员工报名表
     ----在职后台员工报名表pPensionUpdatePerEmp_register
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID)
-    select a.ID,b.EID
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,Status,JoinDate,LeaDate)
+    select a.ID,b.EID,b.Status,b.JoinDate,b.LeaDate
     from pPensionUpdate a,pVW_Employee b
     where a.ID=@ID and b.Status in (1,2,3) and b.EID is not NULL 
     and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
@@ -83,8 +83,8 @@ Begin
     Goto ErrM
     
     ---- 插入退休员工
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,IsPension,IsSubmit)
-    select a.ID,b.EID,1,1
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,Status,JoinDate,LeaDate,IsPension,IsSubmit)
+    select a.ID,b.EID,b.Status,b.JoinDate,b.LeaDate,1,1
     from pPensionUpdate a,pVW_Employee b
     where a.ID=@ID and b.Status=5 and b.EID is not NULL 
     and DATEDIFF(yy,b.LeaDate,a.PensionYearBegin)<=0

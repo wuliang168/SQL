@@ -180,9 +180,9 @@ N'<a href="#" onclick="moveTo(''1.0.530110'',''leftid^' + cast(a.EID AS nvarchar
 N''',''企业年金分配参与员工'')">请您确认' + N'参加'+ cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) 
 + N'年度企业年金分配</a>' AS url, 
 a.EID AS approver, 1 AS id
-FROM pPensionUpdatePerEmp_Register a,pPensionUpdate b
+FROM pPensionUpdatePerEmp_Register a,pPensionUpdate b,pVW_employee c
 where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
-and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.EID=c.EID and c.DepType in (1,4)
 -- 营业部;
 UNION
 SELECT DISTINCT
@@ -192,7 +192,7 @@ N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from o
 a.PensionContact AS approver, 1 AS id
 FROM pPensionUpdatePerDep a,pPensionUpdate b
 where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
-and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.PensionContact is not NULL
 
 
 --------------- 月度工资 ------------
@@ -241,7 +241,7 @@ AND a.SalaryPayID=20
 --FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
 --WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 --and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
----- 新统计功能
+-- 新统计功能
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550320'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 

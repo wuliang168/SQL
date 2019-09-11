@@ -1,5 +1,5 @@
 GO
-Use zszqtest
+Use zszqtest1
 
 --ALTER LOGIN [HRKayang] DISABLE
 GO
@@ -24,17 +24,17 @@ GO
 --Use HRMaster
 GO
 
-Use zszqtest
+Use zszqtest1
 
 GO
 --�������û�ӳ�䵽��½���������µ���Ϣ
 --exec sp_change_users_login 'UPDATE_ONE','HRKayang','HRKayang'
 GO
 Update skySecHResource
-        Set Password='k6mdRv2jrjSTmkO9Mw6e7A==',Server='10.51.190.161',DBName='zszqtest',Login='HRSYS'
+        Set Password='k6mdRv2jrjSTmkO9Mw6e7A==',Server='10.51.190.161',DBName='zszqtest1',Login='HRSYS'
 GO
 GO
-Use zszqtest
+Use zszqtest1
 GO
 --�������û�����ΪDBO
 exec sp_changedbowner HRSYS

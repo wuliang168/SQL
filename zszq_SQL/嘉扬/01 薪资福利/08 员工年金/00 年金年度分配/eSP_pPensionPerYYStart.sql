@@ -44,9 +44,18 @@ Begin
     -- 更新年度年金计划分配表项pPensionPerYY
     ---- 更新开启信息
     Update a
-    Set a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
+    Set a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE(),a.IsDisMM=1
     From pPensionPerYY a
     Where a.ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    ---- 更新月度分配状态
+    Update a
+    Set a.IsDisMM=NULL
+    From pPensionPerYY a
+    Where a.ID<@ID and ISNULL(a.Closed,0)=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM

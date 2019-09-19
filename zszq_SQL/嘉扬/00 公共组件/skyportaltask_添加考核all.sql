@@ -232,26 +232,26 @@ AND a.SalaryPayID=20
 
 
 ------------- 月度工资统计 ------------
---UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.550310'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 
---N''',''月度工资统计反馈'')">请您完成' + cast(datepart(yy, b.Date) AS varchar(10)) + N'年' + 
---cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + c.DepAbbr + N'员工工资统计</a>' AS url, 
---a.SalaryContact AS approver, 1 AS id
---FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
---WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
---and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
--- 新统计功能
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.550320'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 
-'-' + cast(a.ProcessID AS nvarchar(5)) +
+N'<a href="#" onclick="moveTo(''1.0.550310'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 
 N''',''月度工资统计反馈'')">请您完成' + cast(datepart(yy, b.Date) AS varchar(10)) + N'年' + 
-cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + c.DepAbbr + N'员工工资统计(新)</a>' AS url, 
+cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + c.DepAbbr + N'员工工资统计</a>' AS url, 
 a.SalaryContact AS approver, 1 AS id
 FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
+-- 新统计功能
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.550320'',''leftid^' + cast(a.DepID AS nvarchar(5)) + 
+--'-' + cast(a.ProcessID AS nvarchar(5)) +
+--N''',''月度工资统计反馈'')">请您完成' + cast(datepart(yy, b.Date) AS varchar(10)) + N'年' + 
+--cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + c.DepAbbr + N'员工工资统计(新)</a>' AS url, 
+--a.SalaryContact AS approver, 1 AS id
+--FROM pSalaryPerMMSummDep a,pSalaryPerMMSumm_Process b,oDepartment c
+--WHERE DATEDIFF(mm,a.Date,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and ISNULL(a.IsSubmit,0)=0 AND a.SalaryContact is NOT NULL AND a.DepID=c.DepID
 
 
 ------------- 业绩考核(月度) ------------

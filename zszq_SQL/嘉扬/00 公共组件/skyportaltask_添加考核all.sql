@@ -160,7 +160,8 @@ N''',''企业年金分配反馈'')">请您完成' + cast(datepart(yy, a.PensionM
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.Title + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
 FROM pDepPensionPerMM a,oCD_SalaryPayType b
-WHERE a.SalaryPayID=b.ID AND a.SalaryPayID<>6 AND ISNULL(IsSubmit,0)=0 and a.PensionContact is not NULL
+WHERE a.SalaryPayID=b.ID AND a.SalaryPayID<>6 AND ISNULL(IsSubmit,0)=0 AND ISNULL(IsClosed,0)=0 
+and a.PensionContact is not NULL
 -- 薪酬类型为营业部;
 UNION
 SELECT DISTINCT
@@ -169,7 +170,8 @@ N''',''企业年金分配反馈'')">请您完成' + cast(datepart(yy, a.PensionM
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.DepAbbr + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
 FROM pDepPensionPerMM a,odepartment b
-WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit,0)=0 and a.PensionContact is not NULL
+WHERE ISNULL(a.DepID,a.SupDepID)=b.DepID AND a.SalaryPayID=6 AND ISNULL(IsSubmit,0)=0 AND ISNULL(IsClosed,0)=0 
+and a.PensionContact is not NULL
 
 
 ------------- 年金参与员工分配 ------------

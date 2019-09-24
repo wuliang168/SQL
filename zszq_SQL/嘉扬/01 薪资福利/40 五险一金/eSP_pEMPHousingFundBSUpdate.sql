@@ -42,6 +42,16 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 月度表单中未出现员工，更新后自动添加
+    insert into pEMPHousingFundPerMM(Month,EID,HousingFundEMP,HousingFundGRP,HousingFundEMPTotal,HousingFundGRPTotal)
+    select a.Date,b.EID,b.HousingFundEMP,b.HousingFundGRP,b.HousingFundEMP,b.HousingFundGRP
+    from pEMPInsuranceHousingFund_Process a,pVW_EMPHousingFundDetails b
+    where ISNULL(a.Submit,0)=1 and ISNULL(a.Closed,0)=0 and b.EID=@EID
+    and b.EID not in (select EID from pEMPHousingFundPerMM)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
 
     -- 递交
     COMMIT TRANSACTION

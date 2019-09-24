@@ -45,6 +45,18 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 月度表单中未出现员工，更新后自动添加
+    insert into pEMPInsurancePerMM(Month,EID,EndowInsEMP,MedicalInsEMP,UnemployInsEMP,EndowInsGRP,MedicalInsGRP,UnemployInsGRP,MaternityInsGRP,InjuryInsGRP,
+    InsEMPTotal,InsGRPTotal)
+    select a.Date,b.EID,b.EndowInsEMP,b.MedicalInsEMP,b.UnemployInsEMP,b.EndowInsGRP,b.MedicalInsGRP,b.UnemployInsGRP,b.MaternityInsGRP,b.InjuryInsGRP,
+    b.MedicalInsEMP+b.UnemployInsEMP+b.EndowInsEMP,b.EndowInsGRP+b.MedicalInsGRP+b.UnemployInsGRP+b.MaternityInsGRP+b.InjuryInsGRP
+    from pEMPInsuranceHousingFund_Process a,pVW_EMPInsuranceDetails b
+    where ISNULL(a.Submit,0)=1 and ISNULL(a.Closed,0)=0 and b.EID=@EID
+    and b.EID not in (select EID from pEMPInsurancePerMM)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
 
     -- 递交
     COMMIT TRANSACTION

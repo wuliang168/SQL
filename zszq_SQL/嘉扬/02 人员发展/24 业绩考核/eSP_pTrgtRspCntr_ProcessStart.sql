@@ -33,7 +33,7 @@ Begin
     End
 
     -- 本季度业绩考核月度日期为空，无法重新开启！
-    if exists (select 1 from pTrgtRspCntr_Process where id=@id and TRCMonth is NULL)
+    if exists (select 1 from pTrgtRspCntr_Process where id=@id and (TRCYEAR is NULL or TRCQTR is NULL))
     Begin
         Set @RetVal=930580
         Return @RetVal
@@ -59,8 +59,8 @@ Begin
 
     -- 添加至月度业务考核部门表项pTrgtRspCntrDep
     ---- 被考核人
-    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select b.TRCMonth,a.CompID,a.DepID1st,a.DepID2nd,a.EID,0
+    insert into pTrgtRspCntrDep(ProcessID,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select b.ID,a.CompID,a.DepID1st,a.DepID2nd,a.EID,0
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
     where b.ID=@ID
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
@@ -69,8 +69,8 @@ Begin
     If @@Error<>0
     Goto ErrM
     ---- 审核人 提交建议
-    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.PreviewTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.PreviewTo),
+    insert into pTrgtRspCntrDep(ProcessID,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.ID,(select CompID from eEmployee where EID=a.PreviewTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.PreviewTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.PreviewTo),a.PreviewTo,1
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
@@ -80,8 +80,8 @@ Begin
     If @@Error<>0
     Goto ErrM
     ---- 考核人 提交建议
-    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
+    insert into pTrgtRspCntrDep(ProcessID,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.ID,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,2
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
@@ -91,8 +91,8 @@ Begin
     If @@Error<>0
     Goto ErrM
     ---- 考核人 提交反馈
-    insert into pTrgtRspCntrDep(TRCMonth,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
-    select distinct b.TRCMonth,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
+    insert into pTrgtRspCntrDep(ProcessID,CompID,DepID1st,DepID2nd,ReportTo,TRCLev)
+    select distinct b.ID,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,3
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
@@ -104,8 +104,8 @@ Begin
 
     ---- 被考核人
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM
-    insert into pEMPTrgtRspCntrMM(TRCMonth,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
-    select a.TRCMonth,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID
+    insert into pEMPTrgtRspCntrMM(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
+    select a.ID,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID
     from pTrgtRspCntr_Process a,pEMPTrgtRspCntr b
     where a.ID=@ID 
     and ((DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)<>0) or DATEDIFF(MM,a.TRCMonth,b.TRCEndDate)=0)
@@ -115,8 +115,8 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI表项pEMPTrgtRspCntrKPIMM
-    insert into pEMPTrgtRspCntrKPIMM(TRCMonth,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCTarget)
-    select distinct b.TRCMonth,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
+    insert into pEMPTrgtRspCntrKPIMM(ProcessID,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCTarget)
+    select distinct b.ID,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
     and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)

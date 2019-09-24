@@ -69,7 +69,7 @@ Begin
     -- 更新员工目标任务协议表项pEMPTrgtRspCntr_KPI
     update a
     set a.TRCTarget=b.TRCTarget,a.TRCActualTarget=b.TRCActualTarget,a.TRCActualValue=b.TRCActualValue,
-    a.TRCAchRate=b.TRCAchRate,a.TRCAchDate=b.TRCMonth
+    a.TRCAchRate=b.TRCAchRate,a.TRCAchDate=(select DATEADD(q,TRCQTR,TRCYear) from pTrgtRspCntr_Process where ID=b.ProcessID)
     from pEMPTrgtRspCntr_KPI a,pEMPTrgtRspCntrKPIMM b
     where a.KPIID=b.KPIID and a.TRCKPI=b.TRCKPI and b.EID=@EID and a.EID=b.EID 
     -- 异常流程

@@ -1,6 +1,6 @@
 -- pVW_pEMPTrgtRspCntrMM
 
-select a.TRCMonth as TRCMonth,a.EID as EID,b.Badge as Badge,b.Name as Name,b.CompID as CompID,b.DepID1st as DepID1st,b.DepID2nd as DepID2nd,b.JobTitle as JobTitle,a.TRCBeginDate,a.TRCEndDate,
+select a.TRCMonth as TRCMonth,a.ProcessID as ProcessID,a.EID as EID,b.Badge as Badge,b.Name as Name,b.CompID as CompID,b.DepID1st as DepID1st,b.DepID2nd as DepID2nd,b.JobTitle as JobTitle,a.TRCBeginDate,a.TRCEndDate,
 c.TRCKPI,d.TRCKPIActual,e.CommRT,f.CommHR
 from pEMPTrgtRspCntrMM a
 inner join pVW_Employee b on a.EID=b.EID

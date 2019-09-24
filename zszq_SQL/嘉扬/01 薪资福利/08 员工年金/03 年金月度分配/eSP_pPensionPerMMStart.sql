@@ -56,7 +56,7 @@ Begin
     insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,DepID,SalaryPayID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
     select a.PensionMonth,b.EID,b.BID,c.DepID,(case when b.BID is NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),
     b.EmpPensionPerYYRST,b.EmpPensionPerYYRST,
-    (case when b.BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6 
+    (case when b.BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6
     then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID))) 
     when (select SalaryPayID from pEMPSalary where EID=b.EID)<>6
     then (select PensionContact from oCD_SalaryPayType where ID=(select SalaryPayID from pEMPSalary where EID=b.EID)) end)

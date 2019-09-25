@@ -63,8 +63,7 @@ Begin
     select b.ID,a.CompID,a.DepID1st,a.DepID2nd,a.EID,0
     from pEMPTrgtRspCntr a,pTrgtRspCntr_Process b
     where b.ID=@ID
-    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and ((DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,a.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,a.TRCEndDate)=0)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=a.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(a.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -74,8 +73,7 @@ Begin
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.PreviewTo),a.PreviewTo,1
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
-    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -85,8 +83,7 @@ Begin
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,2
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
-    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -96,8 +93,7 @@ Begin
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,3
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
     where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st)
-    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0
-    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
+    and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -107,8 +103,7 @@ Begin
     insert into pEMPTrgtRspCntrMM(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID)
     select a.ID,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID
     from pTrgtRspCntr_Process a,pEMPTrgtRspCntr b
-    where a.ID=@ID 
-    and ((DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,b.TRCBeginDate),a.TRCMonth)<>0) or DATEDIFF(MM,a.TRCMonth,b.TRCEndDate)=0)
+    where a.ID=@ID and ISNULL(b.IsCont,0)=0
     and exists (select 1 from pEMPTrgtRspCntr_KPI where KPIID=b.KPIID and ISNULL(TRCAchRate,0)<1)
     -- 异常流程
     If @@Error<>0
@@ -118,8 +113,7 @@ Begin
     insert into pEMPTrgtRspCntrKPIMM(ProcessID,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCTarget)
     select distinct b.ID,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
-    where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID
-    and ((DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)%3=0 and DATEDIFF(mm,DATEADD(dd,1,c.TRCBeginDate),b.TRCMonth)<>0) or DATEDIFF(MM,b.TRCMonth,c.TRCEndDate)=0)
+    where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID and ISNULL(b.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

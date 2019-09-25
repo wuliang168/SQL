@@ -52,11 +52,21 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 更新pEMPTrgtRspCntrMM中的IsCont标记位
+    ---- IsCont表示归档，后续该员工对应的绩效协议将不再考核
+    update a
+    set a.IsCont=1
+    from pEMPTrgtRspCntrMM a,pEMPTrgtRspCntrMM_all b
+    where a.EID=b.EID and a.KPIID=b.KPIID and ISNULL(b.IsCont,0)=1
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM_all
     insert into pEMPTrgtRspCntrMM_all(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,
-    SubmitSelf,DateSelf,SubmitPT,DatePT,SubmitRT,DateRT,SubmitHR,SubmitRRT,DateRRT,Remark)
+    SubmitSelf,DateSelf,SubmitPT,DatePT,SubmitRT,DateRT,SubmitHR,SubmitRRT,DateRRT,IsCont,Remark)
     select a.ProcessID,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID,
-    a.SubmitSelf,a.DateSelf,a.SubmitPT,a.DatePT,a.SubmitRT,a.DateRT,a.SubmitHR,a.SubmitRRT,a.DateRRT,a.Remark
+    a.SubmitSelf,a.DateSelf,a.SubmitPT,a.DatePT,a.SubmitRT,a.DateRT,a.SubmitHR,a.SubmitRRT,a.DateRRT,a.IsCont,a.Remark
     from pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and a.ProcessID=b.ID
     -- 异常流程

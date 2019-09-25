@@ -113,7 +113,7 @@ Begin
     insert into pEMPTrgtRspCntrKPIMM(ProcessID,EID,KPIID,TRCKPI,TRCWeight,TRCTargetValue,TRCTarget)
     select distinct b.ID,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTargetValue,TRCTarget
     from pEMPTrgtRspCntr_KPI a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c
-    where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID and ISNULL(b.IsCont,0)=0
+    where b.ID=@ID and ISNULL(a.TRCAchRate,0)<1 and a.KPIID=c.KPIID and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

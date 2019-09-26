@@ -35,6 +35,25 @@ Begin
 
     Begin TRANSACTION
 
+    -- 设置年金参与数据
+    ---- 更新参与人员状态
+    ------ 后台员工
+    update a
+    set a.IsClosed=1
+    from pPensionUpdatePerEmp_register a,pPensionUpdate b
+    where b.ID=@ID and a.pPensionUpdateID=b.ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ------ 分支机构
+    update a
+    set a.IsClosed=1
+    from pPensionUpdatePerDep a,pPensionUpdate b
+    where b.ID=@ID and a.pPensionUpdateID=b.ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
     -- 插入后台员工参与年金pPensionUpdatePerEmp
     ---- 在职
     ------ MD和AdminID为去年年度的
@@ -80,25 +99,6 @@ Begin
     If @@Error<>0
     Goto ErrM
 
-
-    -- 设置年金参与数据
-    ---- 更新参与人员状态
-    ------ 后台员工
-    update a
-    set a.IsClosed=1
-    from pPensionUpdatePerEmp_register a,pPensionUpdate b
-    where b.ID=@ID and a.pPensionUpdateID=b.ID
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
-    ------ 分支机构
-    update a
-    set a.IsClosed=1
-    from pPensionUpdatePerDep a,pPensionUpdate b
-    where b.ID=@ID and a.pPensionUpdateID=b.ID
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
 
     ---- 企业年金参与人员总人数
     update a

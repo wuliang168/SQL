@@ -323,7 +323,7 @@ FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartmen
 WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
 AND a.DepInsHFContact is NOT NULL
-AND DATEDIFF(DD,GETDATE(),'2019-9-26 23:59:59')>=0
+AND DATEDIFF(DD,GETDATE(),'2019-9-27 23:59:59')>=0
 
 
 ------------- 月度费用统计 ------------

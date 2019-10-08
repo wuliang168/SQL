@@ -263,7 +263,7 @@ SELECT DISTINCT
 N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570410'',''目标责任考核'')">请您于3个工作日内对《目标任务协议书》中的业绩协议完成情况进行说明。</a>' AS url, 
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.ProcessID=b.ID
 and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.SubmitTime,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=0
 --and DATEDIFF(dd,GETDATE(),'2019-5-30 0:0:0')>0
 ---- 部门审核人考核
@@ -272,32 +272,32 @@ SELECT DISTINCT
 N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570415'',''目标责任考核'')">请您完成本月部门目标责任审核。</a>' AS url, 
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
-and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=1
-and (select COUNT(m.EID)-COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.PreviewTo=a.ReportTo and n.PreviewTo is not NULL)=0
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.ProcessID=b.ID 
+and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=1
+and (select COUNT(m.EID)-COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m
+where m.PT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570420'',''目标责任考核'')">请您完成本月部门目标责任考核。</a>' AS url, 
 a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
-and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=2
-and ((select COUNT(m.EID)-SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is NULL)=0 or
-(select COUNT(m.EID)-SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo and n.PreviewTo is not NULL)=0)
+WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.ProcessID=b.ID 
+and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=2
+and ((select COUNT(m.EID)-SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m
+where m.RT=a.ReportTo and m.PT is NULL and m.ProcessID=b.ID)=0 or
+(select COUNT(m.EID)-SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m
+where m.RT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0)
 ---- 部门负责人考核反馈
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570430'',''目标责任考核'')">请您完成本月部门目标责任考核反馈。</a>' AS url, 
-a.ReportTo AS approver, 1 AS id
-FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
-WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
-and Datediff(mm,b.TRCMonth,a.TRCMonth)=0 and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=3
-and (select COUNT(m.EID)-COUNT(m.SubmitHR) from pEMPTrgtRspCntrMM m,pVW_TrgtRspCntrReportTo n
-where m.EID=n.EID and n.ReportTo=a.ReportTo)=0
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="$x.top().LoadPortal(''1.0.570430'',''目标责任考核'')">请您完成本月部门目标责任考核反馈。</a>' AS url, 
+--a.ReportTo AS approver, 1 AS id
+--FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
+--WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 
+--and a.ProcessID=b.ID and ISNULL(a.IsSubmit,0)=0 and a.TRCLev=3
+--and (select COUNT(m.EID)-SUM(cast(m.SubmitHR as int)) from pEMPTrgtRspCntrMM m
+--where m.RRT=a.ReportTo and m.ProcessID=b.ID)=0
 
 
 ------------- 五险一金统计 ------------

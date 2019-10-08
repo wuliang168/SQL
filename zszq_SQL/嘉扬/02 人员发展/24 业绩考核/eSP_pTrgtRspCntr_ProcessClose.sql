@@ -56,7 +56,7 @@ Begin
     ---- IsCont表示归档，后续该员工对应的绩效协议将不再考核
     update a
     set a.IsCont=1
-    from pEMPTrgtRspCntrMM a,pEMPTrgtRspCntrMM_all b
+    from pEMPTrgtRspCntr a,pEMPTrgtRspCntrMM b
     where a.EID=b.EID and a.KPIID=b.KPIID and ISNULL(b.IsCont,0)=1
     -- 异常流程
     If @@Error<>0
@@ -64,9 +64,11 @@ Begin
 
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM_all
     insert into pEMPTrgtRspCntrMM_all(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,
-    SubmitSelf,DateSelf,SubmitPT,DatePT,SubmitRT,DateRT,SubmitHR,SubmitRRT,DateRRT,IsCont,Remark)
+    SubmitSelf,DateSelf,PT,SubmitPT,DatePT,RT,SubmitRT,DateRT,HR,SubmitHR,RRT,SubmitRRT,DateRRT,RHR,IsCont,
+    CommPT,CommRT,CommHR,CommRRT,CommRHR,Remark)
     select a.ProcessID,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID,
-    a.SubmitSelf,a.DateSelf,a.SubmitPT,a.DatePT,a.SubmitRT,a.DateRT,a.SubmitHR,a.SubmitRRT,a.DateRRT,a.IsCont,a.Remark
+    a.SubmitSelf,a.DateSelf,a.PT,a.SubmitPT,a.DatePT,a.RT,a.SubmitRT,a.DateRT,a.HR,a.SubmitHR,a.RRT,a.SubmitRRT,a.DateRRT,a.RHR,a.IsCont,
+    a.CommPT,a.CommRT,a.CommHR,a.CommRRT,a.CommRHR,a.Remark
     from pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and a.ProcessID=b.ID
     -- 异常流程
@@ -74,10 +76,10 @@ Begin
     Goto ErrM
 
     -- 添加至月度业务考核员工KPI历史表项pEMPTrgtRspCntrKPIMM_all
-    insert into pEMPTrgtRspCntrKPIMM_all(ProcessID,EID,KPIID,TRCKPI,TRCWeight,TRCTarget,TRCActualTarget,TRCTargetValue,TRCActualValue,TRCAchRate,
-    CommPT,CommRT,CommHR,CommRRT,CommRHR,Remark)
-    select a.ProcessID,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTarget,a.TRCActualTarget,a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,
-    a.CommPT,a.CommRT,a.CommHR,a.CommRRT,a.CommRHR,a.Remark
+    insert into pEMPTrgtRspCntrKPIMM_all(ProcessID,EID,KPIID,TRCKPI,TRCWeight,TRCTarget,
+    TRCActualTarget,TRCTargetValue,TRCActualValue,TRCAchRate,Remark)
+    select a.ProcessID,a.EID,a.KPIID,a.TRCKPI,a.TRCWeight,a.TRCTarget,a.TRCActualTarget,
+    a.TRCTargetValue,a.TRCActualValue,a.TRCAchRate,a.Remark
     from pEMPTrgtRspCntrKPIMM a,pTrgtRspCntr_Process b
     where b.ID=@ID and a.ProcessID=b.ID
     -- 异常流程
@@ -86,12 +88,14 @@ Begin
 
     -- 删除pEMPTrgtRspCntrMM
     delete from pEMPTrgtRspCntrMM
+    where ProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 删除pEMPTrgtRspCntrKPIMM
     delete from pEMPTrgtRspCntrKPIMM
+    where ProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

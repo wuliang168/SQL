@@ -19,10 +19,7 @@ Begin
 
     -- 业务考核评语为空，无法递交！
     ---- 主管部门负责人考核意见
-    IF Exists(select 1 from pEMPTrgtRspCntrKPIMM a,pEMPTrgtRspCntrMM b,pVW_TrgtRspCntrReportTo c
-    where a.KPIID=b.KPIID and b.SubmitPT=1 and b.SubmitRT is NULL
-    and c.ReportTo=@EID and a.EID=c.EID
-    and a.CommRT is NULL)
+    IF Exists(select 1 from pEMPTrgtRspCntrMM a where a.RT=@EID and a.CommRT is NULL)
     Begin
         Set @RetVal=930550
         Return @RetVal
@@ -35,8 +32,8 @@ Begin
     ---- 部门负责人业务考核递交
     update a
     set a.SubmitRT=1,a.DateRT=GETDATE()
-    from pEMPTrgtRspCntrMM a,pVW_TrgtRspCntrReportTo b
-    where b.ReportTo=@EID and a.EID=b.EID and ISNULL(a.SubmitRT,0)=0
+    from pEMPTrgtRspCntrMM a
+    where a.RT=@EID and ISNULL(a.SubmitRT,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

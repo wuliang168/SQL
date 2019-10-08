@@ -40,7 +40,7 @@ UNION
 select a.EID as EID,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,
 1992 as PreviewTo,dbo.eFN_getdepdirector(362) as ReportTo,362 as ReportToDepID
 from eEmployee a,oDepartment b
-where a.DepID=b.DepID and a.EmpGrade in (9,5)
+where a.DepID=b.DepID
 and a.CompID=11 and dbo.eFN_getdeptype(a.DepID) in (2,3)
 
 UNION

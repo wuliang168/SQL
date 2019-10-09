@@ -6,7 +6,7 @@ a.pay_date as PayRollMonth,
 -- EMP_CODE
 a.emp_code,
 -- 员工
-(select EID from eEmployee where HRLID=a.emp_code and Status not in (4,5)) as EID,
+(select EID from eEmployee where HRLID=a.emp_code) as EID,
 -- 基本工资：固定工资(考核工资)+保代津贴+保代补贴
 --- 转正前后工资计算
 ---- 未转正人员或者已转正但转正月份和发薪月份相同，固定工资80%(未包含考核工资)

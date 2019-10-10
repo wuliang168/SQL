@@ -4,9 +4,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER proc [dbo].[CSP_Pension_import_BF]--CSP_Pension_import_BF()
+ALTER proc [dbo].[CSP_PensionDep_import_BF]--CSP_PensionDep_import_BF()
     @URID int,
-    @leftid int,
+    @leftid varchar(20),
     @RetVal int=0 output
 AS
 /*
@@ -15,11 +15,14 @@ AS
 */
 Begin
 
+    declare @DepID int,@SalaryPayID int
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @SalaryPayID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     Begin TRANSACTION
 
     -- 清空URID和leftid对应的Badge
-    delete from pEmpPension_import where SalaryPayID=@leftid and PensionContact=(select EID from SkySecUser where ID=@URID)
+    delete from pEmpPensionDep_import where DepID=@DepID and PensionContact=(select EID from SkySecUser where ID=@URID)
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

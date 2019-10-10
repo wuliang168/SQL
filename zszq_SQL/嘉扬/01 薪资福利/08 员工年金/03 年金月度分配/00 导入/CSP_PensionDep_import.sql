@@ -6,12 +6,11 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_PensionDep_import]--CSP_PensionDep_import()
     @URID int,
-    @leftid int,
-    @Badge varchar(10),
-    @Name nvarchar(50),
+    @leftid varchar(20),
+    @EID int,
+    @BID int,
     @EmpPensionPerMMBTax decimal(10,2),
     @EmpPensionPerMMATax decimal(10,2),
-    @Remark nvarchar(100),
     @RetVal int=0 output
 AS
 /*
@@ -20,18 +19,15 @@ AS
 */
 Begin
 
-    -- 检查工号与姓名是否一致
-    If Exists(Select 1 From pEmpPensionDep_import a Where @Name<>(select Name from eEmployee where Badge=@Badge))
-    Begin
-        Set @RetVal = 930096
-        Return @RetVal
-    End
+    declare @DepID int,@SalaryPayID int
+    set @DepID=convert(int,SUBSTRING(@leftid,0,CHARINDEX('-',@leftid)))
+    set @SalaryPayID=convert(int,REVERSE(SUBSTRING(REVERSE(@leftid),0,CHARINDEX('-',REVERSE(@leftid)))))
 
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEmpPensionDep_import表项中
-    insert into pEmpPensionDep_import (DepID,PensionContact,Badge,EmpPensionPerMMBTax,EmpPensionPerMMATax,Remark)
-    select @leftid,(select EID from SkySecUser where ID=@URID),@Badge,@EmpPensionPerMMBTax,@EmpPensionPerMMATax,@Remark
+    insert into pEmpPensionDep_import (DepID,PensionContact,EID,BID,EmpPensionPerMMBTax,EmpPensionPerMMATax,Remark)
+    select @DepID,(select EID from SkySecUser where ID=@URID),@EID,@BID,@EmpPensionPerMMBTax,@EmpPensionPerMMATax,@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

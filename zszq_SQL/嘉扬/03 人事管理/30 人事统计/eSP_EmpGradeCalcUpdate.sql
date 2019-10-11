@@ -60,16 +60,16 @@ Begin
     where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL)
     group by b.DepType,a.CompID,a.EmpGrade,c.Gender,c.HighLevel,c.WorkBeginDate,d.JoinDate) a
 	group by a.DepType,a.CompID,a.EmpGrade) a
-    left join (SELECT DepType,EmpGrade,SUM(JoinMM) AS JoinMMSum,SUM(JoinYY) AS JoinYYSum,SUM(LeaMM) AS LeaMMSum,SUM(LeaYY) AS LeaYYSum
-	from (select m.DepType,n.EmpGrade,
+    left join (SELECT DepType,CompID,EmpGrade,SUM(JoinMM) AS JoinMMSum,SUM(JoinYY) AS JoinYYSum,SUM(LeaMM) AS LeaMMSum,SUM(LeaYY) AS LeaYYSum
+	from (select m.DepType,n.CompID,n.EmpGrade,
     (case when DATEDIFF(MM,o.JoinDate,@calcdate)=0 then COUNT(n.EID) end) as JoinMM,
     (case when DATEDIFF(YY,o.JoinDate,@calcdate)=0 then COUNT(n.EID) end) as JoinYY,
     (case when DATEDIFF(MM,o.LeaDate,@calcdate)=0 then COUNT(n.EID) end) as LeaMM,
     (case when DATEDIFF(YY,o.LeaDate,@calcdate)=0 then COUNT(n.EID) end) as LeaYY
     from eEmployee n,oDepartment m,eStatus o 
     where n.DepID=m.DepID and n.EID=o.EID 
-    group by m.DepType,n.EmpGrade,o.JoinDate,o.LeaDate) a
-	GROUP BY DepType, EmpGrade ) b on a.DepType=b.DepType and a.EmpGrade=b.EmpGrade
+    group by m.DepType,n.CompID,n.EmpGrade,o.JoinDate,o.LeaDate) a
+	GROUP BY DepType,CompID,EmpGrade) b on a.DepType=b.DepType and a.EmpGrade=b.EmpGrade and a.CompID=b.CompID
     where 0 not in (select distinct DATEDIFF(MM,@calcdate,MonthStat) from pEmpGradeStat)
     -- 异常流程
     If @@Error<>0

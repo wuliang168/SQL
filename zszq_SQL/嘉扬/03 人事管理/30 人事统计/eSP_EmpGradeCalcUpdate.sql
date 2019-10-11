@@ -28,19 +28,19 @@ Begin
     Goto ErrM
 
     -- 月度表单中未出现员工，更新后自动添加
-    insert into pEmpGradeStat(MonthStat,DepType,EmpGrade,EMPSum,GenderMSum,GenderFSum,AVGAGESum,HighLev_ASSTTSum,HighLev_UGTTSum,HighLev_MSTTSum,HighLev_DTTTSum,
+    insert into pEmpGradeStat(MonthStat,DepType,CompID,EmpGrade,EMPSum,GenderMSum,GenderFSum,AVGAGESum,HighLev_ASSTTSum,HighLev_UGTTSum,HighLev_MSTTSum,HighLev_DTTTSum,
     WorkDate1YTTSum,WorkDate1t5YTTSum,WorkDate5t10YTTSum,WorkDate10YTTSum,JoinDate1YTTSum,JoinDate1t3YTTSum,JoinDate3t5YTTSum,JoinDate5t8YTTSum,JoinDate8YTTSum,
     JoinMMSum,JoinYYSum,LeaMMSum,LeaYYSum)
-    select @calcdate,a.DepType,a.EmpGrade,a.EMPSum,a.GenderMSum,a.GenderFSum,a.AVGAGESum,a.HighLev_ASSTTSum,a.HighLev_UGTTSum,a.HighLev_MSTTSum,a.HighLev_DTTTSum,
+    select @calcdate,a.DepType,a.CompID,a.EmpGrade,a.EMPSum,a.GenderMSum,a.GenderFSum,a.AVGAGESum,a.HighLev_ASSTTSum,a.HighLev_UGTTSum,a.HighLev_MSTTSum,a.HighLev_DTTTSum,
     a.WorkDate1YTTSum,a.WorkDate1t5YTTSum,a.WorkDate5t10YTTSum,a.WorkDate10YTTSum,
     a.JoinDate1YTTSum,a.JoinDate1t3YTTSum,a.JoinDate3t5YTTSum,a.JoinDate5t8YTTSum,a.JoinDate8YTTSum,
     b.JoinMMSum,b.JoinYYSum,b.LeaMMSum,b.LeaYYSum
-    from (select a.DepType,a.EmpGrade,SUM(a.EMP) as EMPSum,SUM(a.GenderM) as GenderMSum,SUM(a.GenderF) as GenderFSum,SUM(a.EMP*a.AVGAGE)/SUM(a.EMP) as AVGAGESum,
+    from (select a.DepType,a.CompID,a.EmpGrade,SUM(a.EMP) as EMPSum,SUM(a.GenderM) as GenderMSum,SUM(a.GenderF) as GenderFSum,SUM(a.EMP*a.AVGAGE)/SUM(a.EMP) as AVGAGESum,
 	SUM(a.HighLev_ASSTT) as HighLev_ASSTTSum,SUM(a.HighLev_UGTT) as HighLev_UGTTSum,SUM(a.HighLev_MSTT) as HighLev_MSTTSum,SUM(a.HighLev_DTTT) as HighLev_DTTTSum,
 	SUM(a.WorkDate1YTT) as WorkDate1YTTSum,SUM(a.WorkDate1t5YTT) as WorkDate1t5YTTSum,SUM(a.WorkDate5t10YTT) as WorkDate5t10YTTSum,SUM(a.WorkDate10YTT) as WorkDate10YTTSum,
 	SUM(a.JoinDate1YTT) as JoinDate1YTTSum,SUM(a.JoinDate1t3YTT) as JoinDate1t3YTTSum,SUM(a.JoinDate3t5YTT) as JoinDate3t5YTTSum,SUM(a.JoinDate5t8YTT) as JoinDate5t8YTTSum,
 	SUM(a.JoinDate8YTT) as JoinDate8YTTSum
-	from (select b.DepType,a.EmpGrade,COUNT(a.EID) as EMP,(case when c.Gender=1 then COUNT(a.EID) end) as GenderM,(case when c.Gender=2 then COUNT(a.EID) end) as GenderF,
+	from (select b.DepType,a.CompID,a.EmpGrade,COUNT(a.EID) as EMP,(case when c.Gender=1 then COUNT(a.EID) end) as GenderM,(case when c.Gender=2 then COUNT(a.EID) end) as GenderF,
     AVG(DATEDIFF(YY,c.BirthDay,@calcdate)) as AVGAGE,
     (case when c.HighLevel in (4,5,6,7,8,9,10) then COUNT(a.EID) end) as HighLev_ASSTT,(case when c.HighLevel=3 then COUNT(a.EID) end) as HighLev_UGTT,
     (case when c.HighLevel=2 then COUNT(a.EID) end) as HighLev_MSTT,(case when c.HighLevel=1 then COUNT(a.EID) end) as HighLev_DTTT,
@@ -58,8 +58,8 @@ Begin
     left join eDetails c on a.EID=c.EID
     left join eStatus d on a.EID=d.EID
     where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL)
-    group by a.EmpGrade,b.DepType,c.Gender,c.HighLevel,c.WorkBeginDate,d.JoinDate) a
-	group by a.DepType,a.EmpGrade) a
+    group by b.DepType,a.CompID,a.EmpGrade,c.Gender,c.HighLevel,c.WorkBeginDate,d.JoinDate) a
+	group by a.DepType,a.CompID,a.EmpGrade) a
     left join (SELECT DepType,EmpGrade,SUM(JoinMM) AS JoinMMSum,SUM(JoinYY) AS JoinYYSum,SUM(LeaMM) AS LeaMMSum,SUM(LeaYY) AS LeaYYSum
 	from (select m.DepType,n.EmpGrade,
     (case when DATEDIFF(MM,o.JoinDate,@calcdate)=0 then COUNT(n.EID) end) as JoinMM,

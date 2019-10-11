@@ -15,6 +15,7 @@ As
 -- 年金参与关闭程序
 -- @ID 为年金参与对应ID
 -- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取
+-- pPensionUpdatePerEmp用于企业年金金额计算
 */
 Begin
 

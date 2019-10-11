@@ -58,9 +58,9 @@ Begin
     -- 插入年金月度历史数据表项
     -- 插入后台人员月度历史数据表项pEmpPensionPerMM_all
     insert pEmpPensionPerMM_all(PensionMonth,EID,BID,SalaryPayID,DepID,GrpPensionPerMM,EmpPensionPerMMBTax,EmpPensionPerMMATax,
-    GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,Remark,PensionContact,Submit,SubmitBy,SubmitTime)
+    GrpPensionMonthTotal,GrpPensionMonthRest,EmpPensionMonthTotal,EmpPensionMonthRest,Remark,PensionContact,IsWayside,Submit,SubmitBy,SubmitTime)
     select a.PensionMonth,a.EID,a.BID,a.SalaryPayID,a.DepID,a.GrpPensionPerMM,a.EmpPensionPerMMBTax,a.EmpPensionPerMMATax,a.GrpPensionMonthTotal,
-    a.GrpPensionMonthRest,a.EmpPensionMonthTotal,a.EmpPensionMonthRest,a.Remark,a.PensionContact,a.Submit,a.SubmitBy,a.SubmitTime
+    a.GrpPensionMonthRest,a.EmpPensionMonthTotal,a.EmpPensionMonthRest,a.Remark,a.PensionContact,a.IsWayside,a.Submit,a.SubmitBy,a.SubmitTime
     from pEmpPensionPerMM_register a
     -- 异常流程
     If @@Error<>0

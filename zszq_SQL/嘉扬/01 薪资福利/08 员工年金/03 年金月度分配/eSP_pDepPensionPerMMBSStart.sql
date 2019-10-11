@@ -27,7 +27,7 @@ Begin
     ---- 非营业部发薪员工
     If Exists(Select 1 From pEmpPensionPerMM_register a
     Where a.PensionContact=@EID And ISNULL(a.EmpPensionMonthRest,0)<0 AND @DepID=0
-    And ((a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16) and @SalaryPayID=1)
+    And ((a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) and @SalaryPayID=1)
     or (a.SalaryPayID in (4,5) and @SalaryPayID=4)
     or (a.SalaryPayID=7 and @SalaryPayID=7)))
     Begin
@@ -51,9 +51,31 @@ Begin
     update a
     set a.IsSubmit=1
     from pDepPensionPerMM a
-    where ((a.SalaryPayID=@SalaryPayID and (@SalaryPayID in (1,2,3,10,11,12,13,14,15,16) or @SalaryPayID=7 or @SalaryPayID in (4,5)) and @DepID=0) 
+    where ((a.SalaryPayID=@SalaryPayID and (@SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) or @SalaryPayID=7 or @SalaryPayID in (4,5)) and @DepID=0) 
     or (a.SalaryPayID=@SalaryPayID and @SalaryPayID=6 and ISNULL(a.DepID,a.SupDepID)=@DepID))
     AND ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    -- 更新年度中途退出人员
+    ---- pPensionUpdatePerEmp_register
+    update a
+    set a.IsWayside=1
+    from pPensionUpdatePerEmp_register a,pEmpPensionPerMM_register b
+    where a.pPensionUpdateID=(select MAX(ID) from pPensionUpdate where ISNULL(Closed,0)=1)
+    and b.PensionContact=@EID and ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
+    and ISNULL(b.IsWayside,0)=1
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ---- pPensionUpdatePerEmp
+    update a
+    set a.EmpPensionPerYYRST=NULL
+    from pPensionUpdatePerEmp a,pEmpPensionPerMM_register b
+    where YEAR(a.PensionYear) in (select YEAR(PensionYear) from pPensionPerYY where ISNULL(IsDisMM,0)=1)
+    and b.PensionContact=@EID and ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
+    and ISNULL(b.IsWayside,0)=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM

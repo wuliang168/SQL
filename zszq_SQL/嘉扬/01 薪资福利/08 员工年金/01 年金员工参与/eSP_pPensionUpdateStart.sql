@@ -15,6 +15,7 @@ As
 -- 年金参与开启程序
 -- @ID 为年金参与对应ID
 -- @URID 为workshop操作账号的ID，前台通过 {U_URID} 全局参数获取
+-- pPensionUpdatePerEmp_register用于企业年金报名
 */
 Begin
     
@@ -51,13 +52,12 @@ Begin
 
 
     -- 插入后台员工报名表
-    ----在职后台员工报名表pPensionUpdatePerEmp_register
+    ----在职前后台员工报名表pPensionUpdatePerEmp_register
     insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,Status,JoinDate,LeaDate)
     select a.ID,b.EID,b.Status,b.JoinDate,b.LeaDate
     from pPensionUpdate a,pVW_Employee b
-    where a.ID=@ID and b.Status in (1,2,3) and b.EID is not NULL 
-    and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
-    and b.EID not in (select EID from pPensionUpdatePerEmp_register where pPensionUpdateID=@ID and EID is not NULL)
+    where a.ID=@ID and b.Status in (1,2,3) and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pPensionUpdatePerEmp_register where pPensionUpdateID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -66,9 +66,9 @@ Begin
     set b.IsPension=1
     from pPensionUpdate a,pPensionUpdatePerEmp_register b
     where a.ID=@ID and a.ID=b.pPensionUpdateID
-    AND b.EID in (select EID from pPensionUpdatePerEmp
-	where DATEDIFF(yy,PensionYear,(select MAX(PensionYearEnd) from pPensionUpdate where ISNULL(Closed,0)=1))=0
-    and EID is not NULL and ISNULL(IsPension,0)=1)
+    AND ISNULL(b.EID,b.BID) in (select ISNULL(EID,BID) from pPensionUpdatePerEmp_register
+	where pPensionUpdateID=(select MAX(ID) from pPensionUpdate where ISNULL(Closed,0)=1)
+    and ISNULL(IsPension,0)=1 and ISNULL(IsWayside,0)=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

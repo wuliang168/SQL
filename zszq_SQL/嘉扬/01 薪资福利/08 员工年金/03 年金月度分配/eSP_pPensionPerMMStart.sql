@@ -74,7 +74,7 @@ Begin
     from pDepPensionPerMM a,pPensionPerMM b
     where b.ID=@ID and DATEDIFF(YY,a.PensionMonth,b.PensionMonth)=0
     and ((a.SalaryPayID=6 and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and DepID=ISNULL(a.DepID,a.SupDepID))=0)
-    or ((a.SalaryPayID in (4,5) or a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16) or a.SalaryPayID=7)
+    or ((a.SalaryPayID in (4,5) or a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) or a.SalaryPayID=7)
     and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and a.SalarypayID=SalarypayID)=0))
     -- 异常流程
     If @@Error<>0

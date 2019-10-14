@@ -21,23 +21,25 @@ Begin
     -- 更新后台人员年金月度分配注册表pEmpPensionPerMM_register
     -- 薪酬类型非营业部;
     ------ 总部
-    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) and ID=@ID)
+    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID=1 and ID=@ID)
     BEGIN
         update a
         set a.PensionContact=b.PensionContact
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,pEmpSalary c
-        where b.ID=@ID and c.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) and a.EID=c.EID
+        from pEmpPensionPerMM_register a,pDepPensionPerMM b
+        where b.ID=@ID and b.SalaryPayID=1
+        and a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19)
         -- 异常流程
         If @@Error<>0
         Goto ErrM
     END
     ------ 资管
-    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID in (4,5) and ID=@ID)
+    IF Exists(select 1 from pDepPensionPerMM where SalaryPayID=4 and ID=@ID)
     BEGIN
         update a
         set a.PensionContact=b.PensionContact
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,pEmpSalary c
-        where b.ID=@ID and c.SalaryPayID in (4,5) and a.EID=c.EID 
+        from pEmpPensionPerMM_register a,pDepPensionPerMM b
+        where b.ID=@ID and b.SalaryPayID=4
+        and a.SalaryPayID in (4,5)
         -- 异常流程
         If @@Error<>0
         Goto ErrM
@@ -47,8 +49,9 @@ Begin
     BEGIN
         update a
         set a.PensionContact=b.PensionContact
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,pEmpSalary c
-        where b.ID=@ID and b.SalaryPayID=c.SalaryPayID and a.EID=c.EID 
+        from pEmpPensionPerMM_register a,pDepPensionPerMM b
+        where b.ID=@ID and b.SalaryPayID=7 
+        and a.SalaryPayID=7
         -- 异常流程
         If @@Error<>0
         Goto ErrM
@@ -59,9 +62,9 @@ Begin
     BEGIN
         update a
         set a.PensionContact=b.PensionContact
-        from pEmpPensionPerMM_register a,pDepPensionPerMM b,pVW_employee c
-        where b.ID=@ID and b.SalaryPayID=6 and ISNULL(a.EID,a.BID)=ISNULL(c.EID,c.BID) 
-        and ISNULL(b.DepID,b.SupDepID)=c.DepID
+        from pEmpPensionPerMM_register a,pDepPensionPerMM b
+        where b.ID=@ID and b.SalaryPayID=6
+        and ISNULL(b.DepID,b.SupDepID)=a.DepID and a.SalaryPayID=6
         -- 异常流程
         If @@Error<>0
         Goto ErrM

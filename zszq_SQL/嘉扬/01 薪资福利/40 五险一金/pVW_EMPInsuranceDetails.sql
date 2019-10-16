@@ -2,8 +2,8 @@
 
 -- 社保
 SELECT a.EID as EID,a.BID as BID,c.Badge as Badge,c.Name,b.SalaryPayID as SalaryPayID,c.Status as Status,
-c.CompID,dbo.eFN_getdepid1st(c.DepID) as Dep1st,dbo.eFN_getdepid2nd(c.DepID) as Dep2nd,c.JobTitle as JobTitle,c.JobxOrder as JobxOrder,
-a.EMPInsuranceLoc as EMPInsuranceLoc,a.EMPInsuranceDepart as EMPInsuranceDepart,
+c.CompID,c.DepID1st as Dep1st,c.DepID2nd as Dep2nd,c.JobTitle as JobTitle,c.JobxOrder as JobxOrder,
+a.EMPInsuranceLoc as EMPInsuranceLoc,a.InsRatioLocID as EMPInsRatioLocID,a.EMPInsuranceDepart as EMPInsuranceDepart,
 ---- 1-四舍五入进分;2-四舍五入进角;3-四舍五入进元;4-里进分;5-分进角;6-分角进元;7-取整到分;8-取整到角;9-取整到元
 ------ 养老保险(个人)
 (Case 
@@ -158,4 +158,4 @@ as InjuryInsGRP
 from pEMPInsurance a
 left join pEMPSalary b on ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
 left join pVW_Employee c on ISNULL(a.EID,a.BID)=ISNULL(c.EID,c.BID)
-left join oCD_InsuranceRatioLoc d on a.EMPInsuranceLoc=d.Place and ISNULL(d.IsDisabled,0)=0
+left join oCD_InsuranceRatioLoc d on a.InsRatioLocID=d.ID and ISNULL(d.IsDisabled,0)=0

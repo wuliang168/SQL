@@ -66,16 +66,16 @@ Begin
     Update a
     Set a.IsDisabled=1
     From oCD_InsuranceRatioLoc a,oCD_InsuranceRatioLoc_register b
-    Where b.ID=@ID and a.Place=b.Place and ISNULL(a.IsDisabled,0)=0
+    Where b.ID=@ID and a.ID=b.ID_Orig and ISNULL(a.IsDisabled,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 添加社保缴费比例表项oCD_InsuranceRatioLoc
-    insert into oCD_InsuranceRatioLoc(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
-    EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,MaternityInsRatioGRP,InjuryInsRatioGRP,
-    MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod,Remark)
-    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
+    insert into oCD_InsuranceRatioLoc(Code,Place,Title,InsDepID,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,
+    MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,
+    MaternityInsRatioGRP,InjuryInsRatioGRP,MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod,Remark)
+    select a.Code,a.Place,a.Title,a.InsDepID,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
     a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod,a.Remark
     From oCD_InsuranceRatioLoc_register a
@@ -84,11 +84,20 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 更新员工的社保缴交地为最新
+    update a
+    set a.InsRatioLocID=(select ID from oCD_InsuranceRatioLoc where ISNULL(IsDisabled,0)=0 and InsDepID=b.InsDepID and Title=b.Title)
+    from pEMPInsurance a,oCD_InsuranceRatioLoc_register b
+    where a.InsRatioLocID=b.ID_Orig and b.ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
     -- 拷贝到社保缴费比例历史表oCD_InsuranceRatioLoc_all
-    insert into oCD_InsuranceRatioLoc_all(Code,Place,Title,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
+    insert into oCD_InsuranceRatioLoc_all(ID_Orig,Code,Place,Title,InsDepID,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
     EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,MaternityInsRatioGRP,InjuryInsRatioGRP,
     MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod,Remark,IsSubmit,SubmitBy,SubmitTime)
-    select a.Code,a.Place,a.Title,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
+    select a.ID_Orig,a.Code,a.Place,a.Title,a.InsDepID,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
     a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod,a.Remark,a.IsSubmit,a.SubmitBy,a.SubmitTime
     From oCD_InsuranceRatioLoc_register a

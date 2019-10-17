@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[eSP_pEMPInsuranceBSUpdate]
 -- skydatarefresh eSP_pEMPInsuranceBSUpdate
-    @EID int,
+    @ID int,
     @RetVal int=0 Output
 As
 /*
@@ -24,7 +24,7 @@ Begin
     --End
 
     -- 员工社保缴纳地为空，无法递交!
-    If Exists(Select 1 From pEMPInsurance Where EID=@EID And EMPInsuranceLoc is NULL)
+    If Exists(Select 1 From pEMPInsurance Where ID=@ID And InsRatioLocID is NULL)
     Begin
         Set @RetVal = 946020
         Return @RetVal
@@ -40,19 +40,19 @@ Begin
     a.InsEMPTotal=ISNULL(b.EndowInsEMP,0)+ISNULL(b.MedicalInsEMP,0)+ISNULL(b.UnemployInsEMP,0),
     a.InsGRPTotal=ISNULL(b.EndowInsGRP,0)+ISNULL(b.MedicalInsGRP,0)+ISNULL(b.UnemployInsGRP,0)+ISNULL(b.MaternityInsGRP,0)+ISNULL(b.InjuryInsGRP,0)
     From pEMPInsurancePerMM a,pVW_EMPInsuranceDetails b
-    Where a.EID=@EID and a.EID=b.EID
+    Where ISNULL(a.EID,a.BID)=(select ISNULL(EID,BID) from pEMPInsurance where ID=@ID) and ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 月度表单中未出现员工，更新后自动添加
-    insert into pEMPInsurancePerMM(Month,EID,EndowInsEMP,MedicalInsEMP,UnemployInsEMP,EndowInsGRP,MedicalInsGRP,UnemployInsGRP,MaternityInsGRP,InjuryInsGRP,
+    insert into pEMPInsurancePerMM(pProcessID,Month,EID,BID,EndowInsEMP,MedicalInsEMP,UnemployInsEMP,EndowInsGRP,MedicalInsGRP,UnemployInsGRP,MaternityInsGRP,InjuryInsGRP,
     InsEMPTotal,InsGRPTotal)
-    select a.Date,b.EID,b.EndowInsEMP,b.MedicalInsEMP,b.UnemployInsEMP,b.EndowInsGRP,b.MedicalInsGRP,b.UnemployInsGRP,b.MaternityInsGRP,b.InjuryInsGRP,
+    select a.ID,a.Date,b.EID,b.BID,b.EndowInsEMP,b.MedicalInsEMP,b.UnemployInsEMP,b.EndowInsGRP,b.MedicalInsGRP,b.UnemployInsGRP,b.MaternityInsGRP,b.InjuryInsGRP,
     b.MedicalInsEMP+b.UnemployInsEMP+b.EndowInsEMP,b.EndowInsGRP+b.MedicalInsGRP+b.UnemployInsGRP+b.MaternityInsGRP+b.InjuryInsGRP
     from pEMPInsuranceHousingFund_Process a,pVW_EMPInsuranceDetails b
-    where ISNULL(a.Submit,0)=1 and ISNULL(a.Closed,0)=0 and b.EID=@EID
-    and b.EID not in (select EID from pEMPInsurancePerMM)
+    where ISNULL(a.Submit,0)=1 and ISNULL(a.Closed,0)=0 and ISNULL(b.EID,b.BID)=(select ISNULL(EID,BID) from pEMPInsurance where ID=@ID)
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEMPInsurancePerMM where pProcessID=a.ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

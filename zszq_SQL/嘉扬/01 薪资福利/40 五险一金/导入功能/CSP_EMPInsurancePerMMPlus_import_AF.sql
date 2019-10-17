@@ -26,7 +26,7 @@ Begin
     b.InsGRPPlusTotal=ISNULL(a.EndowInsGRPPlus,b.EndowInsGRPPlus)+ISNULL(a.MedicalInsGRPPlus,b.MedicalInsGRPPlus)+ISNULL(a.UnemployInsGRPPlus,b.UnemployInsGRPPlus)
     +ISNULL(a.MaternityInsGRPPlus,b.MaternityInsGRPPlus)+ISNULL(a.InjuryInsGRPPlus,b.InjuryInsGRPPlus)
     from pEMPInsurancePerMMPlus_import a,pEMPInsurancePerMM b
-    where (select EID from eEmployee where Badge=a.Badge)=b.EID and a.EMPInsuranceDepart=@leftid
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and a.EMPInsuranceDepart=@leftid
     -- 异常流程
     IF @@Error <> 0
 	Goto ErrM

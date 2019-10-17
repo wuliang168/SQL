@@ -6,12 +6,11 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_EMPHousingFund_import]--CSP_EMPHousingFund_import()
     @leftid int,
-    @Badge varchar(10),
+    @EID int,
+    @BID int,
     @Name nvarchar(50),
     @EMPHousingFundBase decimal(10,2),
     @EMPHousingFundDate varchar(50),
-    @EMPHousingFundLoc nvarchar(50),
-    @EMPHousingFundDepart nvarchar(50),
     @Remark nvarchar(200),
     @RetVal int=0 output
 AS
@@ -23,7 +22,7 @@ AS
 Begin
 
     -- 导入文件存在工号和姓名不匹配！
-    If (@Name<>(select Name from eEmployee where Badge=@Badge))
+    If (@Name<>(select Name from pVW_Employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)))
     Begin
         Set @RetVal = 930098
         Return @RetVal
@@ -37,27 +36,25 @@ Begin
     End
 
     -- 导入文件缴纳地错误！
-    If not Exists(select 1 from oCD_HousingFundRatioLoc where Title=@EMPHousingFundLoc and ISNULL(IsDisabled,0)=0 and @EMPHousingFundLoc is not NULL)
-    Begin
-        Set @RetVal = 931020
-        Return @RetVal
-    End
+    --If not Exists(select 1 from oCD_HousingFundRatioLoc where Title=@EMPHousingFundLoc and ISNULL(IsDisabled,0)=0 and @EMPHousingFundLoc is not NULL)
+    --Begin
+    --    Set @RetVal = 931020
+    --    Return @RetVal
+    --End
 
     -- 导入文件归属部门错误！
-    If not Exists(select 1 from oDepartment where DepAbbr=@EMPHousingFundDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999 and @EMPHousingFundDepart is not NULL)
-    Begin
-        Set @RetVal = 931030
-        Return @RetVal
-    End
+    --If not Exists(select 1 from oDepartment where DepAbbr=@EMPHousingFundDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999 and @EMPHousingFundDepart is not NULL)
+    --Begin
+    --    Set @RetVal = 931030
+    --    Return @RetVal
+    --End
 
 
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEMPHousingFund_import表项中
-    insert into pEMPHousingFund_import (Badge,Name,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundLoc,EMPHousingFundDepart,Remark)
-    select @Badge,@Name,@EMPHousingFundBase,@EMPHousingFundDate+'-01 0:0:0',
-    (select Place from oCD_HousingFundRatioLoc where Title=@EMPHousingFundLoc and ISNULL(IsDisabled,0)=0),
-    (select DepID from oDepartment where DepAbbr=@EMPHousingFundDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999),@Remark
+    insert into pEMPHousingFund_import (EID,BID,EMPHousingFundBase,EMPHousingFundDate,Remark)
+    select @EID,@BID,@EMPHousingFundBase,@EMPHousingFundDate+'-01 0:0:0',@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

@@ -44,8 +44,8 @@ Begin
 
 
     -- 插入部门年金月度表项pEMPInsuranceHousingFundDep
-    insert into pEMPInsuranceHousingFundDep(Month,DepID1st,DepID2nd,DepInsHFContact)
-    select a.Date,b.DepID1st,b.DepID2nd,b.DepInsHFContact
+    insert into pEMPInsuranceHousingFundDep(pProcessID,Month,DepID1st,DepID2nd,DepInsHFContact)
+    select a.ID,a.Date,b.DepID1st,b.DepID2nd,b.DepInsHFContact
     from pEMPInsuranceHousingFund_Process a,pVW_DepInsHFContact b
     where a.ID=@ID
     -- 异常流程
@@ -53,23 +53,23 @@ Begin
     Goto ErrM
 
     -- 插入后台员工社保月度分配注册表pEMPInsurancePerMM
-    insert into pEMPInsurancePerMM(Month,EID,EndowInsEMP,MedicalInsEMP,UnemployInsEMP,EndowInsGRP,MedicalInsGRP,UnemployInsGRP,MaternityInsGRP,InjuryInsGRP,
+    insert into pEMPInsurancePerMM(pProcessID,Month,EID,BID,EndowInsEMP,MedicalInsEMP,UnemployInsEMP,EndowInsGRP,MedicalInsGRP,UnemployInsGRP,MaternityInsGRP,InjuryInsGRP,
     InsEMPTotal,InsGRPTotal)
-    select a.Date,b.EID,b.EndowInsEMP,b.MedicalInsEMP,b.UnemployInsEMP,b.EndowInsGRP,b.MedicalInsGRP,b.UnemployInsGRP,b.MaternityInsGRP,b.InjuryInsGRP,
+    select a.ID,a.Date,b.EID,b.BID,b.EndowInsEMP,b.MedicalInsEMP,b.UnemployInsEMP,b.EndowInsGRP,b.MedicalInsGRP,b.UnemployInsGRP,b.MaternityInsGRP,b.InjuryInsGRP,
     b.MedicalInsEMP+b.UnemployInsEMP+b.EndowInsEMP,b.EndowInsGRP+b.MedicalInsGRP+b.UnemployInsGRP+b.MaternityInsGRP+b.InjuryInsGRP
     from pEMPInsuranceHousingFund_Process a,pVW_EMPInsuranceDetails b
     where a.ID=@ID and b.Status not in (4,5)
-    and b.EID not in (select EID from pEMPInsurancePerMM)
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEMPInsurancePerMM)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 插入后台员工公积金月度分配注册表pEMPHousingFundPerMM
-    insert into pEMPHousingFundPerMM(Month,EID,HousingFundEMP,HousingFundGRP,HousingFundEMPTotal,HousingFundGRPTotal)
-    select a.Date,b.EID,b.HousingFundEMP,b.HousingFundGRP,b.HousingFundEMP,b.HousingFundGRP
+    insert into pEMPHousingFundPerMM(pProcessID,Month,EID,BID,HousingFundEMP,HousingFundGRP,HousingFundEMPTotal,HousingFundGRPTotal)
+    select a.ID,a.Date,b.EID,b.BID,b.HousingFundEMP,b.HousingFundGRP,b.HousingFundEMP,b.HousingFundGRP
     from pEMPInsuranceHousingFund_Process a,pVW_EMPHousingFundDetails b
     where a.ID=@ID and b.Status not in (4,5)
-    and b.EID not in (select EID from pEMPHousingFundPerMM)
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEMPHousingFundPerMM)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

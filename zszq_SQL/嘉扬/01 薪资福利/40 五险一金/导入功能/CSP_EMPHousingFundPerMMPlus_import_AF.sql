@@ -23,7 +23,7 @@ Begin
     b.HousingFundEMPPlusTotal=ISNULL(a.HousingFundEMPPlus,b.HousingFundEMPPlusTotal),
     b.HousingFundGRPPlusTotal=(case when ISNULL(ISNULL(a.HousingFundEMPPlus,b.HousingFundGRPPlusTotal),0)>0 then ISNULL(ISNULL(a.HousingFundEMPPlus,b.HousingFundGRPPlusTotal),0) else 0 end)
     from pEMPHousingFundPerMMPlus_import a,pEMPHousingFundPerMM b
-    where (select EID from eEmployee where Badge=a.Badge)=b.EID and a.EMPHousingFundDepart=@leftid
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and a.EMPHousingFundDepart=@leftid
     -- 异常流程
     IF @@Error <> 0
 	Goto ErrM

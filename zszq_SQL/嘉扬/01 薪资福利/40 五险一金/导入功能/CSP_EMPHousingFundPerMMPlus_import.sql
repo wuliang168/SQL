@@ -6,6 +6,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_EMPHousingFundPerMMPlus_import]--CSP_EMPHousingFundPerMMPlus_import()
     @leftid int,
+    @EID int,
+    @BID int,
     @Badge varchar(10),
     @Name nvarchar(50),
     @HousingFundEMPPlus decimal(10,2),
@@ -20,7 +22,7 @@ AS
 Begin
 
     -- 导入文件存在工号和姓名不匹配！
-    If (@Name<>(select Name from eEmployee where Badge=@Badge))
+    If (@Name<>(select Name from pvw_Employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)))
     Begin
         Set @RetVal = 930098
         Return @RetVal
@@ -30,8 +32,8 @@ Begin
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEMPHousingFundPerMMPlus_import表项中
-    insert into pEMPHousingFundPerMMPlus_import (Badge,Name,HousingFundEMPPlus,EMPHousingFundDepart,Remark)
-    select @Badge,@Name,@HousingFundEMPPlus,@leftid,@Remark
+    insert into pEMPHousingFundPerMMPlus_import (EID,BID,Name,HousingFundEMPPlus,EMPHousingFundDepart,Remark)
+    select @EID,@BID,@Name,@HousingFundEMPPlus,@leftid,@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

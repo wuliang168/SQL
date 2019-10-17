@@ -27,9 +27,9 @@ Begin
     Begin TRANSACTION
 
     -- 添加pEMPInsurance_register
-    insert into pEMPHousingFund_register(EID,BID,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundLoc,EMPHousingFundDepart,
+    insert into pEMPHousingFund_register(EID,BID,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundLoc,EMPHousingFundDepart,HFRatioLocID,
     IsPostRetirement,IsLeave,Isabandon)
-    select a.EID,a.BID,a.EMPHousingFundBase,a.EMPHousingFundDate,a.EMPHousingFundLoc,a.EMPHousingFundDepart,
+    select a.EID,a.BID,a.EMPHousingFundBase,a.EMPHousingFundDate,a.EMPHousingFundLoc,a.EMPHousingFundDepart,a.HFRatioLocID,
     a.IsPostRetirement,a.IsLeave,a.Isabandon
     from pEMPHousingFund a
     where a.ID=@ID

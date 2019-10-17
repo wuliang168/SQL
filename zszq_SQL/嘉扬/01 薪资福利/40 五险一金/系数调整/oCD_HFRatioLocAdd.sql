@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER  Procedure [dbo].[oCD_HFRatioLocAdd]
 -- skydatarefresh oCD_HFRatioLocAdd
-    @Place int,
+    @ID int,
     @RetVal int=0 Output
 As
 /*
@@ -21,12 +21,12 @@ Begin
 
 
     -- 添加公积金缴费比例注册表项oCD_HousingFundRatioLoc_register
-    insert into oCD_HousingFundRatioLoc_register(Code,Place,Title,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
+    insert into oCD_HousingFundRatioLoc_register(ID_Orig,Code,Place,Title,HFDepID,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
     HousingFundRatioEMP,HousingFundRatioPlusEMP,HousingFundRatioGRP,HousingFundRatioPlusGRP,CalcMethod)
-    select a.Code,a.Place,a.Title,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
+    select a.ID,a.Code,a.Place,a.Title,a.HFDepID,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
     a.HousingFundRatioEMP,a.HousingFundRatioPlusEMP,a.HousingFundRatioGRP,a.HousingFundRatioPlusGRP,a.CalcMethod
     From oCD_HousingFundRatioLoc a
-    Where a.Place=@Place and ISNULL(a.IsDisabled,0)=0
+    Where a.ID=@ID and ISNULL(a.IsDisabled,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

@@ -28,9 +28,9 @@ Begin
 
     -- 添加pEMPInsurance_register
     insert into pEMPInsurance_register(EID,BID,EMPInsuranceBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,
-    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceLoc,EMPInsuranceDepart,IsPostRetirement,IsLeave,Isabandon)
+    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceLoc,EMPInsuranceDepart,InsRatioLocID,IsPostRetirement,IsLeave,Isabandon)
     select a.EID,a.BID,a.EMPInsuranceBase,a.EMPEndowBase,a.EMPMedicalBase,a.EMPUnemployBase,a.EMPMaternityBase,a.EMPInjuryBase,
-    a.EMPInsuranceDate,a.EMPMedicalDate,a.EMPInsuranceLoc,a.EMPInsuranceDepart,a.IsPostRetirement,a.IsLeave,a.Isabandon
+    a.EMPInsuranceDate,a.EMPMedicalDate,a.EMPInsuranceLoc,a.EMPInsuranceDepart,a.InsRatioLocID,a.IsPostRetirement,a.IsLeave,a.Isabandon
     from pEMPInsurance a
     where a.ID=@ID
     -- 异常流程

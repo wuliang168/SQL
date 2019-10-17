@@ -6,6 +6,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_EMPInsurance_import]--CSP_EMPInsurance_import()
     @leftid int,
+    @EID int,
+    @BID int,
     @Badge varchar(10),
     @Name nvarchar(50),
     @EMPInsuranceBase decimal(10,2),
@@ -29,7 +31,7 @@ AS
 Begin
 
     -- 导入文件存在工号和姓名不匹配！
-    If (@Name<>(select Name from eEmployee where Badge=@Badge))
+    If (@Name<>(select Name from pVW_Employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)))
     Begin
         Set @RetVal = 930098
         Return @RetVal
@@ -48,29 +50,27 @@ Begin
     End
 
     -- 导入文件缴纳地错误！
-    If not Exists(select 1 from oCD_InsuranceRatioLoc where Title=@EMPInsuranceLoc and ISNULL(IsDisabled,0)=0 and @EMPInsuranceLoc is not NULL)
-    Begin
-        Set @RetVal = 931020
-        Return @RetVal
-    End
+    --If not Exists(select 1 from oCD_InsuranceRatioLoc where Title=@EMPInsuranceLoc and ISNULL(IsDisabled,0)=0 and @EMPInsuranceLoc is not NULL)
+    --Begin
+    --    Set @RetVal = 931020
+    --    Return @RetVal
+    --End
 
     -- 导入文件归属部门错误！
-    If not Exists(select 1 from oDepartment where DepAbbr=@EMPInsuranceDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999 and @EMPInsuranceDepart is not NULL)
-    Begin
-        Set @RetVal = 931030
-        Return @RetVal
-    End
+    --If not Exists(select 1 from oDepartment where DepAbbr=@EMPInsuranceDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999 and @EMPInsuranceDepart is not NULL)
+    --Begin
+    --    Set @RetVal = 931030
+    --    Return @RetVal
+    --End
 
 
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEMPInsurance_import表项中
-    insert into pEMPInsurance_import (Badge,Name,EMPInsuranceBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,
-    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceLoc,EMPInsuranceDepart,Remark)
-    select @Badge,@Name,@EMPInsuranceBase,@EMPEndowBase,@EMPMedicalBase,@EMPUnemployBase,@EMPMaternityBase,@EMPInjuryBase,
-    @EMPInsuranceDate+'-01 0:0:0',@EMPMedicalDate+'-01 0:0:0',
-    (select Place from oCD_InsuranceRatioLoc where Title=@EMPInsuranceLoc and ISNULL(IsDisabled,0)=0),
-    (select DepID from oDepartment where DepAbbr=@EMPInsuranceDepart and ISNULL(IsDisabled,0)=0 and xOrder <> 9999999999999),@Remark
+    insert into pEMPInsurance_import (EID,BID,EMPInsuranceBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,
+    EMPInsuranceDate,EMPMedicalDate,Remark)
+    select @EID,@BID,@EMPInsuranceBase,@EMPEndowBase,@EMPMedicalBase,@EMPUnemployBase,@EMPMaternityBase,@EMPInjuryBase,
+    @EMPInsuranceDate+'-01 0:0:0',@EMPMedicalDate+'-01 0:0:0',@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

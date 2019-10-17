@@ -47,25 +47,25 @@ Begin
     Goto ErrM
 
     -- 插入后台员工社保月度分配历史表pEMPInsurancePerMM_all
-    insert into pEMPInsurancePerMM_all(Month,EID,EndowInsEMP,EndowInsEMPPlus,MedicalInsEMP,MedicalInsEMPPlus,UnemployInsEMP,UnemployInsEMPPlus,
+    insert into pEMPInsurancePerMM_all(pProcessID,Month,EID,BID,EndowInsEMP,EndowInsEMPPlus,MedicalInsEMP,MedicalInsEMPPlus,UnemployInsEMP,UnemployInsEMPPlus,
     EndowInsGRP,EndowInsGRPPlus,MedicalInsGRP,MedicalInsGRPPlus,UnemployInsGRP,UnemployInsGRPPlus,MaternityInsGRP,MaternityInsGRPPlus,InjuryInsGRP,InjuryInsGRPPlus,
     InsEMPTotal,InsEMPPlusTotal,InsGRPTotal,InsGRPPlusTotal,Remark)
-    select a.Month,a.EID,a.EndowInsEMP,a.EndowInsEMPPlus,a.MedicalInsEMP,a.MedicalInsEMPPlus,a.UnemployInsEMP,a.UnemployInsEMPPlus,a.EndowInsGRP,a.EndowInsGRPPlus,
+    select a.pProcessID,a.Month,a.EID,a.BID,a.EndowInsEMP,a.EndowInsEMPPlus,a.MedicalInsEMP,a.MedicalInsEMPPlus,a.UnemployInsEMP,a.UnemployInsEMPPlus,a.EndowInsGRP,a.EndowInsGRPPlus,
     a.MedicalInsGRP,a.MedicalInsGRPPlus,a.UnemployInsGRP,a.UnemployInsGRPPlus,a.MaternityInsGRP,a.MaternityInsGRPPlus,a.InjuryInsGRP,a.InjuryInsGRPPlus,
     a.InsEMPTotal,a.InsEMPPlusTotal,a.InsGRPTotal,a.InsGRPPlusTotal,a.Remark
     from pEMPInsurancePerMM a
-    where a.Month=(select Date from pEMPInsuranceHousingFund_Process where ID=@ID)
+    where a.pProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 插入后台员工公积金月度分配历史表pEMPHousingFundPerMM_all
-    insert into pEMPHousingFundPerMM_all(Month,EID,HousingFundEMP,HousingFundEMPPlus,HousingFundGRP,HousingFundGRPPlus,
+    insert into pEMPHousingFundPerMM_all(pProcessID,Month,EID,BID,HousingFundEMP,HousingFundEMPPlus,HousingFundGRP,HousingFundGRPPlus,
     HousingFundEMPTotal,HousingFundEMPPlusTotal,HousingFundGRPTotal,HousingFundGRPPlusTotal,Remark)
-    select a.Month,a.EID,a.HousingFundEMP,a.HousingFundEMPPlus,a.HousingFundGRP,a.HousingFundGRPPlus,
+    select a.pProcessID,a.Month,a.EID,a.BID,a.HousingFundEMP,a.HousingFundEMPPlus,a.HousingFundGRP,a.HousingFundGRPPlus,
     a.HousingFundEMPTotal,a.HousingFundEMPPlusTotal,a.HousingFundGRPTotal,a.HousingFundGRPPlusTotal,a.Remark
     from pEMPHousingFundPerMM a
-    where a.Month=(select Date from pEMPInsuranceHousingFund_Process where ID=@ID)
+    where a.pProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -82,14 +82,14 @@ Begin
 
     -- 删除员工社保月度注册表
     delete from pEMPInsurancePerMM
-    where Month=(select Date from pEMPInsuranceHousingFund_Process where ID=@ID)
+    where pProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 删除员工公积金月度注册表
     delete from pEMPHousingFundPerMM
-    where Month=(select Date from pEMPInsuranceHousingFund_Process where ID=@ID)
+    where pProcessID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

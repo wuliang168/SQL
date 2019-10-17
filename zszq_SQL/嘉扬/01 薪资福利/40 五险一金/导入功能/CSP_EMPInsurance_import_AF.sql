@@ -22,10 +22,9 @@ Begin
     b.EMPMedicalBase=ISNULL(a.EMPMedicalBase,b.EMPMedicalBase),b.EMPUnemployBase=ISNULL(a.EMPUnemployBase,b.EMPUnemployBase),
     b.EMPMaternityBase=ISNULL(a.EMPMaternityBase,b.EMPMaternityBase),b.EMPInjuryBase=ISNULL(a.EMPInjuryBase,b.EMPInjuryBase),
     b.EMPInsuranceDate=ISNULL(a.EMPInsuranceDate,b.EMPInsuranceDate),
-    b.EMPMedicalDate=ISNULL(a.EMPMedicalDate,b.EMPMedicalDate),
-    b.EMPInsuranceLoc=ISNULL(a.EMPInsuranceLoc,b.EMPInsuranceLoc),b.EMPInsuranceDepart=ISNULL(a.EMPInsuranceDepart,b.EMPInsuranceDepart)
+    b.EMPMedicalDate=ISNULL(a.EMPMedicalDate,b.EMPMedicalDate)
     from pEMPInsurance_import a,pEMPInsurance b
-    where (select EID from eEmployee where Badge=a.Badge)=b.EID and a.EMPInsuranceDepart=@leftid and b.EMPInsuranceDepart=@leftid
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and a.EMPInsuranceDepart=@leftid and b.EMPInsuranceDepart=@leftid
     -- 异常流程
     IF @@Error <> 0
 	Goto ErrM

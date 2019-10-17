@@ -64,15 +64,15 @@ Begin
     Update a
     Set a.IsDisabled=1
     From oCD_HousingFundRatioLoc a,oCD_HousingFundRatioLoc_register b
-    Where b.ID=@ID and a.Place=b.Place and ISNULL(a.IsDisabled,0)=0
+    Where b.ID=@ID and a.ID=b.ID_Orig and ISNULL(a.IsDisabled,0)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 添加社保缴费比例表项oCD_HousingFundRatioLoc
-    insert into oCD_HousingFundRatioLoc(Code,Place,Title,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
+    insert into oCD_HousingFundRatioLoc(Code,Place,Title,HFDepID,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
     HousingFundRatioEMP,HousingFundRatioPlusEMP,HousingFundRatioGRP,HousingFundRatioPlusGRP,CalcMethod,Remark)
-    select a.Code,a.Place,a.Title,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
+    select a.Code,a.Place,a.Title,a.HFDepID,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
     a.HousingFundRatioEMP,a.HousingFundRatioPlusEMP,a.HousingFundRatioGRP,a.HousingFundRatioPlusGRP,a.CalcMethod,a.Remark
     From oCD_HousingFundRatioLoc_register a
     Where a.ID=@ID
@@ -80,10 +80,19 @@ Begin
     If @@Error<>0
     Goto ErrM
 
+    -- 更新员工的公积金缴交地为最新
+    update a
+    set a.HFRatioLocID=(select ID from oCD_HousingFundRatioLoc where ISNULL(IsDisabled,0)=0 and HFDepID=b.HFDepID and Title=b.Title)
+    from pEMPHousingFund a,oCD_HousingFundRatioLoc_register b
+    where a.HFRatioLocID=b.ID_Orig and b.ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
     -- 拷贝到社保缴费比例历史表oCD_HousingFundRatioLoc_all
-    insert into oCD_HousingFundRatioLoc_all(Code,Place,Title,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
+    insert into oCD_HousingFundRatioLoc_all(ID_Orig,Code,Place,Title,HFDepID,HousingFundYear,HousingFundBaseUpLimit,HousingFundBaseDownLimit,
     HousingFundRatioEMP,HousingFundRatioPlusEMP,HousingFundRatioGRP,HousingFundRatioPlusGRP,CalcMethod,Remark,IsSubmit,SubmitBy,SubmitTime)
-    select a.Code,a.Place,a.Title,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
+    select a.ID_Orig,a.Code,a.Place,a.Title,a.HFDepID,a.HousingFundYear,a.HousingFundBaseUpLimit,a.HousingFundBaseDownLimit,
     a.HousingFundRatioEMP,a.HousingFundRatioPlusEMP,a.HousingFundRatioGRP,a.HousingFundRatioPlusGRP,a.CalcMethod,a.Remark,a.IsSubmit,a.SubmitBy,a.SubmitTime
     From oCD_HousingFundRatioLoc_register a
     Where a.ID=@ID

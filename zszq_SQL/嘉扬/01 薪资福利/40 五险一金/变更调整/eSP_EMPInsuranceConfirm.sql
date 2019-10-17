@@ -26,7 +26,7 @@ Begin
     End
 
     -- 员工五险一金的社保发放地为空！
-    If Exists(Select 1 From pEMPInsurance_register Where ID=@ID and EMPInsuranceLoc is NULL)
+    If Exists(Select 1 From pEMPInsurance_register Where ID=@ID and InsRatioLocID is NULL)
     Begin
         Set @RetVal = 930112
         Return @RetVal
@@ -41,8 +41,8 @@ Begin
     a.EMPMedicalBase=ISNULL(ISNULL(b.EMPMedicalBase,a.EMPMedicalBase),a.EMPInsuranceBase),a.EMPUnemployBase=ISNULL(ISNULL(b.EMPUnemployBase,a.EMPUnemployBase),a.EMPInsuranceBase),
     a.EMPMaternityBase=ISNULL(ISNULL(b.EMPMaternityBase,a.EMPMaternityBase),a.EMPInsuranceBase),a.EMPInjuryBase=ISNULL(ISNULL(b.EMPInjuryBase,a.EMPInjuryBase),a.EMPInsuranceBase),
     a.EMPInsuranceDate=ISNULL(b.EMPInsuranceDate,a.EMPInsuranceDate),a.EMPMedicalDate=ISNULL(b.EMPMedicalDate,a.EMPMedicalDate),
-    a.EMPInsuranceLoc=ISNULL(b.EMPInsuranceLoc,a.EMPInsuranceLoc),a.IsPostRetirement=ISNULL(b.IsPostRetirement,a.IsPostRetirement),
-    a.IsLeave=ISNULL(b.IsLeave,a.IsLeave),a.Isabandon=ISNULL(b.Isabandon,a.Isabandon)
+    a.InsRatioLocID=ISNULL(b.InsRatioLocID,a.InsRatioLocID),a.EMPInsuranceLoc=ISNULL(b.EMPInsuranceLoc,a.EMPInsuranceLoc),
+    a.IsPostRetirement=ISNULL(b.IsPostRetirement,a.IsPostRetirement),a.IsLeave=ISNULL(b.IsLeave,a.IsLeave),a.Isabandon=ISNULL(b.Isabandon,a.Isabandon)
     from pEMPInsurance a,pEMPInsurance_register b
     where b.ID=@ID and ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
     -- 异常流程
@@ -51,9 +51,9 @@ Begin
 
     -- 拷贝到pEMPInsurance_all
     insert into pEMPInsurance_all(EID,BID,EMPInsuranceBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,
-    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceLoc,EMPInsuranceDepart,IsPostRetirement,IsLeave,Isabandon,Submit,Submitby,SubmitTime)
+    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceLoc,InsRatioLocID,EMPInsuranceDepart,IsPostRetirement,IsLeave,Isabandon,Submit,Submitby,SubmitTime)
     select a.EID,a.BID,a.EMPInsuranceBase,a.EMPEndowBase,a.EMPMedicalBase,a.EMPUnemployBase,a.EMPMaternityBase,a.EMPInjuryBase,
-    a.EMPInsuranceDate,a.EMPMedicalDate,a.EMPInsuranceLoc,a.EMPInsuranceDepart,a.IsPostRetirement,a.IsLeave,a.Isabandon,a.Submit,a.Submitby,a.SubmitTime
+    a.EMPInsuranceDate,a.EMPMedicalDate,a.EMPInsuranceLoc,a.InsRatioLocID,a.EMPInsuranceDepart,a.IsPostRetirement,a.IsLeave,a.Isabandon,a.Submit,a.Submitby,a.SubmitTime
     from pEMPInsurance_register a
     where a.ID=@ID
     -- 异常流程

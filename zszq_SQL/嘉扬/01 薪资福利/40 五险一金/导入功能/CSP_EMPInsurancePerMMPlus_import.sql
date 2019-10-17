@@ -6,6 +6,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_EMPInsurancePerMMPlus_import]--CSP_EMPInsurancePerMMPlus_import()
     @leftid int,
+    @EID int,
+    @BID int,
     @Badge varchar(10),
     @Name nvarchar(50),
     @EndowInsEMPPlus decimal(10,2),
@@ -27,7 +29,7 @@ AS
 Begin
 
     -- 导入文件存在工号和姓名不匹配！
-    If (@Name<>(select Name from eEmployee where Badge=@Badge))
+    If (@Name<>(select Name from pVW_Employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)))
     Begin
         Set @RetVal = 930098
         Return @RetVal
@@ -37,9 +39,9 @@ Begin
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEMPInsurancePerMMPlus_import表项中
-    insert into pEMPInsurancePerMMPlus_import (Badge,Name,EndowInsEMPPlus,MedicalInsEMPPlus,UnemployInsEMPPlus,EndowInsGRPPlus,MedicalInsGRPPlus,UnemployInsGRPPlus,
+    insert into pEMPInsurancePerMMPlus_import (EID,BID,EndowInsEMPPlus,MedicalInsEMPPlus,UnemployInsEMPPlus,EndowInsGRPPlus,MedicalInsGRPPlus,UnemployInsGRPPlus,
     MaternityInsGRPPlus,InjuryInsGRPPlus,EMPInsuranceDepart,Remark)
-    select @Badge,@Name,@EndowInsEMPPlus,@MedicalInsEMPPlus,@UnemployInsEMPPlus,
+    select @EID,@BID,@EndowInsEMPPlus,@MedicalInsEMPPlus,@UnemployInsEMPPlus,
     @EndowInsGRPPlus,@MedicalInsGRPPlus,@UnemployInsGRPPlus,@MaternityInsGRPPlus,@InjuryInsGRPPlus,@leftid,@Remark
     -- 异常流程
 	IF @@Error <> 0

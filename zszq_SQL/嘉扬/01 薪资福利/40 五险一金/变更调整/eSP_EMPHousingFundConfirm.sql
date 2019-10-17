@@ -25,7 +25,7 @@ Begin
     End
 
     -- 员工五险一金的公积金发放地为空！
-    If Exists(Select 1 From pEMPHousingFund_register Where ID=@ID and EMPHousingFundLoc is NULL)
+    If Exists(Select 1 From pEMPHousingFund_register Where ID=@ID and HFRatioLocID is NULL)
     Begin
         Set @RetVal = 930122
         Return @RetVal
@@ -37,8 +37,8 @@ Begin
     -- 添加pEMPHousingFund_register
     update a
     set a.EMPHousingFundBase=ISNULL(b.EMPHousingFundBase,a.EMPHousingFundBase),a.EMPHousingFundDate=ISNULL(b.EMPHousingFundDate,a.EMPHousingFundDate),
-    a.EMPHousingFundLoc=ISNULL(b.EMPHousingFundLoc,a.EMPHousingFundLoc),a.IsPostRetirement=ISNULL(b.IsPostRetirement,a.IsPostRetirement),
-    a.IsLeave=ISNULL(b.IsLeave,a.IsLeave),a.Isabandon=ISNULL(b.Isabandon,a.Isabandon)
+    a.HFRatioLocID=ISNULL(b.HFRatioLocID,a.HFRatioLocID),a.EMPHousingFundLoc=ISNULL(b.EMPHousingFundLoc,a.EMPHousingFundLoc),
+    a.IsPostRetirement=ISNULL(b.IsPostRetirement,a.IsPostRetirement),a.IsLeave=ISNULL(b.IsLeave,a.IsLeave),a.Isabandon=ISNULL(b.Isabandon,a.Isabandon)
     from pEMPHousingFund a,pEMPHousingFund_register b
     where b.ID=@ID and ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
     -- 异常流程
@@ -46,8 +46,8 @@ Begin
     Goto ErrM
 
     -- 拷贝到pEMPHousingFund_all
-    insert into pEMPHousingFund_all(EID,BID,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundLoc,EMPHousingFundDepart,IsPostRetirement,IsLeave,Isabandon)
-    select a.EID,a.BID,a.EMPHousingFundBase,a.EMPHousingFundDate,a.EMPHousingFundLoc,a.EMPHousingFundDepart,a.IsPostRetirement,a.IsLeave,a.Isabandon
+    insert into pEMPHousingFund_all(EID,BID,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundLoc,HFRatioLocID,EMPHousingFundDepart,IsPostRetirement,IsLeave,Isabandon)
+    select a.EID,a.BID,a.EMPHousingFundBase,a.EMPHousingFundDate,a.EMPHousingFundLoc,a.HFRatioLocID,a.EMPHousingFundDepart,a.IsPostRetirement,a.IsLeave,a.Isabandon
     from pEMPHousingFund_register a
     where a.ID=@ID
     -- 异常流程

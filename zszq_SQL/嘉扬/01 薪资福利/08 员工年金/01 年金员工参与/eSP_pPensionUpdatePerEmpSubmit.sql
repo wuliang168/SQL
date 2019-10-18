@@ -27,7 +27,7 @@ Begin
     ---- 更新参与人员状态
     ------ 后台员工
     update a
-    set a.IsSubmit=1
+    set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pPensionUpdatePerEmp_register a
     where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and EID=@EID and pPensionUpdateID=@pPensionUpdateID
     -- 异常流程

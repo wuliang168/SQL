@@ -18,7 +18,7 @@ Begin
 
     -- 更新pEMPHousingFund_import的公积金信息到pEMPHousingFund
     update b
-    set b.EMPHousingFundBase=ISNULL(a.EMPHousingFundBase,b.EMPHousingFundBase),b.EMPHousingFundDate=ISNULL(a.EMPHousingFundDate,b.EMPHousingFundDate)
+    set b.EMPHousingFundBase=ISNULL(a.EMPHousingFundBase,b.EMPHousingFundBase),b.EMPHousingFundDate=a.EMPHousingFundDate
     from pEMPHousingFund_import a,pEMPHousingFund b
     where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and a.EMPHousingFundDepart=@leftid and b.EMPHousingFundDepart=@leftid
     -- 异常流程

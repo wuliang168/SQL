@@ -21,8 +21,7 @@ Begin
     set b.EMPInsuranceBase=ISNULL(a.EMPInsuranceBase,b.EMPInsuranceBase),b.EMPEndowBase=ISNULL(a.EMPEndowBase,b.EMPEndowBase),
     b.EMPMedicalBase=ISNULL(a.EMPMedicalBase,b.EMPMedicalBase),b.EMPUnemployBase=ISNULL(a.EMPUnemployBase,b.EMPUnemployBase),
     b.EMPMaternityBase=ISNULL(a.EMPMaternityBase,b.EMPMaternityBase),b.EMPInjuryBase=ISNULL(a.EMPInjuryBase,b.EMPInjuryBase),
-    b.EMPInsuranceDate=ISNULL(a.EMPInsuranceDate,b.EMPInsuranceDate),
-    b.EMPMedicalDate=ISNULL(a.EMPMedicalDate,b.EMPMedicalDate)
+    b.EMPInsuranceDate=a.EMPInsuranceDate,b.EMPMedicalDate=a.EMPMedicalDate
     from pEMPInsurance_import a,pEMPInsurance b
     where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and a.EMPInsuranceDepart=@leftid and b.EMPInsuranceDepart=@leftid
     -- 异常流程

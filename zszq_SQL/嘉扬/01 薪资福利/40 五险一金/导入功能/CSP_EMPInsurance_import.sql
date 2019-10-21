@@ -18,8 +18,6 @@ ALTER proc [dbo].[CSP_EMPInsurance_import]--CSP_EMPInsurance_import()
     @EMPInjuryBase decimal(10,2),
     @EMPInsuranceDate varchar(20),
     @EMPMedicalDate varchar(20),
-    @EMPInsuranceLoc nvarchar(50),
-    @EMPInsuranceDepart nvarchar(50),
     @Remark nvarchar(200),
     @RetVal int=0 output
 AS
@@ -68,9 +66,9 @@ Begin
 
     -- 将导入的文件插入到pEMPInsurance_import表项中
     insert into pEMPInsurance_import (EID,BID,EMPInsuranceBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,
-    EMPInsuranceDate,EMPMedicalDate,Remark)
-    select @EID,@BID,@EMPInsuranceBase,@EMPEndowBase,@EMPMedicalBase,@EMPUnemployBase,@EMPMaternityBase,@EMPInjuryBase,
-    @EMPInsuranceDate+'-01 0:0:0',@EMPMedicalDate+'-01 0:0:0',@Remark
+    EMPInsuranceDate,EMPMedicalDate,EMPInsuranceDepart,Remark)
+    select convert(int,@EID),@BID,@EMPInsuranceBase,@EMPEndowBase,@EMPMedicalBase,@EMPUnemployBase,@EMPMaternityBase,@EMPInjuryBase,
+    @EMPInsuranceDate+'-01 0:0:0',@EMPMedicalDate+'-01 0:0:0',@leftid,@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

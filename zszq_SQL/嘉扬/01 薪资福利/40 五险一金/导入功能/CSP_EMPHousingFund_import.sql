@@ -8,6 +8,7 @@ ALTER proc [dbo].[CSP_EMPHousingFund_import]--CSP_EMPHousingFund_import()
     @leftid int,
     @EID int,
     @BID int,
+    @Badge varchar(10),
     @Name nvarchar(50),
     @EMPHousingFundBase decimal(10,2),
     @EMPHousingFundDate varchar(50),
@@ -53,8 +54,8 @@ Begin
     Begin TRANSACTION
 
     -- 将导入的文件插入到pEMPHousingFund_import表项中
-    insert into pEMPHousingFund_import (EID,BID,EMPHousingFundBase,EMPHousingFundDate,Remark)
-    select @EID,@BID,@EMPHousingFundBase,@EMPHousingFundDate+'-01 0:0:0',@Remark
+    insert into pEMPHousingFund_import (EID,BID,EMPHousingFundBase,EMPHousingFundDate,EMPHousingFundDepart,Remark)
+    select @EID,@BID,@EMPHousingFundBase,@EMPHousingFundDate+'-01 0:0:0',@leftid,@Remark
     -- 异常流程
 	IF @@Error <> 0
 	Goto ErrM

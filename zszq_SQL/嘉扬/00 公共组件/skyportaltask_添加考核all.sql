@@ -274,8 +274,9 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.ProcessID=b.ID 
 and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=1
-and (select COUNT(m.EID)-COUNT(m.SubmitSelf) from pEMPTrgtRspCntrMM m
-where m.PT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0
+and (select COUNT(n.ReportTo)-SUM(cast(ISNULL(n.IsSubmit,n.IsClosed) as int)) from pEMPTrgtRspCntrMM m,pTrgtRspCntrDep n
+where m.EID=n.ReportTo and n.TRCLev=0 and m.ProcessID=n.ProcessID
+and m.PT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0
 ---- 部门负责人考核
 UNION
 SELECT DISTINCT
@@ -284,8 +285,9 @@ a.ReportTo AS approver, 1 AS id
 FROM pTrgtRspCntrDep a,pTrgtRspCntr_Process b
 WHERE ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.ProcessID=b.ID 
 and ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.TRCLev=2
-and ((select COUNT(m.EID)-SUM(cast(m.SubmitSelf as int)) from pEMPTrgtRspCntrMM m
-where m.RT=a.ReportTo and m.PT is NULL and m.ProcessID=b.ID)=0 or
+and ((select COUNT(n.ReportTo)-SUM(cast(ISNULL(n.IsSubmit,n.IsClosed) as int)) from pEMPTrgtRspCntrMM m,pTrgtRspCntrDep n
+where m.EID=n.ReportTo and n.TRCLev=0 and m.ProcessID=n.ProcessID
+and m.RT=a.ReportTo and m.RT is NULL and m.ProcessID=b.ID)=0 or
 (select COUNT(m.EID)-SUM(cast(m.SubmitPT as int)) from pEMPTrgtRspCntrMM m
 where m.RT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0)
 ---- 部门负责人考核反馈
@@ -302,28 +304,29 @@ where m.RT=a.ReportTo and m.PT is not NULL and m.ProcessID=b.ID)=0)
 
 ------------- 五险一金统计 ------------
 UNION
---SELECT DISTINCT
---N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
---N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
---+ cast(datepart(dd, (select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
---+ cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
---a.DepInsHFContact AS approver, 1 AS id
---FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
---WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
---and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
---AND a.DepInsHFContact is NOT NULL
---AND DATEDIFF(DD,GETDATE(),(select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
----- 临时调整
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
-N''',''五险一金工资扣款统计'')">请于9月26日下班前递交' + c.DepAbbr
+N''',''五险一金工资扣款统计'')">请于' + cast(datepart(mm, (select min(term)+1 from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'月'
++ cast(datepart(dd, (select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1)) AS varchar(2)) + N'日前递交' + c.DepAbbr
 + cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
 a.DepInsHFContact AS approver, 1 AS id
 FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
 WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
 AND a.DepInsHFContact is NOT NULL
-AND DATEDIFF(DD,GETDATE(),'2019-9-27 23:59:59')>=0
+AND DATEDIFF(DD,GETDATE(),(select min(term) from lCalendar where DATEDIFF(mm,term,b.Date)=0 and xType=1))>=0
+--and a.DepInsHFContact in (4404)
+---- 临时调整
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.530220'',''leftid^' + cast(ISNULL(a.DepID2nd,a.DepID1st) AS nvarchar(5)) + 
+--N''',''五险一金工资扣款统计'')">请于9月26日下班前递交' + c.DepAbbr
+--+ cast(datepart(mm, b.Date) AS varchar(10)) + N'月' + N'工资五险一金扣款数据</a>' AS url, 
+--a.DepInsHFContact AS approver, 1 AS id
+--FROM pEMPInsuranceHousingFundDep a,pEMPInsuranceHousingFund_Process b,oDepartment c
+--WHERE DATEDIFF(mm,a.Month,b.Date)=0 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and ISNULL(a.IsSubmit,0)=0 AND ISNULL(a.IsClosed,0)=0 and ISNULL(a.DepID2nd,a.DepID1st)=C.DepID
+--AND a.DepInsHFContact is NOT NULL
+--AND DATEDIFF(DD,GETDATE(),'2019-9-27 23:59:59')>=0
 
 
 ------------- 月度费用统计 ------------

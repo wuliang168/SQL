@@ -6,9 +6,8 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[CSP_EMPInsurancePerMMPlus_import]--CSP_EMPInsurancePerMMPlus_import()
     @leftid int,
-    @EID int,
-    @BID int,
-    @Badge varchar(10),
+    @EID varchar(20),
+    @BID varchar(20),
     @Name nvarchar(50),
     @EndowInsEMPPlus decimal(10,2),
     @MedicalInsEMPPlus decimal(10,2),
@@ -41,7 +40,7 @@ Begin
     -- 将导入的文件插入到pEMPInsurancePerMMPlus_import表项中
     insert into pEMPInsurancePerMMPlus_import (EID,BID,EndowInsEMPPlus,MedicalInsEMPPlus,UnemployInsEMPPlus,EndowInsGRPPlus,MedicalInsGRPPlus,UnemployInsGRPPlus,
     MaternityInsGRPPlus,InjuryInsGRPPlus,EMPInsuranceDepart,Remark)
-    select @EID,@BID,@EndowInsEMPPlus,@MedicalInsEMPPlus,@UnemployInsEMPPlus,
+    select CONVERT(int,@EID),CONVERT(int,@BID),@EndowInsEMPPlus,@MedicalInsEMPPlus,@UnemployInsEMPPlus,
     @EndowInsGRPPlus,@MedicalInsGRPPlus,@UnemployInsGRPPlus,@MaternityInsGRPPlus,@InjuryInsGRPPlus,@leftid,@Remark
     -- 异常流程
 	IF @@Error <> 0

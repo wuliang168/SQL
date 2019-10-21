@@ -606,18 +606,20 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
     If @@Error<>0
     Goto ErrM
     -- 公积金添加
-    insert into pEMPHousingFund(eid)
-    select eid
+    insert into pEMPHousingFund(eid,EMPHousingFundDepart)
+    select eid,depid
     from eemployee a
-    where a.EID=@EID and a.EID not in (select EID from pEMPHousingFund)
+    where a.EID=@EID and dbo.eFN_getdeptype(DepID) in (2,3)
+    and a.EID not in (select EID from pEMPHousingFund)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     -- 社保添加
-    insert into pEMPInsurance(eid)
-    select eid
+    insert into pEMPInsurance(eid,EMPInsuranceDepart)
+    select eid,depid
     from eemployee a
-    where a.EID=@EID and a.EID not in (select EID from pEMPInsurance)
+    where a.EID=@EID and dbo.eFN_getdeptype(DepID) in (2,3) 
+    and a.EID not in (select EID from pEMPInsurance)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

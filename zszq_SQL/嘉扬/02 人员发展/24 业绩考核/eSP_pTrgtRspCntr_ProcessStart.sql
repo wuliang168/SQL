@@ -72,7 +72,7 @@ Begin
     select distinct b.ID,(select CompID from eEmployee where EID=a.PreviewTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.PreviewTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.PreviewTo),a.PreviewTo,1
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c,pVW_employee d
-    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(d.DepID2nd,d.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     and a.PreviewTo is not NULL
     -- 异常流程
@@ -83,7 +83,7 @@ Begin
     select distinct b.ID,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,2
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c,pVW_employee d
-    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(d.DepID2nd,d.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
@@ -93,7 +93,7 @@ Begin
     select distinct b.ID,(select CompID from eEmployee where EID=a.ReportTo),(select dbo.eFN_getdepid1st(DepID) from eEmployee where EID=a.ReportTo),
     (select dbo.eFN_getdepid2nd(DepID) from eEmployee where EID=a.ReportTo),a.ReportTo,3
     from pVW_TrgtRspCntrDep a,pTrgtRspCntr_Process b,pEMPTrgtRspCntr c,pVW_employee d
-    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(c.DepID2nd,c.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
+    where b.ID=@ID and ISNULL(a.DepID2nd,a.DepID1st)=ISNULL(d.DepID2nd,d.DepID1st) and c.EID=d.EID and d.Status not in (4,5)
     and (select COUNT(ID) from pEMPTrgtRspCntr_KPI where KPIID=c.KPIID and ISNULL(TRCAchRate,0)<1)>0 and ISNULL(c.IsCont,0)=0
     -- 异常流程
     If @@Error<>0
@@ -102,7 +102,7 @@ Begin
     ---- 被考核人
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM
     insert into pEMPTrgtRspCntrMM(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,PT,RT,RRT)
-    select a.ID,b.EID,b.CompID,b.DepID1st,b.DepID2nd,b.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID,d.PreviewTo,d.ReportTo,d.ReportTo
+    select a.ID,b.EID,b.CompID,c.DepID1st,c.DepID2nd,c.JobID,b.TRCBeginDate,b.TRCEndDate,b.KPIID,d.PreviewTo,d.ReportTo,d.ReportTo
     from pTrgtRspCntr_Process a,pEMPTrgtRspCntr b,pVW_employee c,pVW_TrgtRspCntrReportTo d
     where a.ID=@ID and ISNULL(b.IsCont,0)=0 and b.EID=c.EID and c.Status not in (4,5) and b.EID=d.EID
     and exists (select 1 from pEMPTrgtRspCntr_KPI where KPIID=b.KPIID and ISNULL(TRCAchRate,0)<1)

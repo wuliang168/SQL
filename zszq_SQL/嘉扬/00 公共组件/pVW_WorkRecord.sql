@@ -1,24 +1,11 @@
 -- pvw_Workrecord
 
-SELECT f.EID,
-    (select COUNT(term)
-    from lCalendar
-    where XTYPE=1 and DATEDIFF(DD,Term,(CASE WHEN DATEDIFF(day,c.JoinDate,d.BeginDate)>=0 THEN d.BeginDate ELSE c.JoinDate END))<=0 and datediff(dd,term,(CASE WHEN datediff(day,getdate(),d.EndDate)<=0 THEN d.EndDate ELSE getdate() END))>=0)  AS workday,
-    d.Term AS mm,
-    ISNULL(b.tianxieday, 0) AS tianxieday,
-    (select COUNT(term)
-    from lCalendar
-    where XTYPE=1 and DATEDIFF(DD,Term,(CASE WHEN DATEDIFF(day,c.JoinDate,d.BeginDate)>=0 THEN d.BeginDate ELSE c.JoinDate END))<=0 and datediff(dd,term,(CASE WHEN datediff(day,getdate(),d.EndDate)<=0 THEN d.EndDate ELSE getdate() END))>=0)-ISNULL(b.tianxieday, 0)  AS diffdays,
-    f.Name, f.DepID AS depid1
-    , e.DepAbbr, e.DepType, e.xOrder
-FROM dbo.Lleave_Periods AS d
-    left JOIN dbo.eStatus AS c ON DATEDIFF(day, c.JoinDate, d.EndDate) >= 0
-    inner join eEmployee f on f.EID=c.EID AND f.Status IN (1,2,3)
-    left join dbo.pEmployee_register AS a ON a.EID = c.EID
-    left JOIN (SELECT COUNT(DISTINCT CONVERT(varchar(10), tianxiedate, 120)) AS tianxieday, EID, CONVERT(VARCHAR(8), tianxiedate, 120) + '01' AS month
-    FROM dbo.Workrecord
-    WHERE (workitem IS NOT NULL) and datediff(m,GETDATE(),tianxiedate)>=-1
-    GROUP BY EID, CONVERT(VARCHAR(8), tianxiedate, 120) + '01') AS b ON b.month = d.Term AND b.EID = c.EID
-    inner join dbo.oDepartment AS e ON f.DepID = e.DepID
-WHERE DATEDIFF(MM,d.term,GETDATE())=1
-    AND a.pstatus = 1
+select a.EID as EID,a.WorkDay as WorkDay,a.month as mm,a.tianxieday as tianxieday, a.WorkDay-a.tianxieday as diffdays,a.Name as Name,a.depid1 as depid1,a.DepType as DepType,a.xOrder as xOrder
+from (select a.EID as EID,(Case When DATEDIFF(mm,b.joindate,GETDATE())<=1 Then  (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1 and DATEDIFF(DD,b.JoinDate,term)>=0)
+ELSE (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1) End) as WorkDay,
+DATEADD(m,-1 ,dateadd(dd,-day(getdate())+1,getdate())) as month,
+(select COUNT(EID) from Workrecord where EID=a.EID and DATEDIFF(mm,tianxiedate,GETDATE())=1 and id in (select min(id) from Workrecord where DATEDIFF(mm,tianxiedate,GETDATE())=1 group by EID,tianxiedate)) as tianxieday, a.Name as Name,a.DepID as depid1,
+(select DepAbbr from oDepartment where DepID=a.DepID) as DepAbbr,(select DepType from oDepartment where DepID=a.DepID) as DepType,(select xorder from oJob where JobID=a.JobID) as xOrder
+from eEmployee a
+inner join eStatus b on a.EID=b.EID
+where a.Status not in (4,5)) a

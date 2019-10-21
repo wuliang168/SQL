@@ -13,55 +13,55 @@ begin
 
     -- 插入日常考勤异常表
     ---- 上午和下午均未打卡：上午未打卡
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
-    null begintime, null endtime, N'上午' KQSJ, N'未打卡' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    null begintime, null endtime, N'上午' KQSJ, N'未打卡' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID
     and a.eid not in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0)
     ---- 上午和下午均未打卡：下午未打卡
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
-    null begintime, null endtime, N'下午' KQSJ, N'未打卡' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    null begintime, null endtime, N'下午' KQSJ, N'未打卡' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID 
     and a.eid not in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0)
     ---- 仅仅上午未打卡
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     null begintime, (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and beginTime is null) endtime, 
-    N'上午' KQSJ, N'未打卡' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    N'上午' KQSJ, N'未打卡' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID 
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and beginTime is null)
     ---- 仅仅下午未打卡
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     (select begintime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is null) begintime, null endtime, 
-    N'下午' KQSJ, N'未打卡' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    N'下午' KQSJ, N'未打卡' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID 
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and endTime is null)
     ---- 上班迟到
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     (select beginTime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and beginTime is not null
     and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10) begintime, 
     (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and beginTime is not null
-    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10) endtime, N'上午' KQSJ, N'迟到' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10) endtime, N'上午' KQSJ, N'迟到' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and beginTime is not null
     and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10)
     ---- 下班早退
-    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX)
+    insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     (select beginTime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is not null
     and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30) begintime, 
     (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is not null
-    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30) endtime, N'下午' KQSJ, N'早退' YCKQNX
-    from eemployee a
-    where a.Status in (1,2,3) 
+    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30) endtime, N'下午' KQSJ, N'早退' YCKQNX,b.ReportToDaily
+    from eemployee a,pVW_EMPReportToDaily b
+    where a.Status in (1,2,3) and a.EID=b.EID
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and endTime is not null
     and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30)
 
@@ -83,7 +83,7 @@ begin
     and DATEDIFF(day,a.term,b.EndTime)>=0
     ---- 外出登记异常记录自动确认
     update a 
-    set Submit=1,SubmitTime=@TIME,YCKQJG=N'情况属实，正常出勤'
+    set Submit=1,SubmitTime=@TIME,YCKQJG=N'情况属实，正常出勤',a.YCKQSM=b.Remark
     from BS_YC_DK a ,aOut_register b 
     where a.eid=b.eid and b.Submit=1 and isnull(a.Submit,0)=0
     and DATEDIFF(day,a.term,b.beginTime)<=0
@@ -92,7 +92,7 @@ begin
     -- OA关联
     ---- OA请假记录自动处理
     update a
-    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,a.YCKQJG=c.Title
+    set a.initialized=1 ,InitializedTime=@TIME,a.OAID=b.OAID,a.Submit=1,a.SubmitTime=@TIME,a.YCKQSM=c.Title,YCKQJG=N'情况属实，正常出勤'
     from BS_YC_DK a,pEmpOALeave b,oCD_LeaveType c
     where a.eid=b.EID and b.LeaveBeginDate is not NULL and b.LeaveEndDate is not NULL and b.LeaveType=c.ID
     and DATEDIFF(dd,a.term,b.LeaveBeginDate)<=0

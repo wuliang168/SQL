@@ -1,4 +1,5 @@
 -- Attence_LastMonthly
+
 select a.EID as EID,a.Badge as Badge,a.Name as Name,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as Dep1st,dbo.eFN_getdepid2nd(a.DepID) as Dep2nd,a.JobID as JobID,a.WorkCity as WorkCity,
 (Case When DATEDIFF(mm,m.joindate,GETDATE())<=1 Then  (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1 and DATEDIFF(DD,m.JoinDate,term)>=0)
 ELSE (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1) End) as ToWorkDays,

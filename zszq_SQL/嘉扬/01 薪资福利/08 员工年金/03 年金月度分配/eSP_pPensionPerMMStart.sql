@@ -44,8 +44,8 @@ Begin
 
 
     -- 插入部门年金月度表项pDepPensionPerMM
-    insert into pDepPensionPerMM(PensionMonth,SupDepID,DepID,Status,SalaryPayID,PensionContact,Remark)
-    select a.PensionMonth,b.SupDepID,b.DepID,b.Status,b.SalaryPayID,b.PensionContact,c.Instruction
+    insert into pDepPensionPerMM(pProcessID,PensionMonth,SupDepID,DepID,Status,SalaryPayID,PensionContact,Remark)
+    select a.ID,a.PensionMonth,b.SupDepID,b.DepID,b.Status,b.SalaryPayID,b.PensionContact,c.Instruction
     from pPensionPerMM a,pVW_DepPensionContact b,pPensionInfo c
     where a.ID=@ID and c.ID=1 and b.Status<>5
     -- 异常流程
@@ -53,8 +53,8 @@ Begin
     Goto ErrM
 
     -- 插入人员年金月度分配注册表pEmpPensionPerMM_register
-    insert into pEmpPensionPerMM_register(PensionMonth,EID,BID,DepID,SalaryPayID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
-    select a.PensionMonth,b.EID,b.BID,c.DepID,(case when b.BID is NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),
+    insert into pEmpPensionPerMM_register(pProcessID,PensionMonth,EID,BID,DepID,SalaryPayID,EmpPensionMonthTotal,EmpPensionMonthRest,PensionContact)
+    select a.ID,a.PensionMonth,b.EID,b.BID,c.DepID,(case when b.BID is NULL then (select SalaryPayID from pEMPSalary where EID=b.EID) else NULL end),
     b.EmpPensionPerYYRST,b.EmpPensionPerYYRST,
     (case when b.BID is not NULL or (select SalaryPayID from pEMPSalary where EID=b.EID)=6
     then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID))) 

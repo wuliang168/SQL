@@ -14,8 +14,8 @@
 -- 异常考勤确认
 SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600052'',''考勤确认'')">请您确认的异常考勤</a>' AS url,
 ISNULL(a.ReportToDaily,5256) AS approver,2 AS id
-FROM pVW_EMPReportToDaily a
-WHERE EXISTS (select 1 from BS_YC_DK where EID=a.EID AND ISNULL(Initialized, 0) = 1 AND ISNULL(SUBMIT, 0) = 0 AND ISNULL(OUTID,0)=0)
+from BS_YC_DK a
+where ISNULL(Initialized, 0) = 1 AND ISNULL(SUBMIT, 0) = 0 AND ISNULL(OUTID,0)=0
 
 -- 异常考勤说明
 UNION
@@ -23,29 +23,25 @@ SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600051'',''异�
 ISNULL(a.EID, 5256) AS approver,2 AS id
 FROM BS_YC_DK a
 WHERE ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.SUBMIT, 0) = 0
----- 仅限今年和去年
-AND datediff(yy,a.TERM,getdate())<2
--- AND (datediff(M,getdate(),a.TERM)=0 or datediff(M,getdate(),a.TERM)=-1)
+---- 仅限今年
+AND datediff(yy,a.TERM,getdate())<1
 
 -- 外出登记确认
 UNION
-SELECT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600201'',''外出考勤确认'')">请您确认的外出记录</a>' AS url, 
-CASE WHEN dbo.eFN_getdepid1_XS(b.DEPID) = b.DEPID 
-THEN (SELECT ISNULL(Director, 5256) FROM odepartment c WHERE c.depid = b.DEPID) 
-ELSE (SELECT ISNULL(Director, 5256) FROM odepartment c WHERE c.depid = dbo.eFN_getdepid1_XS(b.DEPID))
-END AS approver, 2 AS id
-FROM aOut_register a, eemployee b
-WHERE a.EID = b.EID AND ISNULL(a.Initialized, 0) = 1 AND ISNULL(a.SUBMIT, 0) = 0
+SELECT distinct N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600201'',''外出考勤确认'')">请您确认的外出记录</a>' AS url, 
+a.ReportTo approver, 2 AS id
+FROM aOut_register a
+WHERE ISNULL(a.Initialized, 0)=1 AND ISNULL(a.SUBMIT, 0) = 0 and a.ReportTo is not NULL
 
 -- 月工作计划与汇总(旧)
 UNION
 SELECT DISTINCT 
 N'<a href="#" onclick="moveTo(''1.0.600020'',''leftid^' + cast(a.MonthID AS nvarchar(15)) + 
 N''',''绩效首页'')">请您于本月15日前制定' + cast(month(a.period) AS varchar(10)) + N'月份工作计划</a>' AS url, 
-ISNULL(b.EID, 5256) AS approver,3 AS id
-FROM PEMPPROCESS_MONTH a, eemployee b
-WHERE a.badge = b.Badge AND ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.Closed, 0) = 0 
-AND a.monthID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=0)
+ISNULL(a.EID, 5256) AS approver,3 AS id
+FROM PEMPPROCESS_MONTH a
+WHERE ISNULL(a.Initialized,0) = 0 AND ISNULL(a.Closed,0) = 0 
+AND a.monthID=(select id from pProcess_month where ISNULL(Initialized,0)=1 and ISNULL(Submit,0)=0)
 
 
 -- 月工作计划与汇总_上月(旧)
@@ -54,9 +50,9 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.600020'',''leftid^' + cast(a.MonthID AS nvarchar(15)) + 
 N''',''绩效首页'')">请您先修改' + cast(month(a.period) AS varchar(10)) + N'月份工作计划，再'
 + cast(month(DATEADD(mm,1,a.period)) AS varchar(10)) + N'对月份工作计划进行评分</a>' AS url, 
-ISNULL(b.EID, 5256) AS approver,2 AS id
-FROM PEMPPROCESS_MONTH a, eemployee b
-WHERE a.badge = b.Badge AND ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.Closed, 0) = 1 AND a.pStatus=2
+ISNULL(a.EID, 5256) AS approver,2 AS id
+FROM PEMPPROCESS_MONTH a
+WHERE ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.Closed, 0) = 1 AND a.pStatus=2
 
 -- 月工作计划与汇总(新)
 --UNION
@@ -82,7 +78,7 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.600021'',''leftid^' + cast(a.MonthID AS nvarchar(15)) + 
 N''',''月度计划评分'')">请您于本月底前考核下属上月度工作完成情况</a>' AS url, 
 ISNULL(a.kpiReportTo, 5256) AS approver, 3 AS id
-FROM pvw_pEmpProcess_Month a
+FROM pEmpProcess_Month a
 WHERE (a.pstatus in (0,1) or (a.pstatus=3 and ISNULL(a.IsReSubmit,0)=1))
 AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=1)
 AND DATEPART(dd,GETDATE()) BETWEEN 16 AND 31

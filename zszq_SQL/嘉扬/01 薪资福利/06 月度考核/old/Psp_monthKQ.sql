@@ -58,8 +58,8 @@ begin
 	Goto ErrM
 
 	-- 插入员工 从pemployee插入才合理
-	insert into pEmpProcess_Month (period,badge,name,depid,depid2,jobid,kpidepid,pegroup,pstatus,kpiReportTo,monthID)
-	select @kpimonth,a.badge,a.Name,b.DepID1st,b.DepID2nd,a.jobid,b.KPIDepID,NULL,0,b.KPIReportTo,@id
+	insert into pEmpProcess_Month (period,EID,badge,name,depid,depid2,jobid,kpidepid,pegroup,pstatus,kpiReportTo,monthID)
+	select @kpimonth,a.EID,a.badge,a.Name,b.DepID1st,b.DepID2nd,a.jobid,b.KPIDepID,NULL,0,b.KPIReportTo,@id
 	from eEmployee a, pVW_pMonthKPIReportTo b
 	where a.Status in (1,2,3) and a.EID=b.EID and ISNULL(b.pStatus,0)<>2
 	and not exists (select 1

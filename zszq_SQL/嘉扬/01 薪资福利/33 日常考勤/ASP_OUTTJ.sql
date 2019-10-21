@@ -76,9 +76,10 @@ begin
     From aout_register
     Where ID=@ID
 
-    update aout_register
-    set Initialized=1,InitializedTime=GETDATE(),InitializedBy=@EID
-    where id=@id
+    update a
+    set a.Initialized=1,a.InitializedTime=GETDATE(),a.InitializedBy=@EID,a.ReportTo=b.ReportToDaily
+    from aout_register a,pVW_EMPReportToDaily b
+    where a.EID=b.EID and a.id=@id
 
     IF @@Error <> 0
     Goto ErrM

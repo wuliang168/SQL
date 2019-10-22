@@ -21,11 +21,15 @@ Begin
 
 
     -- 添加社保缴费比例注册表项oCD_InsuranceRatioLoc_register
-    insert into oCD_InsuranceRatioLoc_register(ID_Orig,Code,Place,Title,InsDepID,InsuranceYear,InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,
-    MedicalInsBaseDownLimit,EndowInsRatioEMP,EndowInsRatioGRP,MedicalInsRatioEMP,MedicalInsRatioGRP,UnemployInsRatioEMP,UnemployInsRatioGRP,
-    MaternityInsRatioGRP,InjuryInsRatioGRP,MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod)
-    select a.ID,a.Code,a.Place,a.Title,a.InsDepID,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
-    a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.MaternityInsRatioGRP,a.InjuryInsRatioGRP,
+    insert into oCD_InsuranceRatioLoc_register(ID_Orig,Code,Place,Title,InsDepID,InsuranceYear,
+    InsuranceBaseUpLimit,InsuranceBaseDownLimit,SalaryLimitLoc,MedicalInsBaseUpLimit,MedicalInsBaseDownLimit,
+    EndowInsRatioEMP,EndowInsRatioGRP,EndowInsCalcMethod,MedicalInsRatioEMP,MedicalInsRatioGRP,MedicalInsCalcMethod,
+    UnemployInsRatioEMP,UnemployInsRatioGRP,UnemployInsCalcMethod,MaternityInsRatioGRP,MaternityInsCalcMethod,InjuryInsRatioGRP,InjuryInsCalcMethod,
+    MedicalPlusInsRatioEMP,MedicalPlusInsEMP,MedicalPlusInsRatioGRP,MedicalPlusInsGRP,MedicalPlusInsType,CalcMethod)
+    select a.ID,a.Code,a.Place,a.Title,a.InsDepID,a.InsuranceYear,a.InsuranceBaseUpLimit,a.InsuranceBaseDownLimit,
+    a.SalaryLimitLoc,a.MedicalInsBaseUpLimit,a.MedicalInsBaseDownLimit,
+    a.EndowInsRatioEMP,a.EndowInsRatioGRP,a.EndowInsCalcMethod,a.MedicalInsRatioEMP,a.MedicalInsRatioGRP,a.MedicalInsCalcMethod,
+    a.UnemployInsRatioEMP,a.UnemployInsRatioGRP,a.UnemployInsCalcMethod,a.MaternityInsRatioGRP,a.MaternityInsCalcMethod,a.InjuryInsRatioGRP,a.InjuryInsCalcMethod,
     a.MedicalPlusInsRatioEMP,a.MedicalPlusInsEMP,a.MedicalPlusInsRatioGRP,a.MedicalPlusInsGRP,a.MedicalPlusInsType,a.CalcMethod
     From oCD_InsuranceRatioLoc a
     Where a.ID=@ID and ISNULL(a.IsDisabled,0)=0

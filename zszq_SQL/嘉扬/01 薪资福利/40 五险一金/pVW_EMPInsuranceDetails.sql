@@ -10,15 +10,15 @@ a.EMPInsuranceLoc as EMPInsuranceLoc,a.InsRatioLocID as EMPInsRatioLocID,a.EMPIn
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,2)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,1)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,0)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
 end )
 end )
 as EndowInsEMP,
@@ -27,15 +27,15 @@ as EndowInsEMP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,2)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,1)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP,0)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/100
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/10)/10
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*100)/100
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP*10)/10
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioEMP)
 end )
 end )
 ------ 医疗补助金额(个人)
@@ -51,15 +51,15 @@ as MedicalInsEMP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,2)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,1)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP,0)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/100
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/10)/10
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*100)/100
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP*10)/10
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioEMP)
 end )
 end )
 as UnemployInsEMP,
@@ -68,15 +68,15 @@ as UnemployInsEMP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,2)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,1)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP,0)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP*10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioGRP)
 end ) 
 end )
 as EndowInsGRP,
@@ -85,15 +85,15 @@ as EndowInsGRP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,2)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,1)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP,0)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/100
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/10)/10
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP)
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*100)/100
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP*10)/10
+when ISNULL(d.MedicalInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPMedicalBase,a.EMPInsuranceBase)*d.MedicalInsRatioGRP)
 end ) 
 end )
 ------ 医疗补助金额(公司)
@@ -109,15 +109,15 @@ as MedicalInsGRP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,2)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,1)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP,0)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/100
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/10)/10
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP)
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*100)/100
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP*10)/10
+when ISNULL(d.UnemployInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPUnemployBase,a.EMPInsuranceBase)*d.UnemployInsRatioGRP)
 end ) 
 end )
 as UnemployInsGRP,
@@ -126,15 +126,15 @@ as UnemployInsGRP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP)
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,2)
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,1)
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP,0)
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/100
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/10)/10
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP)
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*100)/100
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP*10)/10
+when ISNULL(d.MaternityInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPMaternityBase,a.EMPInsuranceBase)*d.MaternityInsRatioGRP)
 end ) 
 end )
 as MaternityInsGRP,
@@ -143,15 +143,15 @@ as MaternityInsGRP,
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case 
-when d.CalcMethod=1 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,2)
-when d.CalcMethod=2 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,1)
-when d.CalcMethod=3 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,0)
-when d.CalcMethod=4 Then CEILING(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/100
-when d.CalcMethod=5 Then CEILING(FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/10)/10
-when d.CalcMethod=6 Then CEILING(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP)
-when d.CalcMethod=7 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/100
-when d.CalcMethod=8 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*10)/10
-when d.CalcMethod=9 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP)
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,2)
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,1)
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP,0)
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/100
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/10)/10
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP)
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*100)/100
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP*10)/10
+when ISNULL(d.InjuryInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPInjuryBase,a.EMPInsuranceBase)*d.InjuryInsRatioGRP)
 end ) 
 end )
 as InjuryInsGRP

@@ -16,6 +16,14 @@ As
 */
 Begin
 
+    -- 调整表项中已存在，无法新增!
+    If Exists(Select 1 From oCD_HousingFundRatioLoc Where ID=@ID 
+    And ID in (select ID_Orig from oCD_HousingFundRatioLoc_register where ID_Orig is not NULL))
+    Begin
+        Set @RetVal = 950190
+        Return @RetVal
+    End
+
 
     Begin TRANSACTION
 

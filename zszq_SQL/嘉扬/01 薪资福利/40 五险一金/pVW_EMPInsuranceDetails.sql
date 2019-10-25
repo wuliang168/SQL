@@ -10,15 +10,15 @@ a.EMPInsuranceLoc as EMPInsuranceLoc,a.InsRatioLocID as EMPInsRatioLocID,a.EMPIn
 when ISNULL(a.IsPostRetirement,0)=1 or ISNULL(a.IsLeave,0)=1 or ISNULL(a.Isabandon,0)=1 then NULL
 when ISNULL(a.IsPostRetirement,0)=0 and ISNULL(a.IsLeave,0)=0 and ISNULL(a.Isabandon,0)=0 then 
 (Case
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,2)
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,1)
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP,0)
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/10)/10
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP*10)/10
-when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(a.EMPEndowBase,a.EMPInsuranceBase)*d.EndowInsRatioEMP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=1 Then ROUND(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP,2)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=2 Then ROUND(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP,1)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=3 Then ROUND(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP,0)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=4 Then CEILING(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=5 Then CEILING(FLOOR(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=6 Then CEILING(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP)
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=7 Then FLOOR(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP*100)/100
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=8 Then FLOOR(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP*10)/10
+when ISNULL(d.EndowInsCalcMethod,d.CalcMethod)=9 Then FLOOR(ISNULL(ISNULL(a.EMPEndowBaseEmp,a.EMPEndowBase),a.EMPInsuranceBase)*d.EndowInsRatioEMP)
 end )
 end )
 as EndowInsEMP,

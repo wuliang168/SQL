@@ -9,18 +9,18 @@ WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)+ROUND(c.
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*1,0)-ROUND(c.TotalRankNum*0.1,0) and ROUND(c.TotalRankNum*1,0) THEN 'D'
 END) as RankLevel,
 (CASE WHEN c.TotalRankNum=1 THEN 1.2
--- A
+-- A 20%
 WHEN c.TotalRankNum>1 and d.Ranking between 0 and ROUND(c.TotalRankNum*0.2,0)/3 THEN 1.5
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)/3  and ROUND(c.TotalRankNum*0.2,0)-ROUND(c.TotalRankNum*0.2,0)/3 THEN 1.4
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)-ROUND(c.TotalRankNum*0.2/3,3) and ROUND(c.TotalRankNum*0.2,0) THEN 1.3
--- B
+-- B 40%
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0) and ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)/3 THEN 1.2
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)/3 and ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)-ROUND(c.TotalRankNum*0.4,0)/3 THEN 1.1
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)-ROUND(c.TotalRankNum*0.4,0)/3 and ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0) THEN 1.0
--- C
+-- C 30%
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0) and ROUND(ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)+ROUND(c.TotalRankNum*0.3/2,0),0) THEN 0.9
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(ROUND(c.TotalRankNum*0.2,0)+ROUND(c.TotalRankNum*0.4,0)+ROUND(c.TotalRankNum*0.3/2,0),0) and ROUND(c.TotalRankNum*1,0)-ROUND(c.TotalRankNum*0.1,0) THEN 0.8
--- D
+-- D 10%
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(c.TotalRankNum*1,0)-ROUND(c.TotalRankNum*0.1,0) and ROUND(ROUND(c.TotalRankNum*1,0)-ROUND(c.TotalRankNum*0.1,0)/2,0) THEN 0.7
 WHEN c.TotalRankNum>1 and d.Ranking between ROUND(ROUND(c.TotalRankNum*1,0)-ROUND(c.TotalRankNum*0.1,0)/2,0) and ROUND(c.TotalRankNum*1,0) THEN 0.6
 END) as RankRatio,a.Score_EID as Score_EID

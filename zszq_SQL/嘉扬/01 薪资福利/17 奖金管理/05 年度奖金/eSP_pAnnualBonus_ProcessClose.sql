@@ -37,7 +37,7 @@ Begin
     -- 插入年度奖金流程的历史表项pYear_AnnualBonus_all
     insert into pYear_AnnualBonus_all(ProcessID,Year,Date,AnnualBonusDepID,EMPDepID,EID,BID,Identification,AnnualBonusType,AnnualBonus,Lock,Remark)
     select a.ProcessID,a.Year,a.Date,a.AnnualBonusDepID,a.EMPDepID,a.EID,a.BID,a.Identification,a.AnnualBonusType,a.AnnualBonus,a.Lock,a.Remark
-    from pYear_AnnualBonus a,pYear_AnnualBonus_Process b
+    from pYear_AnnualBonus a
     where a.ProcessID=@ID
     -- 异常流程
     If @@Error<>0

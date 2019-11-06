@@ -25,7 +25,7 @@ Begin
     End
 
     -- 年度奖金流程未关闭!
-    If Exists(Select 1 From pYear_AnnualBonus_Process Where ID=@ID and ISNULL(Closed,0)=NULL)
+    If Exists(Select 1 From pYear_AnnualBonus_Process Where ID=@ID and ISNULL(Closed,0)=0)
     Begin
         Set @RetVal = 930345
         Return @RetVal

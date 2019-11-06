@@ -6,8 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER Procedure [dbo].[eSP_pAnnualBonus_ProcessBack]
 -- skydatarefresh eSP_pAnnualBonus_ProcessBack
-    @ID int,
-    @URID int,  
+    @ID int, 
     @RetVal int=0 Output
 As
 /*

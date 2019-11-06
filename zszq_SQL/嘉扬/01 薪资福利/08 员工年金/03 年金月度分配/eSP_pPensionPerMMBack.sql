@@ -60,8 +60,8 @@ Begin
 
 
     -- 删除年金月度数据表项
-    -- 删除后台人员月度数据表项pEmpPensionPerMM_register
-    delete from pEmpPensionPerMM_register
+    -- 删除后台人员月度数据表项pEmpPensionPerMM_all
+    delete from pEmpPensionPerMM_all
     where pProcessID=@ID
     -- 异常流程
     If @@Error<>0

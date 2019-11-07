@@ -5,7 +5,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[Psp_monthGB]
-	@id int,
+	@ID int,
 	@URID int,
 	@RetVal int=0 OutPut
 /*
@@ -16,7 +16,7 @@ as
 begin
 
 	-- 该月已关闭，不用重复点击！
-	If Exists(Select 1 From pProcess_month Where ISNULL(Submit,0)=1 and isnull(id,0)=@id and enddate is not null)
+	If Exists(Select 1 From pProcess_month Where ISNULL(Submit,0)=1 and isnull(id,0)=@ID and enddate is not null)
 	Begin
 		Set @RetVal = 1100042
 		Return @RetVal
@@ -24,7 +24,7 @@ begin
 
 	/*
 	-- 存在未完成员工不允许关闭！
-	If Exists(Select 1 From pEmpProcess_Month Where ISNULL(Closed,0)=0 and isnull(monthid,0)=@id)
+	If Exists(Select 1 From pEmpProcess_Month Where ISNULL(Closed,0)=0 and isnull(monthid,0)=@ID)
 	Begin
 		Set @RetVal = 1000012
 		Return @RetVal
@@ -38,6 +38,7 @@ begin
 	update a
 	set a.Closed=1,a.ClosedTime=GETDATE()
 	from pEmpProcess_Month a
+	where a.ID=@ID
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -56,7 +57,7 @@ begin
 	update a
 	set a.Submit=1,a.SubmitTime=GETDATE(),enddate=GETDATE(),eidclose=@URID
 	from pProcess_month a
-	where a.id=@id
+	where a.id=@ID
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -67,6 +68,7 @@ begin
 	select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,remark,Initialized,InitializedTime,
 	Submit,SubmitTime,Closed,Closedtime,badge,monthid
 	from pMonth_Plan
+	where monthid=@ID
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -83,14 +85,14 @@ begin
 	select monthtitle,pMonth_ASSID,begindate,enddate,xorder,datemodulus,monthscoop,grade,Scoreadjust,remark,
 	Initialized,InitializedTime,Submit,SubmitTime,Closed,Closedtime,adjustsonce,badge,monthid
 	from pMonth_ASS a
-	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=a.monthid),(select kpimonth from pProcess_month where id=@id))>0
+	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=a.monthid),(select kpimonth from pProcess_month where id=@ID))>0
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
 
 	-- 删除上月的考核总结pMonth_ASS
 	delete from pMonth_ASS
-	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=monthid),(select kpimonth from pProcess_month where id=@id))>0
+	where DATEDIFF(mm,(select kpimonth from pProcess_month where id=monthid),(select kpimonth from pProcess_month where id=@ID))>0
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM
@@ -115,7 +117,7 @@ begin
 
 	--绩效节点数生成 Add By Jimmy
 	--declare @processid int
-	--select @processid=pProcessID from pProcess_month where id=@id
+	--select @processid=pProcessID from pProcess_month where id=@ID
 
 	--delete from SkyPAFormConfig where xyear=@processid and xtype=4
 
@@ -128,7 +130,7 @@ begin
 	--a.xorder,a.title,a.xtype,a.URL,a.remark,'select {U_EID}',beforeorafter
 	--from pAFormConfig a,pEmpProcess_Month b,pEmployee c,pAForm_Role d
 	--where b.badge=c.Badge and a.xtype=4 and a.beforeorafter=2 and c.perole=d.Roleid and d.Formid=a.id
-	--and d.isUsed=1 and b.monthID=@id
+	--and d.isUsed=1 and b.monthID=@ID
 	--and cast (@processid as varchar)+cast (EID as varchar)+cast (a.id as varchar) not in (select id from SkyPAFormConfig)
 
 	COMMIT TRANSACTION

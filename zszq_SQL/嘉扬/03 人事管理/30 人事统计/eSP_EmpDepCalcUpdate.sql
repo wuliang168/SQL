@@ -15,13 +15,14 @@ As
 */
 Begin
     declare @calcdate smalldatetime
-    set @calcdate=GETDATE()
+    -- 上一个月的最后一天
+    set @calcdate=dateadd(month, datediff(month, 0, dateadd(month, 0, getdate())), -1)
 
     Begin TRANSACTION
 
     -- 删除原有数据
     delete from pEmpDepStat
-    where DATEDIFF(MM,MonthStat,DATEADD(MM,-1,@calcdate))=0
+    where DATEDIFF(MM,MonthStat,@calcdate)=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM

@@ -65,12 +65,12 @@ Begin
     -- 添加至月度业务考核员工表项pEMPTrgtRspCntrMM_all
     insert into pEMPTrgtRspCntrMM_all(ProcessID,EID,CompID,DepID1st,DepID2nd,JobID,TRCBeginDate,TRCEndDate,KPIID,
     SubmitSelf,DateSelf,PT,SubmitPT,DatePT,RT,SubmitRT,DateRT,HR,SubmitHR,RRT,SubmitRRT,DateRRT,RHR,IsCont,
-    CommPT,CommRT,CommHR,CommRRT,CommRHR,Remark)
+    CommPT,CommRT,CommHR,CommRRT,CommRHR,Remark,TRCKPIComb)
     select a.ProcessID,a.EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.TRCBeginDate,a.TRCEndDate,a.KPIID,
     a.SubmitSelf,a.DateSelf,a.PT,a.SubmitPT,a.DatePT,a.RT,a.SubmitRT,a.DateRT,a.HR,a.SubmitHR,a.RRT,a.SubmitRRT,a.DateRRT,a.RHR,a.IsCont,
-    a.CommPT,a.CommRT,a.CommHR,a.CommRRT,a.CommRHR,a.Remark
-    from pEMPTrgtRspCntrMM a,pTrgtRspCntr_Process b
-    where b.ID=@ID and a.ProcessID=b.ID
+    a.CommPT,a.CommRT,a.CommHR,a.CommRRT,a.CommRHR,a.Remark,b.TRCKPIComb
+    from pEMPTrgtRspCntrMM a,pVW_pEMPTrgtRspCntr b
+    where a.ProcessID=@ID and a.EID=b.EID and a.KPIID=b.KPIID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

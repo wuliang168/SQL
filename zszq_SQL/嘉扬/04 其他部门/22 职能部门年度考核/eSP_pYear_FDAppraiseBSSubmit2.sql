@@ -25,15 +25,15 @@ Begin
 
     -- 职能部门考核-服务支持评分超出范围，无法递交职能部门考核！
     IF Exists(select 1 from pFDAppraise where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=3
-    AND (Score1 not between 3 and 5 or Score2 not between 3 and 5 or Score3 not between 3 and 5))
+    AND (Score1 not between 0 and 100 or Score2 not between 0 and 100 or Score3 not between 0 and 100))
     Begin
         Set @RetVal=1005060
         Return @RetVal
     End
 
-    -- 职能部门考核-服务支持评分为3分和5分未填写具体案例说明，无法递交职能部门考核！
+    -- 职能部门考核-服务支持单项评分低于70分或高于90分未填写具体案例说明，无法递交职能部门考核！
     IF Exists(select 1 from pFDAppraise where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=3
-    AND (Score1 in (3,5) or Score2 in (3,5) or Score3 in (3,5)) AND Remark is NULL)
+    AND (Score1 not between 70 and 90 or Score2 not between 70 and 90 or Score3 not between 70 and 90) AND Remark is NULL)
     Begin
         Set @RetVal=1005070
         Return @RetVal

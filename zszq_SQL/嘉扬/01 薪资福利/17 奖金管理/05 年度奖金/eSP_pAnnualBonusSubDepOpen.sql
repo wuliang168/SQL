@@ -16,9 +16,10 @@ As
 */
 Begin
 
+
     -- 待分配奖金上限大于分支机构剩余奖金，二级分支机构奖金分配无法开启!
-    If Exists(Select 1 From pVW_pAnnualBonusDep 
-    Where AnnualBonusDEP2ndRest<0 and AnnualBonusDepID=(select AnnualBonusDepID from pYear_AnnualBonusDep where ID=@ID))
+    If Exists(Select 1 From pVW_pAnnualBonusDep a,pYear_AnnualBonusDep b
+    Where a.AnnualBonusDEP2ndRest<0 and a.AnnualBonusDepID=b.AnnualBonusDepID and a.ProcessID=b.ProcessID and b.ID=@ID)
     Begin
         Set @RetVal = 930361
         Return @RetVal

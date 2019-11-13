@@ -24,6 +24,13 @@ begin
     from aout_register
     where id=@id
 
+    -- 开始日期不能大于结束日期
+    If DATEDIFF(DD,@begintime,@endtime)<0
+    Begin
+        Set @RetVal = 941105
+        Return @RetVal
+    End
+
     --if exists(select 1 from aout_register where ltrim(rtrim(REMARk)) is null and id=@id)
     --begin
     -- set @RetVal=999012

@@ -23,7 +23,7 @@ Begin
     and DATEDIFF(dd,GETDATE(),a.RetireDate)<=45 and DATEDIFF(dd,GETDATE(),a.RetireDate)>=0
     ---- 发送邮箱提醒
     INSERT INTO skyJobQueueSMTP(MailTo,Subject,Message,Status,starttime,endtime,Times,Timesmax)
-    select (select a.Mobile from eDetails a,eEmployee b where a.EID=b.EID and b.EID=@HR),
+    select (select a.OA_mail from eDetails a,eEmployee b where a.EID=b.EID and b.EID=@HR),
     N'提前45天通知内容',b.Name+'('+b.Badge+')'+N'将于'+Convert(nvarchar(4),YEAR(a.RetireDate))+N'年'+Convert(nvarchar(2),MONTH(a.RetireDate))+
     N'月'+Convert(nvarchar(2),DAY(a.RetireDate))+N'日达到法定退休年龄【人力资源部】',0,GETDATE(),DATEADD(DD,1,GETDATE()),0,3
     from eStatus a,eEmployee b
@@ -135,7 +135,7 @@ Begin
 	--and 5014=c.EID and b.EID<>1112
 	---- 人力资源部人事管理室劳动关系岗
 	INSERT INTO skyJobQueueSMTP(MailTo,Subject,Message,Status,starttime,endtime,Times,Timesmax)
-	select (select a.Mobile from eDetails a,eEmployee b where a.EID=b.EID and b.EID=@HR),
+	select (select a.OA_mail from eDetails a,eEmployee b where a.EID=b.EID and b.EID=@HR),
 	N'退休提醒通知',b.Name+N'将于'+Convert(nvarchar(4),YEAR(a.RetireDate))+N'年'+Convert(nvarchar(2),MONTH(a.RetireDate))+
 	N'月'+Convert(nvarchar(2),DAY(a.RetireDate))+N'日达到法定退休年龄，请做好工作交接并办理退休手续【人力资源部】',0,GETDATE(),DATEADD(DD,1,GETDATE()),0,3
 	from eStatus a,eEmployee b

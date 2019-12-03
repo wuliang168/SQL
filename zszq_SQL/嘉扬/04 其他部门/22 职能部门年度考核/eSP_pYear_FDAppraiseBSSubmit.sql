@@ -15,103 +15,27 @@ as
 */
 Begin
 
-    -- 职能部门考核-基本职责评分为空，无法递交职能部门考核！
+    -- 职能部门考核评分为空，无法递交职能部门考核！
     IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=4 and ScoreTotal is NULL)
+    where FDAppraiseEID=@EID and Status=@leftid and ScoreTotal is NULL)
     Begin
         Set @RetVal=1005010
         Return @RetVal
     End
 
-    -- 职能部门考核-基本职责评分超出范围，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=4 and (ScoreTotal not between 0 and 50))
+    -- 职能部门考核评分超出范围，无法递交职能部门考核！
+    IF Exists(select 1 from pFDAppraise a,OCD_FDAPPRAISETYPE b
+    where a.FDAppraiseEID=@EID and a.Status=@leftid and a.FDAppraiseType=b.ID
+    and a.ScoreTotal>ISNULL(b.SUBCREDIT,b.FULLCREDIT))
     Begin
         Set @RetVal=1005020
         Return @RetVal
     End
 
-    -- 职能部门考核-基本职责评分未填写评分原因，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise a,pFDAppraiseAssess b 
-    where a.FDAppraiseEID=@EID and a.Status=@leftid and a.Status=1 and a.FDAppraiseType=4 and a.FDAppraiseEID=b.FDAppraiseEID 
-    and a.Status=b.Status and a.FDAppraiseType=b.FDAppraiseType and a.DepID=b.DepID and b.assess is NULL)
-    Begin
-        Set @RetVal=1005021
-        Return @RetVal
-    End
-
-    -- 职能部门考核-年度重点评分为空，无法递交职能部门考核！
+    -- 职能部门考核服务支持未填写具体案例说明，无法递交职能部门考核！
     IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=5 and ScoreTotal is NULL)
-    Begin
-        Set @RetVal=1005030
-        Return @RetVal
-    End
-
-    -- 职能部门考核-年度重点评分超出范围，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=5 AND (ScoreTotal not between 0 and 50))
-    Begin
-        Set @RetVal=1005040
-        Return @RetVal
-    End
-
-    -- 职能部门考核-年度重点评分未填写评分原因，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise a,pFDAppraiseAssess b 
-    where a.FDAppraiseEID=@EID and a.Status=@leftid and a.Status=1 and a.FDAppraiseType=5 and a.FDAppraiseEID=b.FDAppraiseEID 
-    and a.Status=b.Status and a.FDAppraiseType=b.FDAppraiseType and a.DepID=b.DepID and b.assess is NULL)
-    Begin
-        Set @RetVal=1005041
-        Return @RetVal
-    End
-
-    ---- 职能部门考核-创新加分评分为空，无法递交职能部门考核！
-    --IF Exists(select 1 from pFDAppraise 
-    --where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=7 and ScoreTotal is NULL)
-    --Begin
-    --    Set @RetVal=1005045
-    --    Return @RetVal
-    --End
-
-    -- 职能部门考核-创新加分评分超出范围，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=7 AND (ScoreTotal not between 0 and 10))
-    Begin
-        Set @RetVal=1005046
-        Return @RetVal
-    End
-
-    -- 职能部门考核-创新加分评分未填写具体案例说明，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise a,pFDAppraiseAssess b 
-    where a.FDAppraiseEID=@EID and a.Status=@leftid and a.Status=1 and a.FDAppraiseType=7 and a.FDAppraiseEID=b.FDAppraiseEID 
-    and a.Status=b.Status and a.FDAppraiseType=b.FDAppraiseType and a.DepID=b.DepID and a.ScoreTotal is not NULL and b.assess is NULL)
-    Begin
-        Set @RetVal=1005047
-        Return @RetVal
-    End
-
-    -- 职能部门考核-服务支持评分为空，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=3
-    group by FDAppraiseEID,DepID,Status having COUNT(FDAppraiseEID)-COUNT(ScoreTotal)>0)
-    Begin
-        Set @RetVal=1005050
-        Return @RetVal
-    End
-
-    -- 职能部门考核-服务支持评分超出范围，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType=3
-    AND (Score1 not between 0 and 5 or Score2 not between 0 and 5 or Score3 not between 0 and 5))
-    Begin
-        Set @RetVal=1005060
-        Return @RetVal
-    End
-
-    -- 职能部门考核-服务支持评分未填写具体案例说明，无法递交职能部门考核！
-    IF Exists(select 1 from pFDAppraise 
-    where FDAppraiseEID=@EID and Status=@leftid and Status=1 and FDAppraiseType=3
-    AND (Score1 between 0 and 3 or Score1=5 or Score2 between 0 and 3 or Score2=5 or Score3 between 0 and 3 or Score3=5) AND Remark is NULL)
+    where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType in (3,15,16)
+    AND (ScoreTotal between 0 and 70 or ScoreTotal between 90 and 100) AND Remark is NULL)
     Begin
         Set @RetVal=1005070
         Return @RetVal

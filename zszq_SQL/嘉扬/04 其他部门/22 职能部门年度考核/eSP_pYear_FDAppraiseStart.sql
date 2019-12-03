@@ -43,7 +43,7 @@ Begin
     Begin TRANSACTION
 
 
-    -- 插入职能部门考核被考核部门表项pFDAppraise
+    -- 插入职能部门考核打分表项pFDAppraise(被考核部门)
     insert into pFDAppraise(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status)
     select b.ID,a.DepID,a.Director,a.FDAppraiseEID,a.FDAppraiseType,a.Status
     from pVW_pFDAppraise a,pYear_FDAppraiseProcess b
@@ -52,18 +52,18 @@ Begin
     If @@Error<>0
     Goto ErrM
 
-    -- 插入职能部门考核被考核部门表项pFDAppraiseAssess
-    insert into pFDAppraiseAssess(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex)
-    select b.ID,a.DepID,a.Director,a.FDAppraiseEID,a.FDAppraiseType,a.Status,a.xOrder,a.AppraiseIndex
-    from pVW_pFDAppraiseAssess a,pYear_FDAppraiseProcess b
-    where b.ID=@ID
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
+    -- 插入职能部门考核说明表项pFDAppraiseAssess(被考核部门)
+    --insert into pFDAppraiseAssess(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex)
+    --select b.ID,a.DepID,a.Director,a.FDAppraiseEID,a.FDAppraiseType,a.Status,a.xOrder,a.AppraiseIndex
+    --from pVW_pFDAppraiseAssess a,pYear_FDAppraiseProcess b
+    --where b.ID=@ID
+    ---- 异常流程
+    --If @@Error<>0
+    --Goto ErrM
 
-    -- 插入职能部门考核考核人表项pYear_FDDepAppraise
-    insert into pYear_FDDepAppraise(pYear_ID,FDAppraiseDepID,FDAppraiseEID,Status)
-    select b.ID,a.FDAppraiseDepID,a.FDAppraiseEID,a.Status
+    -- 插入职能部门考核表项pYear_FDDepAppraise(考核人)
+    insert into pYear_FDDepAppraise(pYear_ID,FDAppraiseEID,Status)
+    select distinct b.ID,a.FDAppraiseEID,a.Status
     from pVW_pFDDepAppraise a,pYear_FDAppraiseProcess b
     where b.ID=@ID
     -- 异常流程

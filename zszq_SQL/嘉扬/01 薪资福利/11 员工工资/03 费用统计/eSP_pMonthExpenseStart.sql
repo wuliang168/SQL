@@ -63,7 +63,7 @@ Begin
     -- 插入月度费用通讯费pMonthExpensePerMM
     insert into pMonthExpensePerMM(EID,Month,MonthExpenseDepID,MonthExpenseType,MonthExpense)
     select a.EID,b.Month,c.DepID,16,a.CommAllowance
-    from pEMPTrafficComm a,pMonthExpense_Process b,eEmployee c,pEmployeeEmolu d
+    from pEMPTrafficComm a,pMonthExpense_Process b,eEmployee c,pEMPSalary d
     where b.ID=@ID and a.EID=c.EID and a.EID=d.EID
     and c.status not in (4,5) and d.SalaryPayID not in (4,6,7,8,17,18) and dbo.eFN_getdeptype(c.DepID) in (2,3)
     -- 异常流程

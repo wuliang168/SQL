@@ -177,6 +177,15 @@ Begin
         Set @RetVal=1003200
         Return @RetVal
     End
+
+    -- 年度专业团队奖优秀讲师候选个人超过名额范围，无法递交年度评优！
+    IF Exists(select 1 from pVW_pYear_AppraiseType a
+    where (select COUNT(ID) from pYear_Appraise where AppraiseID=12 and AppraiseEID=@EID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=12 and AppraiseEID=@EID)
+    Begin
+        Set @RetVal=1003205
+        Return @RetVal
+    End
     
     -- 年度优秀员工候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a

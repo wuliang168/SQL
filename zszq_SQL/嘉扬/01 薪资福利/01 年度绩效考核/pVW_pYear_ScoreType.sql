@@ -1,4 +1,5 @@
 -- pVW_pYear_ScoreType
+
 -------- 字段说明 --------
 -- sType：被考核类型
 -- EID：被考核人员EID
@@ -308,6 +309,60 @@ SELECT DISTINCT N'10-子公司部门行政负责人' AS sType,a.EID AS EID,a.kpi
 9 AS Score_Status,N'9-子公司董事长考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,eEmployee d
 WHERE a.perole = 10 AND a.pstatus = 1 AND a.kpidepidyy<>666 AND a.EID=d.EID and d.status not in (4,5)
+
+
+------ 子公司部门副职 ------
+-- 30-子公司部门副职
+-- Score_Status=0：0%               自评完毕
+-- Score_Status=1：30%              胜任素质测评
+-- Score_Status=2：(30%+40%)*50%    子公司部门负责人考核(部门年度工作计划和履职情况)
+-- Score_Status=9：(30%+40%)*50%    分管领导考核(部门年度工作计划和履职情况)
+--
+-- 子公司部门副职 自评 0% Score_Status-0
+UNION
+SELECT DISTINCT N'30-子公司部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,a.EID AS Score_EID,
+NULL AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
+0 AS Score_Status,N'0-自评' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,eEmployee d
+WHERE a.perole = 30 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
+--
+-- 子公司部门副职 胜任素质测评 20% Score_Status-1
+UNION
+SELECT DISTINCT N'30-子公司部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,NULL AS Score_EID,
+30 AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
+1 AS Score_Status,N'1-胜任素质测评' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,eEmployee d
+WHERE a.perole = 30 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
+--
+-- 子公司部门副职 子公司部门负责人考核 (30%+40%)*50% Score_Status-2
+---- 子公司部门负责人(Director)非空，且子公司部门负责人(Director)非分管领导
+UNION
+SELECT DISTINCT N'30-子公司部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director AS Score_EID,
+30 AS Weight1,40 AS Weight2,NULL AS Weight3,50 AS Modulus,
+2 AS Score_Status,N'2-子公司部门负责人考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,oDepartment c,eEmployee d
+WHERE a.perole = 30 AND a.pstatus = 1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
+AND (c.Director is not NULL AND c.Director<>c.Director2)
+--
+-- 子公司部门副职 子公司分管领导考核 (30%+40%)*50% Score_Status-9
+---- 子公司部门负责人(Director)为非空，或子公司部门负责人(Director)非分管领导
+UNION
+SELECT DISTINCT N'30-子公司部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
+30 AS Weight1,40 AS Weight2,NULL AS Weight3,50 AS Modulus,
+9 AS Score_Status,N'9-子公司分管领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,oDepartment c,eEmployee d
+WHERE a.perole = 30 AND a.pstatus = 1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
+AND (c.Director is not NULL AND c.Director<>c.Director2)
+--
+-- 子公司部门副职 子公司分管领导考核 (30%+40%)*100% Score_Status-9
+---- 子公司部门负责人(Director)为空，或子公司部门负责人(Director)为分管领导
+UNION
+SELECT DISTINCT N'30-子公司部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
+30 AS Weight1,40 AS Weight2,NULL AS Weight3,100 AS Modulus,
+9 AS Score_Status,N'9-子公司分管领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,oDepartment c,eEmployee d
+WHERE a.perole = 30 AND a.pstatus = 1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
+AND (c.Director is NULL or c.Director=c.Director2)
 
 
 --------- 子公司普通员工 --------

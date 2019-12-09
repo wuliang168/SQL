@@ -39,6 +39,17 @@ Begin
 
     BEGIN TRANSACTION
 
+    -- 添加员工互评字段
+    -- SCORE_STATUS初始值为1
+    insert into pYear_Score (EID,pYear_ID,Score_Status,Score_Type1,Score_Type2,Score_EID,Score_DepID,Weight1,Weight2,Weight3,Modulus)
+    select a.EID,@id,a.Score_Status,a.Score_Type1,a.Score_Type2,a.Score_EID,a.Score_DepID,a.Weight1,a.Weight2,a.Weight3,a.Modulus
+    from pVW_pYear_ScoreType a,eEmployee b
+    where a.EID=b.EID and b.Status in (1,2,3) and a.Score_Status=1
+    and a.EID not in (select EID from pYear_Score where Score_Status=1)
+    -- 异常处理
+    IF @@Error <> 0
+    Goto ErrM
+
     -------- pYear_ScoreEachN --------
     -- 二级营业部部门员工内部互评；总部一二级部门、子公司、分公司和一级营业部员工统一在一级部门框架内部互评
     insert into pYear_ScoreEachN (EID,pYear_ID,Score_Type1,Score_EID,Initialized,Initializedby,InitializedTime)

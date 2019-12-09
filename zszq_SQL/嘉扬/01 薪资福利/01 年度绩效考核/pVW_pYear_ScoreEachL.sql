@@ -1,4 +1,5 @@
 -- pVW_pYear_ScoreEachL
+
 -- 1-总部部门负责人
 -- 总部部门负责人 总部部门分管领导测评 EachLType=1 Modulus=40%
 select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
@@ -78,6 +79,39 @@ select N'10-子公司部门行政负责人' AS sEachLType,a.EID as EID,a.perole 
 N'0-子公司部门内下属员工360度测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
 where a.KPIDepID=b.KPIDepID and a.perole=10 and b.perole=11 and a.pstatus=1 and b.pstatus=1
+and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+
+-- 2-子公司部门副职
+-- 子公司部门副职 子公司部门分管领导测评 EachLType=5 Modulus=40%
+---- 子公司部门分管领导<>子公司部门负责人
+UNION
+select N'30-子公司部门副职' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,15 as EachLType,
+N'2-子公司部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=30 and a.pstatus=1 and c.Director2<>c.Director
+and a.EID=d.EID and d.Status not in (4,5)
+-- 子公司部门副职 子公司部门分管领导测评 EachLType=5 Modulus=70%
+---- 子公司部门分管领导=子公司部门负责人
+UNION
+select N'30-子公司部门副职' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,70 as Modulus,15 as EachLType,
+N'2-子公司部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=30 and a.pstatus=1 and c.Director2=c.Director
+and a.EID=d.EID and d.Status not in (4,5)
+-- 子公司部门副职 子公司部门负责人测评 EachLType=6 Modulus=30%
+---- 子公司部门分管领导<>子公司部门负责人
+UNION
+select N'30-子公司部门副职' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director as Score_EID,30 as Modulus,16 as EachLType,
+N'1-子公司部门负责人测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=30 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
+-- 子公司部门副职 子公司部门内下属员工360度测评 EachLType=7 Modulus=30%
+UNION
+select N'30-子公司部门副职' AS sEachLType,a.EID as EID,a.perole as Score_Type1,b.EID as Score_EID,30 as Modulus,17 as EachLType,
+N'0-子公司部门内下属员工360度测评' as EachLTypeTitle
+from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
+where a.KPIDepID=b.KPIDepID and a.perole=30 and b.perole=4 and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
 -- 24-分公司负责人

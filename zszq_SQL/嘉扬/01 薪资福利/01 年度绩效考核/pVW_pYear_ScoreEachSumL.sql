@@ -74,6 +74,31 @@ where a.Score_Type1=10 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,
 group by a.EID,b.Weight1
 
 
+-------- 子公司部门副职胜任素质 测评总分计算 --------
+-- EachLType=5,           -- 子公司部门副职 子公司部门分管领导测评
+-- EachLType=6,           -- 子公司部门副职 子公司部门负责人测评
+-- EachLType=7,           -- 子公司部门副职 子公司部门员工测评
+--
+union
+select a.EID,
+-- 子公司部门分管领导测评
+SUM(case when a.EachLType=15 then a.ScoreTotal end) AS EachLEqSUM,
+COUNT(case when a.EachLType=15 then a.ScoreTotal end) as EachLEqCOUNT,
+AVG(case when a.EachLType=15 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
+-- 子公司部门负责人测评
+SUM(case when a.EachLType=16 then a.ScoreTotal end) AS EachLSubSUM,
+COUNT(case when a.EachLType=16 then a.ScoreTotal end) as EachLSubCOUNT,
+AVG(case when a.EachLType=16 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
+-- 子公司部门员工测评
+SUM(case when a.EachLType=17 then a.ScoreTotal end) AS EachLSupSUM,
+COUNT(case when a.EachLType=17 then a.ScoreTotal end) as EachLSupCOUNT,
+AVG(case when a.EachLType=17 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+b.Weight1 as EachLWeight
+from pYear_ScoreEachL a,pYear_Score b
+where a.Score_Type1=30 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
+group by a.EID,b.Weight1
+
+
 -------- 分公司负责人胜任素质 测评总分计算 --------
 -- EachLType=21,         -- 分公司负责人 分公司分管领导评测
 -- EachLType=22,         -- 分公司负责人 分公司人员评测

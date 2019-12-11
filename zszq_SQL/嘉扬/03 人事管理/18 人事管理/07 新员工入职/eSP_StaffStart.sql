@@ -694,9 +694,9 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
 
     -- 五险一金调整
     ---- 新员工添加至五险一金调整表
-    Insert Into pEMPInsHFChange_register(EID,CompID,DepID1st,DepID2nd,JobID,InsHFChangeType)
-    select @EID,a.CompID,dbo.eFN_getdepid1st(a.DepID),dbo.eFN_getdepid2nd(a.DepID),a.JobID,1
-    From eEmployee a
+    Insert Into pEMPInsHFChange_register(EID,CompID,DepID1st,DepID2nd,JobID,JobTitle,InsHFChangeType)
+    select @EID,a.CompID,a.DepID1st,a.DepID2nd,a.JobID,a.JobTitle,1
+    From pvw_Employee a
     Where a.EID=@EID and dbo.eFN_getdeptype(a.DepID) in (1,4)
     -- 异常流程
     If @@Error<>0

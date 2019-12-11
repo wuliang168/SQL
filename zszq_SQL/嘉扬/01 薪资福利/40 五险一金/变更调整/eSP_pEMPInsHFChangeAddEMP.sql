@@ -29,11 +29,12 @@ Begin
     Begin TRANSACTION
 
     -- 更新pEMPInsHFChange_register
-    insert into pEMPInsHFChange_register(EID,BID,CompID,DepID1st,DepID2nd,JobTitle,InsHFChangeType,
+    insert into pEMPInsHFChange_register(EID,BID,CompID,DepID1st,DepID2nd,JobID,JobTitle,InsHFChangeType,
     EMPInsBase,EMPEndowBase,EMPMedicalBase,EMPUnemployBase,EMPMaternityBase,EMPInjuryBase,EMPHFBase,EMPInsDate,EMPHFDate,
     EMPInsDepart,EMPInsRatioLocID,EMPHousingFundDepart,EMPHFRatioLocID,EMPInsDepart_Orig,EMPInsRatioLocID_Orig,EMPHFDepart_Orig,EMPHFRatioLocID_Orig)
     select @EID,@BID,(select CompID from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),(select DepID1st from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),
-    (select DepID2nd from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),(select JobTitle from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),@InsHFChangeType,
+    (select DepID2nd from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),(select JobID from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),
+    (select JobTitle from pVW_employee where ISNULL(EID,BID)=ISNULL(@EID,@BID)),@InsHFChangeType,
     (case when @InsHFChangeType=3 then (select EMPInsuranceBase from pEMPInsurance where ISNULL(EID,BID)=ISNULL(@EID,@BID)) else NULL end),
     (case when @InsHFChangeType=3 then (select EMPEndowBase from pEMPInsurance where ISNULL(EID,BID)=ISNULL(@EID,@BID)) else NULL end),
     (case when @InsHFChangeType=3 then (select EMPMedicalBase from pEMPInsurance where ISNULL(EID,BID)=ISNULL(@EID,@BID)) else NULL end),

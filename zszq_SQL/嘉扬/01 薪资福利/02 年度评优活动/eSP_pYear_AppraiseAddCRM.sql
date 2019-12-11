@@ -8,6 +8,7 @@ ALTER Procedure [dbo].[eSP_pYear_AppraiseAddCRM]
     @bid int,
     @AppraiseID int,
     @AppraiseEID int,
+    @AppraiseDepID int,
     @RetVal int=0 Output
 AS
 /*
@@ -18,7 +19,8 @@ AS
 Begin
 
     -- 年度评优员工请勿重复添加!
-    IF Exists(Select 1 From pYear_Appraise Where AppraiseEID=@AppraiseEID and AppraiseID=@AppraiseID and BID=@bid)
+    IF Exists(Select 1 From pYear_Appraise Where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID
+    and AppraiseID=@AppraiseID and BID=@bid)
     Begin
         Set @RetVal=1003520
         Return @RetVal
@@ -28,8 +30,9 @@ Begin
     Begin TRANSACTION
 
     -- 添加年度评优团队
-    Insert Into pYear_Appraise(pYear_ID,AppraiseEID,AppraiseID,AppraiseStatus,BID,Identification,DepID1,JobTitle,AppraiseOrder,Limit,DepLimit)
-    Values ((select ID from pYear_AppraiseProcess where ISNULL(Submit,0)=1 and ISNULL(Closed,0)=0),@AppraiseEID,@AppraiseID,1,@bid,
+    Insert Into pYear_Appraise(pYear_ID,AppraiseEID,AppraiseDepID,AppraiseID,AppraiseStatus,BID,Identification,DepID1,JobTitle,AppraiseOrder,Limit,DepLimit)
+    Values ((select ID from pYear_AppraiseProcess where ISNULL(Submit,0)=1 and ISNULL(Closed,0)=0),
+    @AppraiseEID,@AppraiseDepID,@AppraiseID,1,@bid,
     (select Identification from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),
     (select DepID from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),
     (select JobTitle from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),

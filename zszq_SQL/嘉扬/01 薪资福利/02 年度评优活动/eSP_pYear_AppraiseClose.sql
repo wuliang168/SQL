@@ -34,9 +34,9 @@ Begin
 
     -------- pYear_Appraise_all --------
     -- 拷贝pYear_Appraise到pYear_Appraise_all
-    insert into pYear_Appraise_all (pYear_ID,AppraiseEID,AppraiseStatus,AppraiseID,EID,Identification,DepID,Reason,Limit,DepLimit,
-    Submit,SubmitBy,SubmitTime)
-    select pYear_ID,AppraiseEID,AppraiseStatus,AppraiseID,EID,Identification,DepID,Reason,Limit,DepLimit,
+    insert into pYear_Appraise_all (pYear_ID,AppraiseEID,AppraiseDepID,AppraiseStatus,AppraiseID,EID,Identification,DepID,Reason,
+    Limit,DepLimit,Submit,SubmitBy,SubmitTime)
+    select pYear_ID,AppraiseEID,AppraiseDepID,AppraiseStatus,AppraiseID,EID,Identification,DepID,Reason,Limit,DepLimit,
     Submit,SubmitBy,SubmitTime
     from pYear_Appraise
     -- 异常处理

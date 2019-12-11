@@ -8,6 +8,7 @@ ALTER Procedure [dbo].[eSP_pYear_AppraiseAddTeam]
     @DepID int,
     @AppraiseID int,
     @AppraiseEID int,
+    @AppraiseDepID int,
     @RetVal int=0 Output
 AS
 /*
@@ -18,7 +19,8 @@ AS
 Begin
 
     -- 年度评优团队请勿重复添加!
-    IF Exists(Select 1 From pYear_Appraise Where AppraiseEID=@AppraiseEID and AppraiseID=@AppraiseID and DepID=@DepID)
+    IF Exists(Select 1 From pYear_Appraise Where AppraiseEID=@AppraiseEID and AppraiseID=@AppraiseID 
+    and DepID=@DepID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003510
         Return @RetVal
@@ -30,8 +32,9 @@ Begin
     -- 添加年度评优团队
     IF @DepID is NOT NULL
     Begin
-        Insert Into pYear_Appraise(pYear_ID,AppraiseEID,AppraiseID,AppraiseStatus,DepID,Limit,DepLimit)
-        Values ((select ID from pYear_AppraiseProcess where ISNULL(Submit,0)=1 and ISNULL(Closed,0)=0),@AppraiseEID,@AppraiseID,1,@DepID,
+        Insert Into pYear_Appraise(pYear_ID,AppraiseEID,AppraiseDepID,AppraiseID,AppraiseStatus,DepID,Limit,DepLimit)
+        Values ((select ID from pYear_AppraiseProcess where ISNULL(Submit,0)=1 and ISNULL(Closed,0)=0),
+        @AppraiseEID,@AppraiseDepID,@AppraiseID,1,@DepID,
         (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1),
         (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1))
         -- 异常处理

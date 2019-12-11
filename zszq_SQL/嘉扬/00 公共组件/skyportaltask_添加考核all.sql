@@ -384,23 +384,25 @@ AND a.AnnualBonusDepID=c.DepID AND c.DepGrade=2
 ---- 部门负责人(含展业精英含投理顾)
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="$x.top().LoadPortal(''1.0.510020'',''年度评优'')">请您进行'
+N'<a href="#" onclick="moveTo(''1.0.510020'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
+'-' + cast(a.AppraiseEID AS nvarchar(5)) +
+N''',''年度评优'')">请您进行'
++ cast(YEAR(b.Date) AS varchar(4)) + N'年度'+(select DepAbbr from odepartment where DepID=a.AppraiseDepID)+N'评优工作</a>' AS url, 
+a.AppraiseEID AS approver, 1 AS id
+FROM pYear_DepAppraise a,pYear_AppraiseProcess b
+WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+AND a.AppraiseDepID<>349
+---- 公司领导
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.510040'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
+'-' + cast(a.AppraiseEID AS nvarchar(5)) +
+N''',''年度评优'')">请您进行'
 + cast(YEAR(b.Date) AS varchar(4)) + N'年度评优工作</a>' AS url, 
 a.AppraiseEID AS approver, 1 AS id
 FROM pYear_DepAppraise a,pYear_AppraiseProcess b
 WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
------- 不包含总裁级别(赵伟江(1026)、高玮(1027)、盛建龙(1028)、张晖(1317))
-AND a.AppraiseEID not in (1026,1027,1028,1317)
----- 公司领导
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="$x.top().LoadPortal(''1.0.510040'',''年度评优'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年度评优工作</a>' AS url, 
-a.AppraiseEID AS approver, 1 AS id
-FROM pYear_DepAppraise a,pYear_AppraiseProcess b,eEmployee c
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
--- 不包含公司一把手(许向军(1033)、何蔚玲(1063)、邓宏光(1032)、刘文雷(1294)、许运凯(4774))
-AND a.AppraiseEID=c.EID AND c.DepID=349 AND a.AppraiseEID in (1026,1027,1028,1317)
+AND a.AppraiseDepID=349
 
 
 ------------- 职能部门考核 ------------

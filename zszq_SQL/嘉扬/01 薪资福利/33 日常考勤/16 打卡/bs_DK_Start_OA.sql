@@ -15,7 +15,7 @@ begin
     declare @time smalldatetime
     select @time=GETDATE()
 
-    -- 同步OA上班时间(最小打卡日期)
+    -- 同步OA上班时间(最小打卡日期) qtype=0
     ---- 同步的时候时间未存在
     insert into BS_DK_time(term,termType,eid,badge,name,beginTime,remark)
     select qday, c.xType, EID, Badge, Name, qday+' '+MIN(qtime), 'OA_Begin_i'
@@ -24,7 +24,7 @@ begin
     and not exists (select 1 from BS_DK_time where eid=a.EID and DATEDIFF(DAY,term,b.qday)=0)
     group by qday,EID,Badge,Name,c.xType
 
-    -- 同步OA下班时间(最大打卡日期)
+    -- 同步OA下班时间(最大打卡日期) qtype=1
     ---- 同步的时候时间未存在
     insert into BS_DK_time(term,termType,eid,badge,name,endTime,remark)
     select qday, c.xType, EID, Badge, Name, qday+' '+MAX(qtime), 'OA_END_i'

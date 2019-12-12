@@ -13,6 +13,8 @@ from eEmployee a
 where a.DepID=349 AND a.EID not in (1022,5014,5587) AND a.Status not in (4,5)
 and a.EID not in (select Director from oDepartment where ISNULL(isDisabled,0)=0 and Director is not NULL 
 and DepType=1 and DepGrade=1 and ISNULL(AdminID,0)<>695 and DepID not in (349,695,744,745,811))
+-- 排除刘文雷
+and a.EID<>1294
 
 -- 总部部门(投资银行：695 => (投资银行管理总部DepID:683))
 union

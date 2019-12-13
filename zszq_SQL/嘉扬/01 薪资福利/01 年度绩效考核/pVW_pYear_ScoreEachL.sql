@@ -1,20 +1,52 @@
 -- pVW_pYear_ScoreEachL
 
 -- 1-总部部门负责人
--- 总部部门负责人 总部部门分管领导测评 EachLType=1 Modulus=40%
+-- 总部部门负责人 分管领导测评 EachLType=1 Modulus=40%
 select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
 N'2-总部部门分管领导测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.KPIDepID=c.DepID and a.perole=1 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5)
---总部部门负责人 总部部门负责人互评 EachLType=2 Modulus=30%
+AND c.Director2 not in (1026,1027,6012,1033,1425,1028,5587,5014,1022) AND c.Director2 is not NULL
+---- 分管领导(Director2)为其他副职领导
+UNION
+select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
+N'2-总部部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=1 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
+AND c.Director2 in (1026,1027,6012,1033,1425,1028)
+---- 分管领导(Director2)为主要领导
+UNION
+select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
+N'2-总部部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=1 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
+AND c.Director2 in (5587,5014,1022)
+-- 总部部门负责人 其他副职领导(副总裁(赵伟江：1026、高玮：1027、程景东：6012、许向军：1033、张辉：1425)、财务总监(盛建龙：1028))考核 EachLType=1 Modulus=40%
+UNION
+select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
+N'2-总部部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=1 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
+-- 总部部门负责人 主要领导(党委书记(李桦：5587)、公司总裁(王青山：5014)、公司董事长(吴承根：1022))考核 EachLType=1 Modulus=40%
+UNION
+select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,c.Director2 as Score_EID,40 as Modulus,1 as EachLType,
+N'2-总部部门分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.KPIDepID=c.DepID and a.perole=1 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
+
+--总部部门负责人 总部部门负责人互评 EachLType=2 Modulus=20%
 UNION
 select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,b.EID as Score_EID,30 as Modulus,2 as EachLType,
 N'1-总部部门负责人互评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
 where a.EID<>b.EID and a.perole=1 and b.perole=1 and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
--- 总部部门负责人 总部部门内下属员工360度测评 EachLType=3 Modulus=30%
+-- 总部部门负责人 总部部门内下属员工360度测评 EachLType=3 Modulus=20%
 UNION
 select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.perole as Score_Type1,b.EID as Score_EID,30 as Modulus,3 as EachLType,
 N'0-总部部门内下属员工360度测评' as EachLTypeTitle

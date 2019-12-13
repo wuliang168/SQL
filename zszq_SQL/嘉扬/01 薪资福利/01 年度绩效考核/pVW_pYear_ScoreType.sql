@@ -53,13 +53,21 @@ NULL AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
 FROM pEmployee_register a,eEmployee d
 WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
 --
--- 总部部门负责人 胜任素质测评 20% Score_Status-1
+-- 总部部门负责人(非法律合规) 胜任素质测评 20% Score_Status-1
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,NULL AS Score_EID,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,NULL AS Score_EID,
 20 AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
 1 AS Score_Status,N'1-胜任素质测评' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
+--
+-- 总部部门负责人(法律合规) 胜任素质测评 0% Score_Status-1
+UNION
+SELECT DISTINCT N'1-总部部门负责人(法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,NULL AS Score_EID,
+NULL AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
+1 AS Score_Status,N'1-胜任素质测评' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,eEmployee d
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID=737
 --
 -- 总部部门负责人 战略企划部考核 50%*100% Score_Status-2
 ---- 战略企划部(702)
@@ -71,50 +79,58 @@ FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
 AND c.DepID=702
 --
--- 总部部门负责人 分管领导考核 30%*30% Score_Status-3
+-- 总部部门负责人(非法律合规) 分管领导考核 30%*20% Score_Status-3
 ---- 分管领导(Director2)为非空，或者分管领导(Director2)非其他副职，或者分管领导(Director2)非主要领导
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
-NULL AS Weight1,30 AS Weight2,NULL AS Weight3,30 AS Modulus,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
+NULL AS Weight1,30 AS Weight2,NULL AS Weight3,20 AS Modulus,
 3 AS Score_Status,N'3-分管领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
-AND a.kpidepidyy=c.DepID AND c.Director2 not in (1026,1027,1028,5587,5014,1022) AND c.Director2 is not NULL
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
+AND a.kpidepidyy=c.DepID AND c.Director2 not in (1026,1027,6012,1033,1425,1028,5587,5014,1022) AND c.Director2 is not NULL
 ---- 分管领导(Director2)为其他副职领导
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
-NULL AS Weight1,30 AS Weight2,NULL AS Weight3,30 AS Modulus,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
+NULL AS Weight1,30 AS Weight2,NULL AS Weight3,20 AS Modulus,
 10 AS Score_Status,N'10-其他副职领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
-AND a.kpidepidyy=c.DepID AND c.Director2 in (1026,1027,1028)
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
+AND a.kpidepidyy=c.DepID AND c.Director2 in (1026,1027,6012,1033,1425,1028)
 ---- 分管领导(Director2)为主要领导
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
-NULL AS Weight1,30 AS Weight2,NULL AS Weight3,30 AS Modulus,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
+NULL AS Weight1,30 AS Weight2,NULL AS Weight3,20 AS Modulus,
 10 AS Score_Status,N'10-主要领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
 AND a.kpidepidyy=c.DepID AND c.Director2 in (5587,5014,1022)
 --
--- 总部部门负责人 其他副职领导(副总裁(赵伟江：1026、高玮：1027)、财务总监(盛建龙：1028))考核 30%*20% Score_Status-4
+-- 总部部门负责人(非法律合规) 其他副职领导(副总裁(赵伟江：1026、高玮：1027、程景东：6012、许向军：1033、张辉：1425)、财务总监(盛建龙：1028))考核 30%*20% Score_Status-4
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,b.EID AS Score_EID,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,b.EID AS Score_EID,
 NULL AS Weight1,30 AS Weight2,NULL AS Weight3,20 AS Modulus,
 4 AS Score_Status,N'4-其他副职领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,eEmployee b,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
-AND b.EID in (1026,1027,1028)
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
+AND b.EID in (1026,1027,6012,1033,1425,1028)
 --
--- 总部部门负责人 主要领导(党委书记(李桦：5587)、公司总裁(王青山：5014)、公司董事长(吴承根：1022))考核 30%*50% Score_Status-9
+-- 总部部门负责人(非法律合规) 主要领导(党委书记(李桦：5587)、公司总裁(王青山：5014)、公司董事长(吴承根：1022))考核 30%*60% Score_Status-9
 UNION
-SELECT DISTINCT N'1-总部部门负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,b.EID AS Score_EID,
-NULL AS Weight1,30 AS Weight2,NULL AS Weight3,50 AS Modulus,
+SELECT DISTINCT N'1-总部部门负责人(非法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,b.EID AS Score_EID,
+NULL AS Weight1,30 AS Weight2,NULL AS Weight3,60 AS Modulus,
 9 AS Score_Status,N'9-主要领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
 FROM pEmployee_register a,eEmployee b,eEmployee d
-WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID<>737
 AND b.EID in (5587,5014,1022)
-
+--
+-- 总部部门负责人(法律合规) 合规总监(许向军：1033)考核 50%*100% Score_Status-9
+UNION
+SELECT DISTINCT N'1-总部部门负责人(法律合规)' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,b.EID AS Score_EID,
+NULL AS Weight1,50 AS Weight2,NULL AS Weight3,100 AS Modulus,
+9 AS Score_Status,N'9-主要领导考核' AS Score_StatusTitle,a.perole AS Score_Type1,a.pegroup AS Score_Type2
+FROM pEmployee_register a,eEmployee b,eEmployee d
+WHERE a.perole = 1 AND a.pstatus = 1 AND a.EID=d.EID and d.status not in (4,5) and d.DepID=737
+AND b.EID=1033
 
 
 --------- 总部部门副职 --------

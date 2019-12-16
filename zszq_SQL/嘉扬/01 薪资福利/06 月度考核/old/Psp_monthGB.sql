@@ -35,10 +35,12 @@ begin
 	Begin TRANSACTION
 
 	-- 关闭员工月度考核
+	---- 系统管理员工月度考核状态，不设置关闭日期
 	update a
-	set a.Closed=1,a.ClosedTime=GETDATE()
+	set a.Closed=1
+	--,a.ClosedTime=GETDATE()
 	from pEmpProcess_Month a
-	where a.ID=@ID
+	where a.monthid=@ID
 	-- 异常处理
 	IF @@Error <> 0
 	Goto ErrM

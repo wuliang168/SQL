@@ -77,8 +77,8 @@ begin
     ---- 外出登记异常记录自动处理
     update a 
     set a.initialized=1 ,InitializedTime=@TIME,outid=b.id
-    from BS_YC_DK a,aOut_register b 
-    where a.eid=b.eid and b.Initialized=1 and isnull(a.Initialized,0)=0
+    from BS_YC_DK a,aOut_register b
+    where a.eid=b.eid and b.Initialized=1 and isnull(a.Submit,0)=0
     and DATEDIFF(day,a.term,b.beginTime)<=0
     and DATEDIFF(day,a.term,b.EndTime)>=0
     ---- 外出登记异常记录自动确认
@@ -98,7 +98,7 @@ begin
     and DATEDIFF(dd,a.term,b.LeaveBeginDate)<=0
     and DATEDIFF(dd,a.term,b.LeaveEndDate)>=0
     and b.ApprDep=N'绩效管理室' and ((b.LeaveType=7 and b.LeaveDays<=15) or b.LeaveType<>7) 
-    and ISNULL(a.Initialized,0)=0
+    and ISNULL(a.Submit,0)=0
     ---- 哺乳假
     ------ 非分支机构员工
     ------ 仅上午
@@ -112,6 +112,7 @@ begin
     and (select Gender from eDetails where EID=a.eid)=2
     and a.YCKQNX=N'早退' and b.ApprDep=N'绩效管理室'
     and (b.OAContent not like N'%流产%' and b.OAContent not like N'%小产%')
+    and ISNULL(a.Submit,0)=0
     -------- 产假多次
     ------ 仅下午
     -------- 产假单次
@@ -124,6 +125,7 @@ begin
     and (select Gender from eDetails where EID=a.eid)=2
     and a.YCKQNX=N'迟到' and b.ApprDep=N'绩效管理室'
     and (b.OAContent not like N'%流产%' and b.OAContent not like N'%小产%')
+    and ISNULL(a.Submit,0)=0
 
     -- 公司中层
     ---- 异常记录自动处理

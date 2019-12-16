@@ -83,22 +83,45 @@ begin
     From aout_register
     Where ID=@ID
 
+    -- 更新外出登记的递交状态，并添加部门考核人
     update a
     set a.Initialized=1,a.InitializedTime=GETDATE(),a.InitializedBy=@EID,a.ReportTo=b.ReportToDaily
     from aout_register a,pVW_EMPReportToDaily b
     where a.EID=b.EID and a.id=@id
-
+    -- 异常流程
     IF @@Error <> 0
     Goto ErrM
 
+    -- 在考勤异常表中，插入外出登记的ID
     update a 
     set a.initialized=1 ,InitializedTime=GETDATE(),outid=@id
     --,Submit=1,SubmitTime=GETDATE(),YCKQJG=N'情况属实，正常出勤'
-    from BS_YC_DK a where eid=@EID and DateDiff (day,a.term,@begintime)<=0 and DateDiff (day,a.term,@endtime)>=0
-
-
+    from BS_YC_DK a 
+    where eid=@EID and DateDiff (day,a.term,@begintime)<=0 and DateDiff (day,a.term,@endtime)>=0
+    -- 异常流程
     IF @@Error <> 0
     Goto ErrM
+
+    -- 外出登记人为部门负责人，自动批复
+    ---- 外出登记
+    update a
+    set Submit=1,SubmitTime=GETDATE(),SubmitBy=@EID
+    from aout_register a
+    where a.id=@id and a.EID=a.ReportTo
+    -- 异常流程
+    IF @@Error <> 0
+    Goto ErrM
+    ---- 考核异常
+    update a
+    set a.Submit=1,a.SubmitTime=GETDATE(),a.YCKQJG=N'情况属实，正常出勤'
+    from BS_YC_DK a
+    where a.EID=@EID and a.outid is not NULL 
+    and a.outid=ISNULL((select ID from aout_register where id=@id and EID=ReportTo),0)
+    and DateDiff (day,a.term,@begintime)<=0 and DateDiff (day,a.term,@endtime)>=0
+    -- 异常流程
+    IF @@Error <> 0
+    Goto ErrM
+
 
     COMMIT TRANSACTION
     Set @Retval = 0

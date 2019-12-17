@@ -69,9 +69,17 @@ begin
     delete from BS_YC_DK where isnull(termType,0)<>1
 
     -- 有外出登记的确认过的自动提交
-    update aOut_register
-    set initialized=1,InitializedTime=@TIME,initializedby=1
-    where isnull(Initialized,0)=0
+    update a
+    set a.initialized=1,a.InitializedTime=@TIME,a.initializedby=1
+    from aOut_register a
+    where isnull(a.Initialized,0)=0
+
+    -- 外出登记的考核人为空的自动调整
+    update a
+    set a.ReportTo=b.ReportToDaily
+    from aOut_register a,pVW_EMPReportToDaily b
+    where a.ReportTo is NULL and a.EID=b.EID and b.ReportToDaily is not NULL
+    and YEAR(a.BeginTime)>=2019 and ISNULL(a.submit,0)=0
 
     -- 外出登记
     ---- 外出登记异常记录自动处理

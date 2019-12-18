@@ -492,35 +492,6 @@ and a.Status=6 and a.FDAppraiseEID=1022
 
 
 ------------- 年度考核 ------------
---------- 全体员工自评 ---------
---UNION ALL
---SELECT N'<a href="#" onclick="moveTo(''1.0.400010'',''年度考核--自评'')">请您完成'
---+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年年度考核自评</a>' AS url, 
---ISNULL(a.Score_EID,5256) AS approver, 1 AS id
---FROM pYear_Score a,pYear_Process b
---WHERE a.Score_Status=0 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
---and a.pYear_ID=b.ID
-
--- 中层员工(非分公司/一级营业部负责人) 自评
--- skyWindow ID: 500020
-UNION ALL
-SELECT N'<a href="#" onclick="moveTo(''1.0.500020'',''年度考核--自评'')">请您完成'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年年度考核自评</a>' AS url, 
-ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_Score a,pYear_Process b
-WHERE a.Score_Type1 IN (1,2,10,30,25,6,7) AND a.Score_Status=0 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-and a.pYear_ID=b.ID
-
--- 中层员工(分公司/一级营业部负责人) 自评
--- skyWindow ID: 500030
-UNION ALL
-SELECT N'<a href="#" onclick="moveTo(''1.0.500030'',''年度考核--自评'')">请您完成'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年年度考核自评</a>' AS url, 
-ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_Score a,pYear_Process b
-WHERE a.Score_Type1 IN (24,5) AND a.Score_Status=0 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-and a.pYear_ID=b.ID
-
 -- 普通员工 自评
 -- skyWindow ID: 500010
 UNION ALL
@@ -528,7 +499,7 @@ SELECT N'<a href="#" onclick="moveTo(''1.0.500010'',''年度考核--自评'')">�
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年年度考核自评</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_Score a,pYear_Process b
-WHERE a.Score_Type1 IN (4,11,29,12,13,14,17,19) AND a.Score_Status=0 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+WHERE a.Score_Status=0 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 and a.pYear_ID=b.ID
 
 

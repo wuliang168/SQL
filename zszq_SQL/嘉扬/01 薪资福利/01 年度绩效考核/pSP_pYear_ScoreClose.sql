@@ -69,10 +69,10 @@ Begin
 
     -------- pYear_ScoreEachL_all --------
     -- 拷贝pYear_ScoreEachL到pYear_ScoreEachL_all
-    insert into pYear_ScoreEachL_all (EID,pYear_ID,Score_EID,Score_Type1,EachLType,
+    insert into pYear_ScoreEachL_all (EID,pYear_ID,Score_EID,Score_Type1,EachLType,ScorePerfDuty,
     ScoreTeamLead,ScoreTargetExec,ScoreSysThinking,ScoreInnovation,ScoreTraining,ScoreTotal,Modulus,Remark,
     Initialized,InitializedBy,InitializedTime,Submit,SubmitBy,SubmitTime,Closed,ClosedBy,ClosedTime)
-    select EID,pYear_ID,Score_EID,Score_Type1,EachLType,
+    select EID,pYear_ID,Score_EID,Score_Type1,EachLType,ScorePerfDuty,
     ScoreTeamLead,ScoreTargetExec,ScoreSysThinking,ScoreInnovation,ScoreTraining,ScoreTotal,Modulus,Remark,
     Initialized,InitializedBy,InitializedTime,Submit,SubmitBy,SubmitTime,1,@URID,GETDATE()
     from pYear_ScoreEachL

@@ -55,7 +55,8 @@ Begin
     insert into pYear_ScoreEachN (EID,pYear_ID,Score_Type1,Score_EID,Initialized,Initializedby,InitializedTime)
     select a.EID,b.pYear_ID,a.Score_Type1,a.Score_EID,1,@URID,GETDATE()
     from pVW_pYear_ScoreEachN a,pYear_Score b
-    where a.EID=b.EID and b.Score_Status=1 and a.EID not in (select EID from pYear_ScoreEachN where EID=a.EID)
+    where a.EID=b.EID and b.Score_Status=1 
+    and a.EID not in (select EID from pYear_ScoreEachN where Score_EID=a.Score_EID)
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM
@@ -65,7 +66,8 @@ Begin
     insert into pYear_ScoreEachL (EID,pYear_ID,Score_Type1,Score_EID,EachLType,Modulus,Initialized,Initializedby,InitializedTime)
     select a.EID,b.pYear_ID,a.Score_Type1,a.Score_EID,a.EachLType,a.Modulus,1,@URID,GETDATE()
     from pVW_pYear_ScoreEachL a,pYear_Score b
-    where a.EID=b.EID and b.Score_Status=1 and a.EID not in (select EID from pYear_ScoreEachL where EachLType=a.EachLType and EID=a.EID)
+    where a.EID=b.EID and b.Score_Status=1 
+    and a.EID not in (select EID from pYear_ScoreEachL where EachLType=a.EachLType and Score_EID=a.Score_EID)
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM

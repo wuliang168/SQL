@@ -49,22 +49,29 @@ Begin
 
     -------- pYear_Score --------
     -- 更新员工考核评分表和递交状态
-    -- Score_Status=1时ScoreTotal
-    ---- Submit=1
+    -- Score_Status=1时Submit
     update a
-    set a.ScoreTotal=b.EachNSubAVG,a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
+    set a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
+    from pYear_Score a
+    where a.Score_Status=1 and a.EID=(select EID from SkySecUser where ID=@URID)
+    -- 异常处理
+    IF @@Error <> 0
+    Goto ErrM
+
+    -- Score_Status=1时ScoreTotal
+    update a
+    set a.ScoreTotal=b.EachNAVG
     from pYear_Score a,pVW_pYear_ScoreEachSumN b
     where a.EID=b.EID and a.Score_Status=1
     and a.EID in (select EID from pYear_ScoreEachN where Score_EID=(select EID from SkySecUser where ID=@URID))
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM
-
-    -- Score_Status=9时ScoreEach，员工互评分用于最终评分及排名统计使用
+    -- Score_Status=99时ScoreEach，员工互评分用于最终评分及排名统计使用
     update a
-    set a.ScoreEach=b.EachNSubAVG*b.EachNWeight/100
+    set a.ScoreEach=b.EachNAVG*b.EachNWeight/100
     from pYear_Score a,pVW_pYear_ScoreEachSumN b
-    where a.EID=b.EID and a.Score_Status=9
+    where a.EID=b.EID and a.Score_Status=99
     and a.EID in (select EID from pYear_ScoreEachN where Score_EID=(select EID from SkySecUser where ID=@URID))
     -- 异常处理
     IF @@Error <> 0

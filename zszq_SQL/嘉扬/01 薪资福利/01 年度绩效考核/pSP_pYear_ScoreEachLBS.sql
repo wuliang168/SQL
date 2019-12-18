@@ -16,7 +16,8 @@ as
 Begin
 
     -- 胜任素质评测得分为空，无法递交员工胜任素质评测！
-    IF Exists(select 1 from pYear_ScoreEachL where ISNULL(ScoreTotal,0)=0 
+    ---- ScoreTotal为NULL表示存在某个评分项未填写
+    IF Exists(select 1 from pYear_ScoreEachL where ScoreTotal is NULL
     and Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
     Begin
         Set @RetVal=1002100
@@ -25,9 +26,9 @@ Begin
 
     -- 胜任素质评测得分超过上限，无法递交员工胜任素质评测！
     IF Exists(select 1 from pYear_ScoreEachL where Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid
-    and ((ISNULL(ScoreTeamLead,0) not between 0 and 20) or (ISNULL(ScoreTargetExec,0) not between 0 and 20)
-    or (ISNULL(ScoreSysThinking,0) not  between 0 and 20) or (ISNULL(ScoreInnovation,0) not between 0 and 20)
-    or (ISNULL(ScoreTraining,0) not between 0 and 20)))
+    and ((ISNULL(ScorePerfDuty,0) not between 0 and 50) or (ISNULL(ScoreTeamLead,0) not between 0 and 10) 
+    or (ISNULL(ScoreTargetExec,0) not between 0 and 10) or (ISNULL(ScoreSysThinking,0) not  between 0 and 10) 
+    or (ISNULL(ScoreInnovation,0) not between 0 and 10) or (ISNULL(ScoreTraining,0) not between 0 and 10)))
     Begin
         Set @RetVal=1002110
         Return @RetVal
@@ -52,7 +53,8 @@ Begin
     -- Score_Status=1时ScoreTotal
     ---- Submit=1
     update a
-    set a.ScoreTotal=ISNULL(b.EachLEpAVG,0)+ISNULL(b.EachLSubAVG,0)+ISNULL(b.EachLSupAVG,0),a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
+    set a.ScoreTotal=ISNULL(b.EachLAVG1,0)+ISNULL(b.EachLAVG2,0)+ISNULL(b.EachLAVG3,0)+ISNULL(b.EachLAVG4,0)
+    ,a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
     from pYear_Score a,pVW_pYear_ScoreEachSumL b
     where a.EID=b.EID and a.SCORE_STATUS=1
     and a.EID in (select EID from pYear_ScoreEachL a where Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
@@ -60,11 +62,11 @@ Begin
     IF @@Error <> 0
     Goto ErrM
 
-    -- Score_Status=9时ScoreEach，员工胜任素质测评分用于最终评分及排名统计使用
+    -- Score_Status=99时ScoreEach，员工胜任素质测评分用于最终评分及排名统计使用
     update a
-    set a.ScoreEach=(ISNULL(b.EachLEpAVG,0)+ISNULL(b.EachLSubAVG,0)+ISNULL(b.EachLSupAVG,0))*b.EachLWeight/100
+    set a.ScoreEach=(ISNULL(b.EachLAVG1,0)+ISNULL(b.EachLAVG2,0)+ISNULL(b.EachLAVG3,0)+ISNULL(b.EachLAVG4,0))*b.EachLWeight/100
     from pYear_Score a,pVW_pYear_ScoreEachSumL b
-    where a.EID=b.EID and a.Score_Status=9
+    where a.EID=b.EID and a.Score_Status=99
     and a.EID in (select EID from pYear_ScoreEachL a where Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
     -- 异常处理
     IF @@Error <> 0

@@ -51,7 +51,7 @@ Begin
     Goto ErrM
 
     -- pmb_gs：年度考核KPI模板
-    -- 14-营业部合规风控专员；17-区域财务经理；
+    -- 14-分支机构合规风控专员；17-分支机构区域财务经理；
     insert into pYear_KPI (EID,pYear_ID,Xorder,Title,Initialized,Initializedby,InitializedTime)
     select a.EID,a.pYear_ID,b.Xorder,b.Title,1,@URID,GETDATE()
     from pYear_Score a,PMB_GS b
@@ -59,20 +59,21 @@ Begin
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM
-    -- 16-总部兼职合规专员；15-营业部合规联系人
+    -- 35-兼职合规管理
     insert into pYear_KPI (EID,pYear_ID,Xorder,Title,Initialized,Initializedby,InitializedTime)
     select a.EID,a.pYear_ID,b.Xorder,b.Title,1,@URID,GETDATE()
     from pYear_Score a,PMB_GS b
-    where a.Score_Type2=b.[group] and a.SCORE_STATUS=0 and ISNULL(a.Score_Type2,0) in (16,15)
+    where a.Score_Type2=b.[group] and a.SCORE_STATUS=0 and ISNULL(a.Score_Type2,0)=35
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM
-    -- 1-总部部门负责人; 2-总部部门副职; 10-子公司部门行政负责人；24-分公司负责人; 25-分公司副职; 
-    -- 5-一级营业部负责人; 6-一级营业部副职; 7-二级营业部经理室成员; 26-子公司班子成员
+    ---- 1-总部部门负责人; 2-总部部门副职; 
+    ---- 31-一级分支机构负责人; 32-二级分支机构副职及二级分支机构经理室成员
+    ---- 10-子公司部门行政负责人；
     insert into pYear_KPI (EID,pYear_ID,Xorder,Title,Initialized,Initializedby,InitializedTime)
     select a.EID,a.pYear_ID,b.Xorder,b.Title,1,@URID,GETDATE()
     from pYear_Score a,PMB_GS b
-    where a.Score_Type1=b.[group] and a.SCORE_STATUS=0 and a.Score_Type1 in (1,2,10,24,25,5,6,7,26)
+    where a.Score_Type1=b.[group] and a.SCORE_STATUS=0 and a.Score_Type1 in (1,2,31,32,10)
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM

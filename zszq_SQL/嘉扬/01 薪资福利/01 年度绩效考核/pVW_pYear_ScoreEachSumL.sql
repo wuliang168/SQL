@@ -1,204 +1,140 @@
 -- pVW_pYear_ScoreEachSumL
 
--------- 总部部门负责人胜任素质 测评总分计算 --------
--- EachLType=1,           -- 总部部门负责人 总部部门分管领导测评
--- EachLType=2,           -- 总部部门负责人 总部部门负责人互评
--- EachLType=3,           -- 总部部门负责人 总部部门员工测评
+-------- 总部部门负责人(Score_Type1：1)
+-------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=110,           -- 总部部门负责人 公司班子成员测评
+-- EachLType=120,           -- 总部部门负责人 分管领导测评
+-- EachLType=130,           -- 总部部门负责人 360度评价 一级部门负责人互评
+-- EachLType=140,           -- 总部部门负责人 360度评价 部门员工评测
 --
 select a.EID,
--- 总部部门分管领导测评
-SUM(case when a.EachLType=1 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=1 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=1 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
--- 总部部门负责人互评
-SUM(case when a.EachLType=2 then a.ScoreTotal end) AS EachLSubSUM,
-COUNT(case when a.EachLType=2 then a.ScoreTotal end) as EachLSubCOUNT,
-AVG(case when a.EachLType=2 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
--- 总部部门员工测评
-SUM(case when a.EachLType=3 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=3 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=3 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+-- 公司班子成员测评
+SUM(case when a.EachLType=110 then a.ScoreTotal end) AS EachLSUM1,
+COUNT(case when a.EachLType=110 then a.ScoreTotal end) as EachLCOUNT1,
+AVG(case when a.EachLType=110 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG1,
+-- 分管领导测评
+SUM(case when a.EachLType=120 then a.ScoreTotal end) AS EachLSUM2,
+COUNT(case when a.EachLType=120 then a.ScoreTotal end) as EachLCOUNT2,
+AVG(case when a.EachLType=120 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG2,
+-- 360度评价 一级部门负责人互评
+SUM(case when a.EachLType=130 then a.ScoreTotal end) AS EachLSUM3,
+COUNT(case when a.EachLType=130 then a.ScoreTotal end) as EachLCOUNT3,
+AVG(case when a.EachLType=130 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG3,
+-- 360度评价 部门员工评测
+SUM(case when a.EachLType=140 then a.ScoreTotal end) AS EachLSUM4,
+COUNT(case when a.EachLType=140 then a.ScoreTotal end) as EachLCOUNT4,
+AVG(case when a.EachLType=140 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG4,
 b.Weight1 as EachLWeight
 from pYear_ScoreEachL a,pYear_Score b
 where a.Score_Type1=1 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 group by a.EID,b.Weight1
 
 
--------- 总部部门副职胜任素质 测评总分计算 --------
--- EachLType=5,           -- 总部部门副职 总部部门分管领导测评
--- EachLType=6,           -- 总部部门副职 总部部门负责人测评
--- EachLType=7,           -- 总部部门副职 总部部门员工测评
+-------- 总部部门副职(Score_Type1：2)
+-------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=210,           -- 总部部门副职 分管领导测评
+-- EachLType=220,           -- 总部部门副职 部门负责人测评
+-- EachLType=240,           -- 总部部门副职 360度评价 部门员工测评
 --
 union
 select a.EID,
--- 总部部门分管领导测评
-SUM(case when a.EachLType=5 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=5 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=5 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
--- 总部部门负责人测评
-SUM(case when a.EachLType=6 then a.ScoreTotal end) AS EachLSubSUM,
-COUNT(case when a.EachLType=6 then a.ScoreTotal end) as EachLSubCOUNT,
-AVG(case when a.EachLType=6 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
--- 总部部门员工测评
-SUM(case when a.EachLType=7 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=7 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=7 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+-- 分管领导测评
+SUM(case when a.EachLType=210 then a.ScoreTotal end) AS EachLSUM1,
+COUNT(case when a.EachLType=210 then a.ScoreTotal end) as EachLCOUNT1,
+AVG(case when a.EachLType=210 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG1,
+-- 部门负责人测评
+SUM(case when a.EachLType=220 then a.ScoreTotal end) AS EachLSUM2,
+COUNT(case when a.EachLType=220 then a.ScoreTotal end) as EachLCOUNT2,
+AVG(case when a.EachLType=220 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG2,
+0 as EachLSUM3,0 as EachLCOUNT3,0 as EachLAVG3,
+-- 部门员工测评
+SUM(case when a.EachLType=240 then a.ScoreTotal end) AS EachLSUM4,
+COUNT(case when a.EachLType=240 then a.ScoreTotal end) as EachLCOUNT4,
+AVG(case when a.EachLType=240 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG4,
 b.Weight1 as EachLWeight
 from pYear_ScoreEachL a,pYear_Score b
 where a.Score_Type1=2 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 group by a.EID,b.Weight1
 
 
--------- 子公司部门负责人胜任素质 测评总分计算 --------
--- EachLType=11,         -- 子公司部门负责人 子公司总经理评测
--- EachLType=12,         -- 子公司部门负责人 子公司部门负责人互评
--- EachLType=13,         -- 子公司部门负责人 子公司部门员工评测
+-------- 一级分支机构负责人(Score_Type1：31)
+-------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=310,         -- 一级分支机构负责人 公司班子成员测评
+-- EachLType=320,         -- 一级分支机构负责人 分管领导评测
+-- EachLType=330,         -- 一级分支机构负责人 360度评价 一级分支机构负责人互评
+-- EachLType=340,         -- 一级分支机构负责人 360度评价 一级分支机构下属员工评测
 --
 union
 select a.EID,
--- 子公司总经理评测
-SUM(case when a.EachLType=11 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=11 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=11 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
--- 子公司部门负责人互评
-SUM(case when a.EachLType=12 then a.ScoreTotal end) AS EachLSubSUM,
-COUNT(case when a.EachLType=12 then a.ScoreTotal end) as EachLSubCOUNT,
-AVG(case when a.EachLType=12 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
--- 子公司部门员工评测
-SUM(case when a.EachLType=13 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=13 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=13 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+-- 公司班子成员测评
+SUM(case when a.EachLType=310 then a.ScoreTotal end) AS EachLSUM1,
+COUNT(case when a.EachLType=310 then a.ScoreTotal end) as EachLCOUNT1,
+AVG(case when a.EachLType=310 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG1,
+-- 分管领导测评
+SUM(case when a.EachLType=320 then a.ScoreTotal end) AS EachLSUM2,
+COUNT(case when a.EachLType=320 then a.ScoreTotal end) as EachLCOUNT2,
+AVG(case when a.EachLType=320 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG2,
+-- 360度评价 一级分支机构负责人互评
+SUM(case when a.EachLType=330 then a.ScoreTotal end) AS EachLSUM3,
+COUNT(case when a.EachLType=330 then a.ScoreTotal end) as EachLCOUNT3,
+AVG(case when a.EachLType=330 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG3,
+-- 360度评价 部门员工评测
+SUM(case when a.EachLType=340 then a.ScoreTotal end) AS EachLSUM4,
+COUNT(case when a.EachLType=340 then a.ScoreTotal end) as EachLCOUNT4,
+AVG(case when a.EachLType=340 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG4,
 b.Weight1 as EachLWeight
 from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=10 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
+where a.Score_Type1=31 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 group by a.EID,b.Weight1
 
 
--------- 子公司部门副职胜任素质 测评总分计算 --------
--- EachLType=5,           -- 子公司部门副职 子公司部门分管领导测评
--- EachLType=6,           -- 子公司部门副职 子公司部门负责人测评
--- EachLType=7,           -- 子公司部门副职 子公司部门员工测评
+-------- 一级分支机构副职及二级分支机构经理室(Score_Type1：32)
+-------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=410,         -- 一级分支机构副职及二级分支机构经理室 分管领导评测
+-- EachLType=420,         -- 一级分支机构副职及二级分支机构经理室 一级分支机构负责人评测
+-- EachLType=440,         -- 一级分支机构副职及二级分支机构经理室 360度评价 部门人员评测
 --
 union
 select a.EID,
--- 子公司部门分管领导测评
-SUM(case when a.EachLType=15 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=15 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=15 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
--- 子公司部门负责人测评
-SUM(case when a.EachLType=16 then a.ScoreTotal end) AS EachLSubSUM,
-COUNT(case when a.EachLType=16 then a.ScoreTotal end) as EachLSubCOUNT,
-AVG(case when a.EachLType=16 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
--- 子公司部门员工测评
-SUM(case when a.EachLType=17 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=17 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=17 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+-- 分管领导测评
+SUM(case when a.EachLType=410 then a.ScoreTotal end) AS EachLSUM1,
+COUNT(case when a.EachLType=410 then a.ScoreTotal end) as EachLCOUNT1,
+AVG(case when a.EachLType=410 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG1,
+-- 一级分支机构负责人评测
+SUM(case when a.EachLType=420 then a.ScoreTotal end) AS EachLSUM2,
+COUNT(case when a.EachLType=420 then a.ScoreTotal end) as EachLCOUNT2,
+AVG(case when a.EachLType=420 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG2,
+0 as EachLSUM3,0 as EachLCOUNT3,0 as EachLAVG3,
+-- 360度评价 部门员工测评
+SUM(case when a.EachLType=440 then a.ScoreTotal end) AS EachLSUM4,
+COUNT(case when a.EachLType=440 then a.ScoreTotal end) as EachLCOUNT4,
+AVG(case when a.EachLType=440 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLAVG4,
 b.Weight1 as EachLWeight
 from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=30 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
+where a.Score_Type1=32 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 group by a.EID,b.Weight1
 
 
--------- 分公司负责人胜任素质 测评总分计算 --------
--- EachLType=21,         -- 分公司负责人 分公司分管领导评测
--- EachLType=22,         -- 分公司负责人 分公司人员评测
---
-union
-select a.EID,
--- 分公司分管领导评测
-SUM(case when a.EachLType=21 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=21 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=21 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
-0,0,0,
--- 分公司人员评测
-SUM(case when a.EachLType=22 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=22 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=22 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
-b.Weight1 as EachLWeight
-from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=24 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
-group by a.EID,b.Weight1
-
-
--------- 分公司副职胜任素质 测评总分计算 --------
--- EachLType=25,         -- 分公司副职 分公司负责人评测
--- EachLType=26,         -- 分公司副职 分公司人员评测
---
-union
-select a.EID,
--- 分公司负责人评测
-SUM(case when a.EachLType=25 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=25 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=25 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
-0,0,0,
--- 分公司人员评测
-SUM(case when a.EachLType=26 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=26 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=26 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
-b.Weight1 as EachLWeight
-from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=25 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
-group by a.EID,b.Weight1
-
-
--------- 一级营业部负责人胜任素质 测评总分计算 --------
--- EachLType=31,         -- 一级营业部负责人 一级营业分管领导评测
--- EachLType=32,         -- 一级营业部负责人 一级营业部人员评测
---
-union
-select a.EID,
--- 一级营业分管领导评测
-SUM(case when a.EachLType=31 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=31 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=31 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
-0,0,0,
--- 一级营业部人员评测
-SUM(case when a.EachLType=32 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=32 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=32 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
-b.Weight1 as EachLWeight
-from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=5 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
-group by a.EID,b.Weight1
-
-
--------- 一级营业部副职胜任素质 测评总分计算 --------
--- EachLType=35,         -- 一级营业部副职 一级营业负责人评测
--- EachLType=36,         -- 一级营业部副职 一级营业部人员评测
---
-union
-select a.EID,
--- 一级营业负责人评测
-SUM(case when a.EachLType=35 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=35 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=35 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
-0,0,0,
--- 一级营业部人员评测
-SUM(case when a.EachLType=36 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=36 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=36 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
-b.Weight1 as EachLWeight
-from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=6 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
-group by a.EID,b.Weight1
-
-
--------- 二级营业部经理室成员胜任素质 测评总分计算 --------
--- EachLType=41,         -- 二级营业部经理室成员 一级营业部人员评测
--- EachLType=42          -- 二级营业部经理室成员 二级营业部人员评测
---
-union
-select a.EID,
--- 一级营业部人员评测
-SUM(case when a.EachLType=41 then a.ScoreTotal end) AS EachLEqSUM,
-COUNT(case when a.EachLType=41 then a.ScoreTotal end) as EachLEqCOUNT,
-AVG(case when a.EachLType=41 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEpAVG,
-0,0,0,
--- 二级营业部人员评测
-SUM(case when a.EachLType=42 then a.ScoreTotal end) AS EachLSupSUM,
-COUNT(case when a.EachLType=42 then a.ScoreTotal end) as EachLSupCOUNT,
-AVG(case when a.EachLType=42 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
-b.Weight1 as EachLWeight
-from pYear_ScoreEachL a,pYear_Score b
-where a.Score_Type1=7 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
-group by a.EID,b.Weight1
+---------- 子公司部门负责人履职情况胜任素质 测评总分计算 --------
+---- EachLType=510,         -- 子公司部门负责人 子公司总经理评测
+---- EachLType=520,         -- 子公司部门负责人 子公司部门负责人互评
+---- EachLType=530,         -- 子公司部门负责人 子公司部门员工评测
+----
+--union
+--select a.EID,0 as EachLEq1SUM,0 as EachLEq1COUNT,0 as EachLEp1AVG,0 as EachLEq2SUM,0 as EachLEq2COUNT,0 as EachLEp2AVG,
+---- 子公司总经理评测
+--SUM(case when a.EachLType=330 then a.ScoreTotal end) AS EachLEq3SUM,
+--COUNT(case when a.EachLType=330 then a.ScoreTotal end) as EachLEq3COUNT,
+--AVG(case when a.EachLType=330 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLEp3AVG,
+---- 子公司部门负责人互评
+--SUM(case when a.EachLType=340 then a.ScoreTotal end) AS EachLSUM,
+--COUNT(case when a.EachLType=340 then a.ScoreTotal end) as EachLSubCOUNT,
+--AVG(case when a.EachLType=340 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSubAVG,
+---- 子公司部门员工评测
+--SUM(case when a.EachLType=350 then a.ScoreTotal end) AS EachLSupSUM,
+--COUNT(case when a.EachLType=350 then a.ScoreTotal end) as EachLSupCOUNT,
+--AVG(case when a.EachLType=350 then a.ScoreTotal*a.Modulus*1.0/100 end) AS EachLSupAVG,
+--b.Weight1 as EachLWeight
+--from pYear_ScoreEachL a,pYear_Score b
+--where a.Score_Type1=10 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
+--group by a.EID,b.Weight1

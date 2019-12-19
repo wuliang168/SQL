@@ -542,6 +542,7 @@ N''',''年度考核评分'')">请您完成'
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_Score a,pYear_Process b
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND a.Score_Status>=2
 AND a.pYear_ID=b.ID
 
 ---- 兼职合规 ----

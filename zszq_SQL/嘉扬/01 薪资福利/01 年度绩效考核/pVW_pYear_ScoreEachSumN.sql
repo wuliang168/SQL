@@ -1,4 +1,14 @@
 -- pVW_pYear_ScoreEachSumN
+
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_ScoreEachSumN]
+AS
+
 -- 4-总部普通员工
 select a.EID,
 SUM(a.ScoreTotal) AS EachNSUM,COUNT(a.ScoreTotal) as EachNCOUNT,AVG(a.ScoreTotal) AS EachNAVG,b.Weight1 as EachNWeight
@@ -29,3 +39,5 @@ SUM(a.ScoreTotal) AS EachNSUM,COUNT(a.ScoreTotal) as EachNCOUNT,AVG(a.ScoreTotal
 from pYear_ScoreEachN a,pYear_Score b
 where a.Score_Type1=34 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 group by a.EID,b.Weight1
+
+GO

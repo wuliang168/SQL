@@ -1,5 +1,14 @@
 -- pVW_pYear_ScoreEachSumL
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_ScoreEachSumL]
+AS
+
 -------- 总部部门负责人(Score_Type1：1)
 -------- 履职情况胜任素质 测评总分计算 --------
 -- EachLType=110,           -- 总部部门负责人 公司班子成员测评
@@ -138,3 +147,5 @@ group by a.EID,b.Weight1
 --from pYear_ScoreEachL a,pYear_Score b
 --where a.Score_Type1=10 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
 --group by a.EID,b.Weight1
+
+GO

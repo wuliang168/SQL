@@ -6,6 +6,14 @@
 32-一级分支机构副职及二级分支机构经理室成员：   履职情况胜任素质测评(分管领导30%、一级分支机构负责人50%、360度评价20%(下属员工20%))
 */
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_ScoreEachL]
+AS
 -- 1-总部部门负责人
 ---- 公司班子成员 EachLType=110 Modulus=30%
 ---- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)、副总裁(赵伟江：1026、高玮：1027、程景东：6012)
@@ -46,6 +54,7 @@ from pEmployee_register a,pEmployee_register b
 where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=1 and b.Score_Type1 in (2,4) and a.pstatus=1 and b.pstatus=1 and a.kpidepidyy<>737
 ---- 合规总监测评 EachLType=110 Modulus=100%
 ---- 合规总监(许向军：1033)
+UNION
 select N'1-总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,100 as Modulus,110 as EachLType,
 N'110-公司班子成员测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
@@ -183,4 +192,6 @@ and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4
 --N'下属员工360度测评' as EachLTypeTitle
 --from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
 --where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=10 and b.Score_Type1=11 and a.pstatus=1 and b.pstatus=1
---and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,
+--and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+
+GO

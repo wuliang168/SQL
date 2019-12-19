@@ -31,6 +31,14 @@
 -------- SCORE_TYPE2 兼职合规说明 --------
 -- 35-兼职合规管理
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_ScoreType]
+AS
 
 --------- 总部部门负责人 --------
 -- 1-总部部门负责人
@@ -630,3 +638,5 @@ SELECT DISTINCT N'19-综合会计' AS sType,a.EID AS EID,a.kpidepidyy AS Score_D
 99 AS Score_Status,N'99-计划财务部负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=19 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND c.CWEID is NULL AND a.EID=d.EID and d.status not in (4,5)
+
+GO

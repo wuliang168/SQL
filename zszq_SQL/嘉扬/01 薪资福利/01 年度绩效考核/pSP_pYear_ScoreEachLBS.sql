@@ -38,7 +38,7 @@ Begin
     Begin TRANSACTION
 
     -------- pYear_ScoreEachL --------
-    -- 更新员工胜任素质评测
+    -- 更新员工履职情况胜任素质评测状态
     update a
     set a.SUBMIT=1,a.Submitby=@URID,a.SubmitTime=GETDATE()
     from pYear_ScoreEachL a
@@ -47,16 +47,29 @@ Begin
     IF @@Error <> 0
     Goto ErrM
 
+    -- 更新员工履职情况胜任素质评测评分
+    ---- 如果EID的Score_EID=(select EID from SkySecUser where ID=@URID)，且EachLType<>@leftid
+    ---- 且Score_Type1=Score_EID=(select EID from SkySecUser where ID=@URID)，且EachLType=@leftid时的Score_Type1
+    update a
+    set a.ScorePerfDuty=b.ScorePerfDuty,a.ScoreTeamLead=b.ScoreTeamLead,a.ScoreTargetExec=b.ScoreTargetExec,
+    a.ScoreSysThinking=b.ScoreSysThinking,a.ScoreInnovation=b.ScoreInnovation,a.ScoreTraining=b.ScoreTraining,
+    a.ScoreTotal=b.ScoreTotal,a.SUBMIT=1,a.Submitby=@URID,a.SubmitTime=GETDATE()
+    from pYear_ScoreEachL a,pYear_ScoreEachL b
+    where a.Score_Type1=b.Score_Type1 and a.Score_EID=b.Score_EID and b.Score_EID=(select EID from SkySecUser where ID=@URID)
+    and a.EachLType<>b.EachLType and b.EachLType=@leftid
+    -- 异常处理
+    IF @@Error <> 0
+    Goto ErrM
 
     -------- pYear_Score --------
     -- 更新员工考核评分表和递交状态
     -- Score_Status=1时ScoreTotal
     ---- Submit=1
     update a
-    set a.ScoreTotal=ISNULL(b.EachLAVG1,0)+ISNULL(b.EachLAVG2,0)+ISNULL(b.EachLAVG3,0)+ISNULL(b.EachLAVG4,0)
+    set a.ScoreTotal=(select SUM(EachLAVG) from pVW_pYear_ScoreEachSumL where EID=a.EID)
     ,a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
-    from pYear_Score a,pVW_pYear_ScoreEachSumL b
-    where a.EID=b.EID and a.SCORE_STATUS=1
+    from pYear_Score a
+    where a.SCORE_STATUS=1
     and a.EID in (select EID from pYear_ScoreEachL a where Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
     -- 异常处理
     IF @@Error <> 0
@@ -64,9 +77,9 @@ Begin
 
     -- Score_Status=99时ScoreEach，员工胜任素质测评分用于最终评分及排名统计使用
     update a
-    set a.ScoreEach=(ISNULL(b.EachLAVG1,0)+ISNULL(b.EachLAVG2,0)+ISNULL(b.EachLAVG3,0)+ISNULL(b.EachLAVG4,0))*b.EachLWeight/100
-    from pYear_Score a,pVW_pYear_ScoreEachSumL b
-    where a.EID=b.EID and a.Score_Status=99
+    set a.ScoreEach=(select SUM(EachLAVG*EachLWeight/100) from pVW_pYear_ScoreEachSumL where EID=a.EID)
+    from pYear_Score a
+    where a.Score_Status=99
     and a.EID in (select EID from pYear_ScoreEachL a where Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
     -- 异常处理
     IF @@Error <> 0

@@ -37,7 +37,7 @@ Begin
   --状态为开启状态时  
   if Exists(Select 1
   From pEmployee_register
-  Where eID=@eid And Isnull(pstatus,0)=1 and ISNULL(perole,0)=0)
+  Where eID=@eid And Isnull(pstatus,0)=1 and ISNULL(Score_Type1,0)=0)
   Begin
     Set @RetVal = 910067
     -- 910067,N'确认失败，考核角色不能为空!'

@@ -1,3 +1,14 @@
+-- skyportaltask
+
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[skyportaltask]
+AS
+
 -- 
 -- SELECT N'<a href="#" onclick="PortalUtil.LoadURL(''../flow/runtime/taskmain.aspx?flowid=' + cast(flowid AS varchar(10)) + N''')">您有<font color="red">' +
 -- cast(count(*) AS varchar(10)) + N'</font>条待处理的' + caption + '</a>' AS url, approver, 1 AS id
@@ -511,10 +522,10 @@ UNION ALL
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501000'',''年度考核-员工互评'')">请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + N'年年度考核员工互评</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_ScoreEachN a,pYear_Score b,pYear_Process c
+FROM pYear_ScoreEachN a
+left join pYear_Process c on a.pYear_ID=c.ID
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND b.Score_Type1 IN (4,33,34,11) AND ISNULL(a.Score_EID,5256)=b.EID AND b.Score_Status=1 AND ISNULL(b.Initialized,0)=1
-AND a.pYear_ID=c.ID
+AND a.Score_Type1 IN (4,33,34,11)
 
 
 -------- 员工履职情况、胜任素质 --------
@@ -524,12 +535,13 @@ UNION ALL
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
 N''',''年度考核-履职情况胜任素质测评'')" >请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + 
-N'年'+d.EachLTypeTitle+N'履职情况胜任素质测评' + '</a>' AS url, 
+N'年'+d.sEachLType+N'履职情况胜任素质测评' + '</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_ScoreEachL a, pYear_Score b,pYear_Process c,(select distinct Score_EID,EachLType,EachLTypeTitle from pVW_pYear_ScoreEachL where Score_EID is not NULL) d
+FROM pYear_ScoreEachL a
+left join pYear_Process c on a.pYear_ID=c.ID
+inner join (select Score_EID,MIN(EachLType) as EachLType,Score_Type1,sEachLType from pVW_pYear_ScoreEachL where Score_EID is not NULL and sEachLType is not NULL group by Score_EID,Score_Type1,sEachLType) d on a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.EID=b.EID AND b.Score_Type1 in (1,2,31,32,10) AND ISNULL(b.Initialized,0)=1
-AND b.pYear_ID=c.ID and a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
+AND a.Score_Type1 in (1,2,31,32,10)
 
 
 ---- 评分
@@ -556,3 +568,5 @@ FROM pYear_Score a,pYear_Process b
 where a.Score_Type2=35 AND a.Score_Status=7
 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.pYear_ID=b.ID
+
+GO

@@ -1,3 +1,14 @@
+-- skyportaltask
+
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[skyportaltask]
+AS
+
 -- 
 -- SELECT N'<a href="#" onclick="PortalUtil.LoadURL(''../flow/runtime/taskmain.aspx?flowid=' + cast(flowid AS varchar(10)) + N''')">您有<font color="red">' +
 -- cast(count(*) AS varchar(10)) + N'</font>条待处理的' + caption + '</a>' AS url, approver, 1 AS id
@@ -1031,3 +1042,5 @@ ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_Score a,pYear_Process b
 where a.Score_Type2=16 AND a.Score_Status=7 AND ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.pYear_ID=b.ID
+
+GO

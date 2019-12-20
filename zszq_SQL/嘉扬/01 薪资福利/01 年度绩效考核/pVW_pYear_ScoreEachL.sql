@@ -8,6 +8,7 @@
 
 1-总部部门负责人：      履职情况胜任素质测评(公司班子成员30%、分管领导50%、360度评价20%(部门负责人互评10%、下属员工10%))
 2-总部部门副职：        履职情况胜任素质测评(分管领导30%、部门负责人50%、360度评价20%(下属员工20%))
+36-总部部门助理：        履职情况胜任素质测评(分管领导30%、部门负责人50%、360度评价20%(下属员工20%))
 31-一级分支机构负责人：  履职情况胜任素质测评(公司班子领导30%、分管领导50%、360度评价20%(一级分支机构互评10%、分支机构员工10%))
 32-一级分支机构副职及二级分支机构经理室成员：   履职情况胜任素质测评(分管领导30%、一级分支机构负责人50%、360度评价20%(下属员工20%))
 */
@@ -89,6 +90,38 @@ select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_T
 N'210-分管领导测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy=737
+
+-- 36-总部部门助理
+---- 分管领导测评 EachLType=215 Modulus=30%
+---- 分管领导非部门负责人
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,215 as EachLType,
+N'215-分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=36 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
+---- 部门负责人测评 EachLType=225 Modulus=50%
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,50 as Modulus,225 as EachLType,
+N'225-部门负责人测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.Score_Type1=36 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
+-- 360度评价 部门员工测评 EachLType=245 Modulus=20%
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,245 as EachLType,
+N'245-360度评价 部门员工测评' as EachLTypeTitle
+from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=36 and b.Score_Type1=4 and a.pstatus=1 and b.pstatus=1
+and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5) and a.kpidepidyy<>737
+---- 合规总监测评 EachLType=215 Modulus=100%
+---- 合规总监(许向军：1033)
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,100 as Modulus,215 as EachLType,
+N'215-分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=36 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy=737
 
 -- 31-一级分支机构负责人

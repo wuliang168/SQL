@@ -43,6 +43,23 @@ where a.Score_Type1=2 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0
 group by a.EID,a.EachLType,a.Modulus,b.Weight1
 
 
+-------- 总部部门副职(Score_Type1：36)
+-------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=215,           -- 总部部门副职 分管领导测评
+-- EachLType=225,           -- 总部部门副职 部门负责人测评
+-- EachLType=245,           -- 总部部门副职 360度评价 部门员工测评
+--
+union
+select a.EID,
+-- 分管领导测评
+a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
+AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
+b.Weight1 as EachLWeight
+from pYear_ScoreEachL a,pYear_Score b
+where a.Score_Type1=2 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0)=1
+group by a.EID,a.EachLType,a.Modulus,b.Weight1
+
+
 -------- 一级分支机构负责人(Score_Type1：31)
 -------- 履职情况胜任素质 测评总分计算 --------
 -- EachLType=310,         -- 一级分支机构负责人 公司班子成员测评

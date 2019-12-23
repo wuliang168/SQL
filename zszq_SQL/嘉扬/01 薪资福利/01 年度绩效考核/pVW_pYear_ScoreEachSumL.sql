@@ -11,13 +11,13 @@ AS
 
 -------- 总部部门负责人(Score_Type1：1)
 -------- 履职情况胜任素质 测评总分计算 --------
--- EachLType=110,           -- 总部部门负责人 公司班子成员测评
+-- EachLType=110,           -- 总部部门负责人 主要领导测评
 -- EachLType=120,           -- 总部部门负责人 分管领导测评
+-- EachLType=125,           -- 总部部门负责人 360度评价 其他领导测评
 -- EachLType=130,           -- 总部部门负责人 360度评价 一级部门负责人互评
 -- EachLType=140,           -- 总部部门负责人 360度评价 部门员工评测
 --
 select a.EID,
--- 公司班子成员测评
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
 b.Weight1 as EachLWeight
@@ -28,13 +28,13 @@ group by a.EID,a.EachLType,a.Modulus,b.Weight1
 
 -------- 总部部门副职(Score_Type1：2)
 -------- 履职情况胜任素质 测评总分计算 --------
+-- EachLType=205,           -- 总部部门副职 主要领导测评
 -- EachLType=210,           -- 总部部门副职 分管领导测评
 -- EachLType=220,           -- 总部部门副职 部门负责人测评
 -- EachLType=240,           -- 总部部门副职 360度评价 部门员工测评
 --
 union
 select a.EID,
--- 分管领导测评
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
 b.Weight1 as EachLWeight
@@ -43,15 +43,14 @@ where a.Score_Type1=2 and a.EID=b.EID and b.Score_Status=1 and ISNULL(a.Submit,0
 group by a.EID,a.EachLType,a.Modulus,b.Weight1
 
 
--------- 总部部门副职(Score_Type1：36)
+-------- 总部部门助理(Score_Type1：36)
 -------- 履职情况胜任素质 测评总分计算 --------
--- EachLType=215,           -- 总部部门副职 分管领导测评
--- EachLType=225,           -- 总部部门副职 部门负责人测评
--- EachLType=245,           -- 总部部门副职 360度评价 部门员工测评
+-- EachLType=215,           -- 总部部门助理 分管领导测评
+-- EachLType=225,           -- 总部部门助理 部门负责人测评
+-- EachLType=245,           -- 总部部门助理 360度评价 部门员工测评
 --
 union
 select a.EID,
--- 分管领导测评
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
 b.Weight1 as EachLWeight
@@ -62,14 +61,13 @@ group by a.EID,a.EachLType,a.Modulus,b.Weight1
 
 -------- 一级分支机构负责人(Score_Type1：31)
 -------- 履职情况胜任素质 测评总分计算 --------
--- EachLType=310,         -- 一级分支机构负责人 公司班子成员测评
+-- EachLType=310,         -- 一级分支机构负责人 主要领导测评
 -- EachLType=320,         -- 一级分支机构负责人 分管领导评测
 -- EachLType=330,         -- 一级分支机构负责人 360度评价 一级分支机构负责人互评
 -- EachLType=340,         -- 一级分支机构负责人 360度评价 一级分支机构下属员工评测
 --
 union
 select a.EID,
--- 公司班子成员测评
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
 b.Weight1 as EachLWeight
@@ -86,7 +84,6 @@ group by a.EID,a.EachLType,a.Modulus,b.Weight1
 --
 union
 select a.EID,
--- 分管领导测评
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*a.Modulus*1.0/100) as EachLAVG,a.Modulus,
 b.Weight1 as EachLWeight

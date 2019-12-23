@@ -23,7 +23,7 @@ UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
 NULL as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
 NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
-(a.Score1*a.Weight1/100*ISNULL(a.Modulus,100)/100
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
@@ -43,7 +43,7 @@ union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
 a.Score1 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
 NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
-(a.Score1*a.Weight1/100*ISNULL(a.Modulus,100)/100
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
@@ -63,7 +63,7 @@ union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
 a.Score1 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
 NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
-(a.Score1*a.Weight1/100*ISNULL(a.Modulus,100)/100
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
@@ -103,7 +103,7 @@ UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
 NULL as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
 NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
-(a.Score1*a.Weight1/100*ISNULL(a.Modulus,100)/100
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a

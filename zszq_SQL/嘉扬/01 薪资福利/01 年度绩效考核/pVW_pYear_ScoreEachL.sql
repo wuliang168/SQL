@@ -22,31 +22,40 @@ GO
 ALTER VIEW [dbo].[pVW_pYear_ScoreEachL]
 AS
 -- 1-总部部门负责人
----- 公司班子成员 EachLType=110 Modulus=30%
----- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)、副总裁(赵伟江：1026、高玮：1027、程景东：6012)
----- 财务总监(盛建龙：1028)、合规总监(许向军：1033)、董事会秘书(张辉：1425)
-select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,30 as Modulus,110 as EachLType,
-N'110-公司班子成员测评' as EachLTypeTitle
+---- 主要领导 EachLType=110 Modulus=50%
+---- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,50 as Modulus,110 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
 from pEmployee_register a,eEmployee d
 where a.Score_Type1=1 and a.pstatus=1
-and d.EID in (1022,5587,5014,1026,1027,6012,1028,1033,1425)
+and d.EID in (1022,5587,5014)
 and a.kpidepidyy<>737
----- 分管领导 EachLType=120 Modulus=50%
+---- 分管领导 EachLType=120 Modulus=30%
 UNION
-select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,50 as Modulus,120 as EachLType,
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,120 as EachLType,
 N'120-分管领导测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c
 where a.kpidepidyy=c.DepID and a.Score_Type1=1 and a.pstatus=1
 and a.kpidepidyy<>737
--- 360度评价 总部部门负责人互评 EachLType=130 Modulus=10%
+---- 其他领导 EachLType=125 Modulus=10%
+---- 副总裁(赵伟江：1026、高玮：1027、程景东：6012)
+---- 财务总监(盛建龙：1028)、合规总监(许向军：1033)、董事会秘书(张辉：1425)
 UNION
-select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,130 as EachLType,
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,10 as Modulus,125 as EachLType,
+N'110-公司班子成员测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee d
+where a.Score_Type1=1 and a.pstatus=1
+and d.EID in (1026,1027,6012,1028,1033,1425)
+and a.kpidepidyy<>737
+-- 360度评价 总部部门负责人互评 EachLType=130 Modulus=5%
+UNION
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,5 as Modulus,130 as EachLType,
 N'130-360度评价 部门负责人互评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b
 where a.EID<>b.EID and a.Score_Type1=1 and b.Score_Type1=1 and a.pstatus=1 and b.pstatus=1 and a.kpidepidyy<>737
--- 360度评价 部门员工测评 EachLType=140 Modulus=10%
+-- 360度评价 部门员工测评 EachLType=140 Modulus=5%
 UNION
-select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,140 as EachLType,
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,5 as Modulus,140 as EachLType,
 N'140-360度评价 部门员工测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b
 where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=1 and b.Score_Type1 in (2,4) and a.pstatus=1 and b.pstatus=1 and a.kpidepidyy<>737
@@ -61,6 +70,14 @@ and d.EID=1033
 and a.kpidepidyy=c.DepID and a.kpidepidyy=737
 
 -- 2-总部部门副职
+---- 主要领导 EachLType=205 Modulus=30%
+---- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
+UNION
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,30 as Modulus,205 as EachLType,
+N'205-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee d
+where a.Score_Type1=2 and a.pstatus=1
+and d.EID in (1022,5587,5014) and a.kpidepidyy<>737
 ---- 分管领导测评 EachLType=210 Modulus=30%
 ---- 分管领导非部门负责人
 UNION
@@ -69,16 +86,16 @@ N'210-分管领导测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
----- 部门负责人测评 EachLType=220 Modulus=50%
+---- 部门负责人测评 EachLType=220 Modulus=30%
 UNION
-select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,50 as Modulus,220 as EachLType,
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,30 as Modulus,220 as EachLType,
 N'220-部门负责人测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
--- 360度评价 部门员工测评 EachLType=240 Modulus=20%
+-- 360度评价 部门员工测评 EachLType=240 Modulus=10%
 UNION
-select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,240 as EachLType,
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,240 as EachLType,
 N'240-360度评价 部门员工测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
 where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=2 and b.Score_Type1=4 and a.pstatus=1 and b.pstatus=1
@@ -125,19 +142,18 @@ where a.kpidepidyy=c.DepID and a.Score_Type1=36 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy=737
 
 -- 31-一级分支机构负责人
--- 公司班子成员测评 EachLType=310 Modulus=30%
----- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)、副总裁(赵伟江：1026、高玮：1027、程景东：6012)
----- 财务总监(盛建龙：1028)、合规总监(许向军：1033)、董事会秘书(张辉：1425)
+-- 主要领导测评 EachLType=310 Modulus=50%
+---- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
 UNION
-select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,310 as EachLType,
-N'310-公司班子成员测评' as EachLTypeTitle
+select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,50 as Modulus,310 as EachLType,
+N'310-主要领导测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=31 and a.pstatus=1
-and a.EID=d.EID and d.EID in (1022,5587,5014,1026,1027,6012,1028,1033,1425)
----- 分管领导评测 EachLType=320 Modulus=50%
+and a.EID=d.EID and d.EID in (1022,5587,5014)
+---- 分管领导评测 EachLType=320 Modulus=30%
 ---- 分管领导非公司班子成员
 UNION
-select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,50 as Modulus,320 as EachLType,
+select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,320 as EachLType,
 N'320-分管领导评测' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=31 and a.pstatus=1

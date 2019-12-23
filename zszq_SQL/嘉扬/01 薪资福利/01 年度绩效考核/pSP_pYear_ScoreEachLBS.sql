@@ -56,7 +56,7 @@ Begin
     a.ScoreTotal=b.ScoreTotal,a.SUBMIT=1,a.Submitby=@URID,a.SubmitTime=GETDATE()
     from pYear_ScoreEachL a,pYear_ScoreEachL b
     where a.Score_Type1=b.Score_Type1 and a.Score_EID=b.Score_EID and b.Score_EID=(select EID from SkySecUser where ID=@URID)
-    and a.EachLType<>b.EachLType and b.EachLType=@leftid
+    and a.EID=b.EID and a.EachLType<>b.EachLType and b.EachLType=@leftid
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

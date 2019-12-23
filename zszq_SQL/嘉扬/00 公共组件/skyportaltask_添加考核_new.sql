@@ -505,7 +505,7 @@ and a.Status=6 and a.FDAppraiseEID=1022
 ------------- 年度考核 ------------
 -- 员工自评
 -- skyWindow ID: 500010
-UNION ALL
+UNION
 SELECT N'<a href="#" onclick="moveTo(''1.0.500010'',''年度考核--自评'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年年度考核自评</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
@@ -518,7 +518,7 @@ and a.pYear_ID=b.ID
 -- 普通员工年度互评
 -- 4-总部普通员工；33-一级分支机构普通员工；34-二级分支机构普通员工；11-子公司员工
 -- skyWindow ID: 501000
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501000'',''年度考核-员工互评'')">请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + N'年年度考核员工互评</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
@@ -531,7 +531,7 @@ AND a.Score_Type1 IN (4,33,34,11)
 -------- 员工履职情况、胜任素质 --------
 -- 1-总部部门负责人；2-总部部门副职；31-一级分支机构负责人；32-一级分支机构副职及二级分支机构经理室成员；10-子公司部门负责人
 -- skyWindow ID: 501100
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
 N''',''年度考核-履职胜任测评'')" >请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + 
@@ -547,7 +547,7 @@ AND a.Score_Type1 in (1,2,31,32,10)
 ---- 评分
 ---- 普通员工 ----
 -- skyWindow ID: 503010
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503010'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
@@ -559,7 +559,7 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11)
 ---- 总部中层员工 ----
 -- skyWindow ID: 503030
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503030'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
@@ -571,7 +571,7 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (1,2,36,10)
 ---- 分支机构合规、财务员工 ----
 -- skyWindow ID: 503020
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503020'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
@@ -583,7 +583,7 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (14,17,19)
 ---- 一级分支机构负责人 ----
 -- skyWindow ID: 503040
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503040'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
@@ -592,10 +592,20 @@ FROM pYear_Score a
 left join pYear_Process b on a.pYear_ID=b.ID
 inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=31 and A.Score_Status in (2,3)
+AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=31 and A.Score_Status=2
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503045'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
++ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
++ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_Score a
+left join pYear_Process b on a.pYear_ID=b.ID
+inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=31 and A.Score_Status=3
 ---- 一级分支机构副职及二级分支机构经理室成员 ----
 -- skyWindow ID: 503050
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503050'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
@@ -608,7 +618,7 @@ AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=32
 
 ---- 兼职合规 ----
 -- skyWindow ID: 503010
-UNION ALL
+UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503010'',''leftid^' + cast(a.Score_Type2 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 

@@ -58,7 +58,7 @@ UNION
 select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,5 as Modulus,140 as EachLType,
 N'140-360度评价 部门员工测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b
-where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=1 and b.Score_Type1 in (2,4) and a.pstatus=1 and b.pstatus=1 and a.kpidepidyy<>737
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=1 and b.Score_Type1 in (2,36,4) and a.pstatus=1 and b.pstatus=1 and a.kpidepidyy<>737
 ---- 合规总监测评 EachLType=110 Modulus=100%
 ---- 合规总监(许向军：1033)
 UNION
@@ -73,7 +73,7 @@ and a.kpidepidyy=c.DepID and a.kpidepidyy=737
 ---- 主要领导 EachLType=205 Modulus=30%
 ---- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
 UNION
-select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,30 as Modulus,205 as EachLType,
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,30 as Modulus,205 as EachLType,
 N'205-主要领导测评' as EachLTypeTitle
 from pEmployee_register a,eEmployee d
 where a.Score_Type1=2 and a.pstatus=1
@@ -98,7 +98,7 @@ UNION
 select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,240 as EachLType,
 N'240-360度评价 部门员工测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=2 and b.Score_Type1=4 and a.pstatus=1 and b.pstatus=1
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=2 and b.Score_Type1 in (36,4) and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5) and a.kpidepidyy<>737
 ---- 合规总监测评 EachLType=210 Modulus=100%
 ---- 合规总监(许向军：1033)
@@ -130,7 +130,7 @@ UNION
 select N'总部部门助理' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,245 as EachLType,
 N'245-360度评价 部门员工测评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=36 and b.Score_Type1=4 and a.pstatus=1 and b.pstatus=1
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=36 and b.Score_Type1 in (2,4) and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5) and a.kpidepidyy<>737
 ---- 合规总监测评 EachLType=215 Modulus=100%
 ---- 合规总监(许向军：1033)

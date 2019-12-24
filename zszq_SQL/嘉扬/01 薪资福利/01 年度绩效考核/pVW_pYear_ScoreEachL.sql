@@ -170,7 +170,7 @@ UNION
 select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,340 as EachLType,
 N'340-360度评价 一级分支机构下属员工评测' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=31 and b.Score_Type1 in (32,33,34) and a.pstatus=1 and b.pstatus=1
+where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=31 and b.Score_Type1 in (32,33) and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
 -- 32-一级分支机构副职及二级分支机构经理室成员
@@ -193,7 +193,7 @@ UNION
 select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,440 as EachLType,
 N'440-360度评价 部门人员评测' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=32 and b.Score_Type1 in (33,34) and a.pstatus=1 and b.pstatus=1
+where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=32 and b.Score_Type1=33 and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
 ---- 10-子公司部门行政负责人

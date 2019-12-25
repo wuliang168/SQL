@@ -21,8 +21,8 @@ WHERE a.Score_Type1=1 and a.Score_Status=2
 UNION
 -- Score_Status=99              最终年度考核
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-NULL as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+NULL as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
@@ -41,8 +41,8 @@ WHERE a.Score_Type1=2 and a.Score_Status=2
 -- Score_Status=99               分管领导考核(部门年度工作计划)
 union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
@@ -61,8 +61,8 @@ WHERE a.Score_Type1=36 and a.Score_Status=2
 -- Score_Status=99               分管领导考核(部门年度工作计划)
 union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
@@ -73,8 +73,8 @@ WHERE a.Score_Type1=36 and a.Score_Status=99
 -- Score_Status=99             总部部门负责人考核
 union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7)*ISNULL(a.Weight1,100)/100*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
@@ -101,8 +101,8 @@ WHERE a.Score_Type1=31 and a.Score_Status=3
 -- Score_Status=99               最终年度考核
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-NULL as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+NULL as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
@@ -121,27 +121,15 @@ WHERE a.Score_Type1=32 and a.Score_Status=2
 -- Score_Status=99               分管领导考核(工作任务目标50%、合规管理有效性10%)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,0)/100 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,0)/100 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
 WHERE a.Score_Type1=32 and a.Score_Status=99
---------- 一级分支机构普通员工 --------
--- 33-一级分支机构普通员工
--- Score_Status=99               一级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
-UNION
-select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
-((a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7)*ISNULL(a.Weight1,100)/100*ISNULL(a.Modulus,100)/100
-+ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
-*(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
-from pYear_Score a
-WHERE a.Score_Type1=33 and a.Score_Status=99
---------- 二级分支机构普通员工 --------
--- 34-二级分支机构普通员工
+--------- 分支机构普通员工 --------
+-- 33-分支机构普通员工
 -- Score_Status=2               二级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
@@ -149,17 +137,17 @@ a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NUL
 (a.Score1+a.Score2+a.Score3)*ISNULL(a.Weight1,100)/100*ISNULL(a.Modulus,100)/100 as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
 NULL as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=34 and a.Score_Status=2
--- Score_Status=99               二级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
+WHERE a.Score_Type1=33 and a.Score_Status=2
+-- Score_Status=99               一级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1+a.Score2+a.Score3+a.Score4+a.Score5+a.Score6+a.Score7)*ISNULL(a.Weight1,100)/100*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=34 and a.Score_Status=99
+WHERE a.Score_Type1=33 and a.Score_Status=99
 --------- 分支机构区域财务经理 --------
 -- 17-分支机构区域财务经理
 -- Score_Status=2               分支机构负责人考核(岗位工作完成情况60%和专业技术考核40%)
@@ -178,16 +166,16 @@ NULL as ScoreSTG1,(a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modul
 NULL as ScoreYear
 from pYear_Score a
 WHERE a.Score_Type1=17 and a.Score_Status=3
--- Score_Status=3               财务总监考核(岗位工作完成情况60%和专业技术考核40%)
+-- Score_Status=99               财务总监考核(岗位工作完成情况60%和专业技术考核40%)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,(a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100 as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=17 and a.Score_Status=3
+WHERE a.Score_Type1=17 and a.Score_Status=99
 --------- 综合会计 --------
 -- 19-综合会计
 -- Score_Status=2               分支机构负责人考核(岗位工作完成情况60%和专业技术考核40%)
@@ -209,8 +197,8 @@ WHERE a.Score_Type1=19 and a.Score_Status=3
 -- Score_Status=99               计划财务部经理考核(岗位工作完成情况60%和专业技术考核40%)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,
-a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,NULL as ScoreEach,NULL as ScoreCompl,
-NULL as ScoreSTG1,NULL as ScoreSTG2,NULL as ScoreSTG3,
+a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,NULL as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 ((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear

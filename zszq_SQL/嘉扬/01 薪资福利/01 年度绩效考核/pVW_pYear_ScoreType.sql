@@ -23,8 +23,7 @@
 -- 11-子公司普通员工
 -- 31-一级分支机构负责人
 -- 32-二级分支机构副职及二级分支机构经理室成员
--- 33-一级分支机构普通员工
--- 34-二级分支机构普通员工
+-- 33-分支机构普通员工
 -- 14-分支机构合规专员
 -- 17-分支机构区域财务经理
 -- 19-综合会计
@@ -344,6 +343,7 @@ AND c.Director is not NULL
 -- Score_Status=0：0%               自评完毕
 -- Score_Status=1：30%              员工互评
 -- Score_Status=2：70%*60%          二级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
+-- Score_Status=99：70%*40%         一级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
 -- Score_Status=99：70%             一级分支机构负责人考核(工作业绩、工作态度、工作能力和合规风控性)
 --
 -- 分支机构普通员工 自评 0% Score_Status-0
@@ -369,7 +369,7 @@ SELECT DISTINCT N'分支机构普通员工' AS sType,a.EID AS EID,a.kpidepidyy A
 2 AS Score_Status,N'2-二级分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
-and c.DepGrade=2
+and c.DepGrade=2 and c.Director<>c.Director2
 --
 -- 分支机构普通员工
 ---- 一级分支机构普通员工 一级分支机构负责人考核 70% Score_Status-99
@@ -378,14 +378,16 @@ SELECT DISTINCT N'分支机构普通员工' AS sType,a.EID AS EID,a.kpidepidyy A
 70 AS Weight1,NULL AS Weight2,NULL AS Weight3,100 AS Modulus,
 99 AS Score_Status,N'99-一级分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) and c.DepGrade=1
+WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) 
+and (c.DepGrade=1 or (c.DepGrade=2 and c.Director=c.Director2))
 ---- 二级分支机构普通员工 一级分支机构负责人考核 70%*40% Score_Status-99
 UNION
 SELECT DISTINCT N'分支机构普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director AS Score_EID,
 70 AS Weight1,NULL AS Weight2,NULL AS Weight3,40 AS Modulus,
 99 AS Score_Status,N'99-一级分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) and c.DepGrade=2
+WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) 
+and c.DepGrade=2 and c.Director<>c.Director2
 
 
 --------- 分支机构合规专员 --------

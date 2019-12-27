@@ -244,7 +244,7 @@ N'子公司部门负责人测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=30 and a.pstatus=1
 and a.EID=d.EID and d.Status not in (4,5) and c.CompID=13 and c.Director2 is not NULL
--- 子公司部门副职 部门员工测评 EachLType=730 Modulus=30%
+-- 子公司部门副职 子公司部门员工测评 EachLType=730 Modulus=30%
 UNION
 select N'子公司部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,30 as Modulus,730 as EachLType,
 N'子公司部门员工测评' as EachLTypeTitle

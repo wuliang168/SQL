@@ -196,30 +196,61 @@ from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
 where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=32 and b.Score_Type1=33 and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
----- 10-子公司部门行政负责人
----- 子公司部门负责人 子公司总经理测评 EachLType=330 Modulus=40%
------- 资管子公司总经理DepID:393;资本子公司总经理DepID:392
---UNION
---select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,
---(case when c.CompID=13 then (select Director from oDepartment where DepID=393) else (select Director from oDepartment where DepID=392) end) as Score_EID,
---40 as Modulus,330 as EachLType,
---N'总经理测评' as EachLTypeTitle
---from pEmployee_register a,oDepartment c,eEmployee d
---where a.kpidepidyy=c.DepID and a.Score_Type1=10 and a.pstatus=1
---and a.EID=d.EID and d.Status not in (4,5)
----- 子公司部门负责人 子公司部门负责人互评 EachLType=340 Modulus=30%
---UNION
---select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,30 as Modulus,340 as EachLType,
---N'部门负责人互评' as EachLTypeTitle
---from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
---where a.EID<>b.EID and a.Score_Type1=10 and b.Score_Type1=10 and a.pstatus=1 and b.pstatus=1
---and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
----- 子公司部门负责人 部门内下属员工360度测评 EachLType=350 Modulus=30%
---UNION
---select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,30 as Modulus,350 as EachLType,
---N'下属员工360度测评' as EachLTypeTitle
---from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
---where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=10 and b.Score_Type1=11 and a.pstatus=1 and b.pstatus=1
---and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+-- 10-子公司部门行政负责人
+-- 子公司部门负责人 子公司总经理测评 EachLType=610 Modulus=40%
+---- 资管子公司总经理(盛建龙：1028)
+UNION
+select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,1028 as Score_EID,40 as Modulus,610 as EachLType,
+N'子公司总经理评价' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=10 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and c.CompID=13
+-- 子公司部门负责人 子公司分管领导测评 EachLType=620 Modulus=20%
+UNION
+select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,20 as Modulus,620 as EachLType,
+N'子公司分管领导评价' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=10 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and c.CompID=13 and c.Director2 is not NULL
+-- 子公司部门负责人 子公司部门负责人互评 EachLType=630 Modulus=20%
+UNION
+select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,630 as EachLType,
+N'子公司部门负责人互评' as EachLTypeTitle
+from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d,oDepartment e,oDepartment f
+where a.EID<>b.EID and a.Score_Type1=10 and b.Score_Type1=10 and a.pstatus=1 and b.pstatus=1
+and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+and a.kpidepidyy=e.DepID and e.CompID=13 and b.kpidepidyy=f.DepID and f.CompID=13
+-- 子公司部门负责人 子公司部门员工评价 EachLType=640 Modulus=20%
+UNION
+select N'子公司部门行政负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,640 as EachLType,
+N'子公司部门员工评价' as EachLTypeTitle
+from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d,oDepartment e,oDepartment f
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=10 and b.Score_Type1 in (11,30) and a.pstatus=1 and b.pstatus=1
+and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+and a.kpidepidyy=e.DepID and e.CompID=13 and b.kpidepidyy=f.DepID and f.CompID=13
+
+-- 30-子公司部门副职
+-- 子公司部门副职 子公司分管领导测评 EachLType=710 Modulus=40%
+UNION
+select N'子公司部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,40 as Modulus,710 as EachLType,
+N'子公司分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=30 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and c.CompID=13 and c.Director2 is not NULL
+-- 子公司部门副职 子公司部门负责人测评 EachLType=720 Modulus=30%
+UNION
+select N'子公司部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,30 as Modulus,720 as EachLType,
+N'子公司部门负责人测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=30 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and c.CompID=13 and c.Director2 is not NULL
+-- 子公司部门副职 部门员工测评 EachLType=730 Modulus=30%
+UNION
+select N'子公司部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,30 as Modulus,730 as EachLType,
+N'子公司部门员工测评' as EachLTypeTitle
+from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d,oDepartment e,oDepartment f
+where a.kpidepidyy=b.kpidepidyy and a.Score_Type1=30 and b.Score_Type1=11 and a.pstatus=1 and b.pstatus=1
+and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
+and a.kpidepidyy=e.DepID and e.CompID=13 and b.kpidepidyy=f.DepID and f.CompID=13
 
 GO

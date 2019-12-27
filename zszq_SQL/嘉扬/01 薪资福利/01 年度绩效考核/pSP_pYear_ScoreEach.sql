@@ -46,6 +46,7 @@ Begin
     from pVW_pYear_ScoreType a,eEmployee b
     where a.EID=b.EID and b.Status in (1,2,3) and a.Score_Status=1
     and a.EID not in (select EID from pYear_Score where Score_Status=1)
+    and a.EID in (select EID from pYear_Score where Score_Status=99)
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

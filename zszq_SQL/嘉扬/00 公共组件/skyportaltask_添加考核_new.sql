@@ -356,7 +356,7 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550420'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
 '-' + cast(a.ProcessID AS nvarchar(5)) +
 N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) + cast(datepart(mm, b.Date) AS varchar(2)) + N'月分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
 WHERE a.ProcessID=b.ID
@@ -369,7 +369,7 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550410'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
 '-' + cast(a.ProcessID AS nvarchar(5)) +
 N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) + cast(datepart(mm, b.Date) AS varchar(2)) + N'月分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
 WHERE a.ProcessID=b.ID
@@ -382,7 +382,7 @@ SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.550410'',''leftid^' + cast(a.AnnualBonusDepID AS nvarchar(5)) + 
 '-' + cast(a.ProcessID AS nvarchar(5)) +
 N''',''年度奖金统计反馈'')">请您完成' + c.DepAbbr + cast(datepart(yy, b.Year) AS varchar(10)) + N'年度' 
-+ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) +N'分配</a>' AS url, 
++ (select Title from oCD_AnnualBonusType where ID=a.AnnualBonusType) + cast(datepart(mm, b.Date) AS varchar(2)) + N'月分配</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_AnnualBonusDep a,pYear_AnnualBonus_Process b,oDepartment c
 WHERE a.ProcessID=b.ID
@@ -541,7 +541,7 @@ FROM pYear_ScoreEachL a
 left join pYear_Process c on a.pYear_ID=c.ID
 inner join (select Score_EID,MIN(EachLType) as EachLType,Score_Type1,sEachLType from pVW_pYear_ScoreEachL where Score_EID is not NULL and sEachLType is not NULL group by Score_EID,Score_Type1,sEachLType) d on a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Type1 in (1,2,31,32,10)
+AND a.Score_Type1 in (1,2,31,32,36,10)
 
 
 ---- 评分
@@ -557,6 +557,9 @@ left join pYear_Process b on a.pYear_ID=b.ID
 inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11)
+---- 兼职合规
+---- 二级分支机构员工
+---- 一级分支机构负责人兼职二级分支机构负责人
 ---- 总部中层员工 ----
 -- skyWindow ID: 503030
 UNION
@@ -617,9 +620,9 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=32
 
 ---- 兼职合规 ----
--- skyWindow ID: 503010
+-- skyWindow ID: 503025
 UNION
-SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503010'',''leftid^' + cast(a.Score_Type2 AS nvarchar(15)) 
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503025'',''leftid^' + cast(a.Score_Type2 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
 + cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id

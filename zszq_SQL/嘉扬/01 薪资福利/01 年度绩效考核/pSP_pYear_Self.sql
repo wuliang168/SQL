@@ -69,11 +69,11 @@ Begin
     GOTO ErrM
     ---- 1-总部部门负责人; 2-总部部门副职; 36-总部部门助理
     ---- 31-一级分支机构负责人; 32-二级分支机构副职及二级分支机构经理室成员
-    ---- 10-子公司部门行政负责人；
+    ---- 10-子公司部门行政负责人；30-子公司部门副职
     insert into pYear_KPI (EID,pYear_ID,Xorder,Title,Initialized,Initializedby,InitializedTime)
     select a.EID,a.pYear_ID,b.Xorder,b.Title,1,@URID,GETDATE()
     from pYear_Score a,PMB_GS b
-    where a.Score_Type1=b.[group] and a.SCORE_STATUS=0 and a.Score_Type1 in (1,2,36,31,32,10)
+    where a.Score_Type1=b.[group] and a.SCORE_STATUS=0 and a.Score_Type1 in (1,2,36,31,32,10,30)
     -- 异常处理
     if @@ERROR<>0
     GOTO ErrM

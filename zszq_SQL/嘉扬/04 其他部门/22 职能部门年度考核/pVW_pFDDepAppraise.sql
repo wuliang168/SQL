@@ -11,6 +11,14 @@
 ---- 总裁考核阶段：5
 ---- 董事长确认阶段：6
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pFDDepAppraise]
+AS
 
 ---- 部门负责人考评
 select distinct a.Director as FDAppraiseEID,a.DepID as FDAppraiseDepID,NULL as FDAppraiseType,1 as Status
@@ -36,17 +44,17 @@ where a.DepID in (361,362,715,683,670,789,786,380,381,382,383,394,738,544,392)
 UNION
 select distinct a.Director as FDAppraiseEID,a.DepID as FDAppraiseDepID,10 as FDAppraiseType,3 as Status
 from oDepartment a
-where a.DepID in (737,359,358,792)
+where a.DepID in (355)
 ------ 质量系数：安全管理               法律合规部(737)、风险管理部(359)、审计部(358)、行政管理总部(352)、信息技术运保部(744)
 UNION
 select distinct a.Director as FDAppraiseEID,NULL as FDAppraiseDepID,13 as FDAppraiseType,3 as Status
 from oDepartment a
-where a.DepID in (350)
+where a.DepID in (737,359,358,352,744)
 ------ 质量系数：党风廉政               党群部(353)、纪检监察室(792)
 UNION
 select distinct a.Director as FDAppraiseEID,NULL as FDAppraiseDepID,14 as FDAppraiseType,3 as Status
 from oDepartment a
-where a.DepID in (702)
+where a.DepID in (353,792)
 
 
 ------ 部门分管领导评测
@@ -73,3 +81,5 @@ where a.DepID in (702)
 --UNION
 --select distinct 1022 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,6 as Status
 --from oDepartment a
+
+Go

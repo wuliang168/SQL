@@ -41,17 +41,25 @@ Begin
     select pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,
     Score1,Score2,Score3,Score4,Score5,Score6,Score7,Score8,Score9,Score10,ScoreTotal,Remark,Submit,SubmitBy,SubmitTime
     from pFDAppraise
+    where pYear_ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 拷贝pFDAppraiseAssess到pFDAppraiseAssess_all
-    insert into pFDAppraiseAssess_all(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex,Assess)
-    select pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex,Assess
-    from pFDAppraiseAssess
+    --insert into pFDAppraiseAssess_all(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex,Assess)
+    --select pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status,xOrder,AppraiseIndex,Assess
+    --from pFDAppraiseAssess
 
     -- 删除pFDAppraise
     delete from pFDAppraise
+    where pYear_ID=@ID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 删除pFDAppraiseAssess
-    delete from pFDAppraiseAssess
+    --delete from pFDAppraiseAssess
 
     -- 更新职能部门考核表项pYear_FDAppraiseProcess
     Update a

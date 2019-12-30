@@ -452,6 +452,7 @@ WHERE a.Score_Type1=19 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND c.CWEID is N
 -- Score_Status=99：(50%+30%)*50%           子公司董事长考核(部门年度工作计划和履职情况)
 -- Score_Status=3：(50%+30%)*30%            子公司常务副总经理考核(部门年度工作计划和履职情况)
 -- Score_Status=99：(50%+30%)*70%           子公司董事长考核(部门年度工作计划和履职情况)
+-- Score_Status=99：(50%+30%)*70%           合规总监考核(部门年度工作计划和履职情况)
 --
 -- 子公司部门行政负责人 自评 0% Score_Status-0
 UNION
@@ -528,7 +529,7 @@ FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=10 AND a.pstatus=1 AND a.kpidepidyy<>666 AND a.EID=d.EID and d.status not in (4,5)
 AND a.kpidepidyy=c.DepID AND ISNULL(c.Director2,1028) in (1028,1343) AND c.CompID=13
 --
--- 子公司合规风控部行政负责人 子公司合规总监(方斌：5479)考核 (50%+30%)*50% Score_Status-2
+-- 子公司合规风控部行政负责人 子公司合规总监(方斌：5479)考核 (50%+50%)*100% Score_Status-2
 UNION
 SELECT DISTINCT N'10-子公司部门行政负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,5479 AS Score_EID,
 50 AS Weight1,50 AS Weight2,NULL AS Weight3,100 AS Modulus,
@@ -619,7 +620,7 @@ AND a.kpidepidyy=c.DepID AND a.kpidepidyy not in (666,542)
 ---- 合规部门
 UNION
 SELECT DISTINCT N'子公司普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,ISNULL(c.Director,c.Director2) AS Score_EID,
-100 AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
+50 AS Weight1,50 AS Weight2,NULL AS Weight3,100 AS Modulus,
 99 AS Score_Status,N'99-子公司负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=11 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)

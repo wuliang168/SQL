@@ -161,7 +161,7 @@ UNION
 select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,20 as Modulus,440 as EachLType,
 N'440-360度评价 分支机构员工评测' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Score_Type1=32 and b.Score_Type1=33 and a.pstatus=1 and b.pstatus=1
+where (a.kpidepidyy = b.kpidepidyy or a.kpidepidyy = dbo.eFN_getdepid1(b.kpidepidyy)) and a.Score_Type1=32 and b.Score_Type1=33 and a.pstatus=1 and b.pstatus=1
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
 -- 10-子公司部门行政负责人

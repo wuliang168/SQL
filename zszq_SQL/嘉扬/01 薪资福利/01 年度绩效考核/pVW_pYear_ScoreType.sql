@@ -168,20 +168,31 @@ FROM pEmployee_register a,eEmployee d
 WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 --
 -- 总部普通员工 员工互评 30% Score_Status-1
+---- 不含法律合规部
 UNION
 SELECT DISTINCT N'总部普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,NULL AS Score_EID,
 30 AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
 1 AS Score_Status,N'1-员工互评' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,eEmployee d
-WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5) and a.kpidepidyy<>737
 --
 -- 总部普通员工 总部部门负责人考核 70% Score_Status-99
+---- 不含法律合规部
 UNION
 SELECT DISTINCT N'总部普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,ISNULL(c.Director,c.Director2) AS Score_EID,
 70 AS Weight1,NULL AS Weight2,NULL AS Weight3,NULL AS Modulus,
 99 AS Score_Status,N'99-总部部门负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) and a.kpidepidyy<>737
+--
+-- 总部普通员工 总部部门负责人考核 100% Score_Status-99
+---- 法律合规部 合规总监(许向军：1033)考核 100%
+UNION
+SELECT DISTINCT N'总部普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,1033 AS Score_EID,
+50 AS Weight1,50 AS Weight2,NULL AS Weight3,NULL AS Modulus,
+99 AS Score_Status,N'99-总部部门负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
+FROM pEmployee_register a,oDepartment c,eEmployee d
+WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5) and a.kpidepidyy=737
 
 
 ------ 一级分支机构负责人 ------

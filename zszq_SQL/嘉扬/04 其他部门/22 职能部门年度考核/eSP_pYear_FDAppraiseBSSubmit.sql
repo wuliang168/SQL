@@ -35,7 +35,7 @@ Begin
     -- 职能部门考核服务支持未填写具体案例说明，无法递交职能部门考核！
     IF Exists(select 1 from pFDAppraise 
     where FDAppraiseEID=@EID and Status=@leftid and FDAppraiseType in (3,15,16)
-    AND (ScoreTotal between 0 and 70 or ScoreTotal between 90 and 100) AND Remark is NULL)
+    AND (ScoreTotal between 0 and 69.99 or ScoreTotal between 90.01 and 100) AND Remark is NULL)
     Begin
         Set @RetVal=1005070
         Return @RetVal

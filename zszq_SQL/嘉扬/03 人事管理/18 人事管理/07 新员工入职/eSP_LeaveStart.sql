@@ -52,37 +52,37 @@ Begin
 Begin TRANSACTION
 
     -- 年金
-    ---- 后台转前台；离职类型为16：转为业务前台
-    ---- 投理顾中未出现
-    IF Exists (select 1 from eleave_register a,eDetails b
-    where a.ID=@ID and a.leaveType in (5) and a.EID=b.EID and b.CertNo not in (select Identification from pSalesDepartMarketerEmolu))
-    Begin
-        insert into pSalesDepartMarketerEmolu(Name,Gender,Identification,Status,CompID,SupDepID,DepID,JobID,AdminID,SalaryPerMM,SalaryPayID,
-        IsPension,IsPensionConfirm,PensionTaxMinus,GrpPensionYearRest,EmpPensionYearRest,GrpPensionFrozen,EmpPensionFrozen,GrpPensionTotal,EmpPensionTotal,
-        JoinDate,JoinGrpDate,LeaveDate,IsConfirm,Remark)
-        select b.Name,b.Gender,b.CertNo,1,b.CompID,b.DepID1,b.DepID2,
-        (select JobID from oJob where ISNULL(DepID1st,0)=ISNULL(b.DepID1,0) and ISNULL(DepID2nd,0)=ISNULL(b.DepID2,0) and JobAbbr=N'投理顾' and ISNULL(isDisabled,0)=0),
-        30,NULL,6,b.IsPension,1,NULL,b.GrpPensionYearRest,b.EmpPensionYearRest,b.GrpPensionFrozen,b.EmpPensionFrozen,b.GrpPensionTotal,b.EmpPensionTotal,b.JoinDate,NULL,NULL,1,NULL
-        from eleave_register a,PVW_PEMPEMOLU b
-        where a.ID=@ID and a.EID=b.EID
-        -- 异常流程
-        If @@Error<>0
-        Goto ErrM
-    End
-    ---- 投理顾中出现
-    IF Exists (select 1 from eleave_register a,eDetails b
-    where a.ID=@ID and a.leaveType in (5) and a.EID=b.EID and b.CertNo in (select Identification from pSalesDepartMarketerEmolu))
-    Begin
-        update c
-        set c.Status=1,c.CompID=c.CompID,c.SupDepID=dbo.eFN_getdepid1st(b.DepID1),c.DepID=dbo.eFN_getdepid2nd(b.DepID2),
-        c.JobID=(select JobID from oJob where ISNULL(DepID1st,0)=ISNULL(b.DepID1,0) and ISNULL(DepID2nd,0)=ISNULL(b.DepID2,0) and JobAbbr=N'投理顾' and ISNULL(isDisabled,0)=0),
-        c.IsPension=b.IsPension,c.IsPensionConfirm=1,c.LeaveDate=NULL,c.IsConfirm=1,c.GrpPensionFrozen=b.GrpPensionFrozen,c.EmpPensionFrozen=b.EmpPensionFrozen
-        from eleave_register a,PVW_PEMPEMOLU b,pSalesDepartMarketerEmolu c
-        where a.ID=@ID and a.EID=b.EID and b.CertNo=c.Identification
-        -- 异常流程
-        If @@Error<>0
-        Goto ErrM
-    End
+    ------ 后台转前台；离职类型为16：转为业务前台
+    ------ 投理顾中未出现
+    --IF Exists (select 1 from eleave_register a,eDetails b
+    --where a.ID=@ID and a.leaveType in (5) and a.EID=b.EID and b.CertNo not in (select Identification from pSalesDepartMarketerEmolu))
+    --Begin
+    --    insert into pSalesDepartMarketerEmolu(Name,Gender,Identification,Status,CompID,SupDepID,DepID,JobID,AdminID,SalaryPerMM,SalaryPayID,
+    --    IsPension,IsPensionConfirm,PensionTaxMinus,GrpPensionYearRest,EmpPensionYearRest,GrpPensionFrozen,EmpPensionFrozen,GrpPensionTotal,EmpPensionTotal,
+    --    JoinDate,JoinGrpDate,LeaveDate,IsConfirm,Remark)
+    --    select b.Name,b.Gender,b.CertNo,1,b.CompID,b.DepID1,b.DepID2,
+    --    (select JobID from oJob where ISNULL(DepID1st,0)=ISNULL(b.DepID1,0) and ISNULL(DepID2nd,0)=ISNULL(b.DepID2,0) and JobAbbr=N'投理顾' and ISNULL(isDisabled,0)=0),
+    --    30,NULL,6,b.IsPension,1,NULL,b.GrpPensionYearRest,b.EmpPensionYearRest,b.GrpPensionFrozen,b.EmpPensionFrozen,b.GrpPensionTotal,b.EmpPensionTotal,b.JoinDate,NULL,NULL,1,NULL
+    --    from eleave_register a,PVW_PEMPEMOLU b
+    --    where a.ID=@ID and a.EID=b.EID
+    --    -- 异常流程
+    --    If @@Error<>0
+    --    Goto ErrM
+    --End
+    ------ 投理顾中出现
+    --IF Exists (select 1 from eleave_register a,eDetails b
+    --where a.ID=@ID and a.leaveType in (5) and a.EID=b.EID and b.CertNo in (select Identification from pSalesDepartMarketerEmolu))
+    --Begin
+    --    update c
+    --    set c.Status=1,c.CompID=c.CompID,c.SupDepID=dbo.eFN_getdepid1st(b.DepID1),c.DepID=dbo.eFN_getdepid2nd(b.DepID2),
+    --    c.JobID=(select JobID from oJob where ISNULL(DepID1st,0)=ISNULL(b.DepID1,0) and ISNULL(DepID2nd,0)=ISNULL(b.DepID2,0) and JobAbbr=N'投理顾' and ISNULL(isDisabled,0)=0),
+    --    c.IsPension=b.IsPension,c.IsPensionConfirm=1,c.LeaveDate=NULL,c.IsConfirm=1,c.GrpPensionFrozen=b.GrpPensionFrozen,c.EmpPensionFrozen=b.EmpPensionFrozen
+    --    from eleave_register a,PVW_PEMPEMOLU b,pSalesDepartMarketerEmolu c
+    --    where a.ID=@ID and a.EID=b.EID and b.CertNo=c.Identification
+    --    -- 异常流程
+    --    If @@Error<>0
+    --    Goto ErrM
+    --End
     
               
  --离职              

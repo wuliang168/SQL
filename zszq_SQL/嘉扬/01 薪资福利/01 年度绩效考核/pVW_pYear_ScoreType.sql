@@ -544,7 +544,7 @@ AND a.kpidepidyy=c.DepID AND ISNULL(c.Director2,1028) in (1028,1343) AND c.CompI
 UNION
 SELECT DISTINCT N'10-子公司部门行政负责人' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,5479 AS Score_EID,
 50 AS Weight1,50 AS Weight2,NULL AS Weight3,100 AS Modulus,
-2 AS Score_Status,N'2-子公司合规总监考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
+99 AS Score_Status,N'2-子公司合规总监考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=10 AND a.pstatus=1 AND a.kpidepidyy=666 AND a.EID=d.EID and d.status not in (4,5)
 AND a.kpidepidyy=c.DepID AND c.CompID=13

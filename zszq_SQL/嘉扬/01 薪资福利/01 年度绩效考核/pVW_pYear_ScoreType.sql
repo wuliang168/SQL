@@ -330,7 +330,7 @@ WHERE a.Score_Type1=33 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID 
 and (c.DepGrade=1 or (c.DepGrade=2 and c.Director=c.Director2))
 ---- 二级分支机构普通员工 一级分支机构负责人考核 70%*40% Score_Status-99
 UNION
-SELECT DISTINCT N'分支机构普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director AS Score_EID,
+SELECT DISTINCT N'分支机构普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
 70 AS Weight1,NULL AS Weight2,NULL AS Weight3,40 AS Modulus,
 99 AS Score_Status,N'99-一级分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d

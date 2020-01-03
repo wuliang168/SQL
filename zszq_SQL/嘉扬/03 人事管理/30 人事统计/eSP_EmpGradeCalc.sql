@@ -50,7 +50,7 @@ Begin
     left join oDepartment b on a.DepID=b.DepID
     left join eDetails c on a.EID=c.EID
     left join eStatus d on a.EID=d.EID
-    where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL)
+    where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL) and a.EmpGrade<>18
     group by b.DepType,a.CompID,a.EmpGrade,c.Gender,c.HighLevel,c.WorkBeginDate,d.JoinDate) a
 	group by a.DepType,a.CompID,a.EmpGrade) a
     left join (SELECT DepType,CompID,EmpGrade,SUM(JoinMM) AS JoinMMSum,SUM(JoinYY) AS JoinYYSum,SUM(LeaMM) AS LeaMMSum,SUM(LeaYY) AS LeaYYSum

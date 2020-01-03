@@ -50,7 +50,7 @@ Begin
     inner join oDepartment b on dbo.eFN_getdepid1st(a.DepID)=b.DepID and b.DepType=1
     inner join eDetails c on a.EID=c.EID
     inner join eStatus d on a.EID=d.EID
-    where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL)
+    where DATEDIFF(dd,d.JoinDate,@calcdate)>=0 and (DATEDIFF(dd,d.LeaDate,@calcdate)<0 or d.LeaDate is NULL) and a.EmpGrade<>18
     group by b.DepType,b.DepID,c.Gender,c.HighLevel,c.WorkBeginDate,d.JoinDate) a
     group by a.DepType,a.DepID) a
     left join (select DepType,DepID,SUM(JoinMM) AS JoinMMSum,SUM(JoinYY) AS JoinYYSum,SUM(LeaMM) AS LeaMMSum,SUM(LeaYY) AS LeaYYSum

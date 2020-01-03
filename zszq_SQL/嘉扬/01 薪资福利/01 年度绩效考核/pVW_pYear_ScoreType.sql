@@ -273,7 +273,7 @@ SELECT DISTINCT N'一级分支机构副职及二级分支机构经理室成员' 
 50 AS Weight1,10 AS Weight2,NULL AS Weight3,50 AS Modulus,
 2 AS Score_Status,N'2-一级分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.Score_Type1=32 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.Score_Type1=32 AND a.pstatus=1 AND dbo.eFN_getdepid1st(a.kpidepidyy)=c.DepID AND a.EID=d.EID and d.status not in (4,5)
 AND c.Director is not NULL
 --
 -- 一级分支机构副职及二级分支机构经理室成员 分管领导(赵伟江：1026)考核 (50%+10%)*50% Score_Status-99

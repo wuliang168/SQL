@@ -1,10 +1,19 @@
 -- pVW_pYear_DepAppraise
 
--- 总部部门(不包含公司领导、投资银行(695)及下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_DepAppraise]
+AS
+
+-- 总部部门(不包含公司领导、投资银行(695)及下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 select distinct a.DepID,a.Director,(select name from eEmployee where EID=a.Director) as DirectorName
 from oDepartment a
 where ISNULL(a.isDisabled,0)=0 and a.Director is not NULL
-and a.DepType=1 and a.DepGrade=1 and ISNULL(a.AdminID,0)<>695 and a.DepID not in (349,695,744,745,811)
+and a.DepType=1 and a.DepGrade=1 and ISNULL(a.AdminID,0)<>695 and a.DepID not in (349,695,744,745,812,813,814)
 
 -- 公司领导(不含董事长、总裁、书记)(非部门负责人)
 union
@@ -12,7 +21,7 @@ select distinct a.DepID,a.EID,a.Name
 from eEmployee a
 where a.DepID=349 AND a.EID not in (1022,5014,5587) AND a.Status not in (4,5)
 and a.EID not in (select Director from oDepartment where ISNULL(isDisabled,0)=0 and Director is not NULL 
-and DepType=1 and DepGrade=1 and ISNULL(AdminID,0)<>695 and DepID not in (349,695,744,745,811))
+and DepType=1 and DepGrade=1 and ISNULL(AdminID,0)<>695 and DepID not in (349,695,744,745,812,813,814))
 -- 排除刘文雷
 and a.EID<>1294
 
@@ -42,3 +51,5 @@ select distinct a.DepID,a.Director,(select name from eEmployee where EID=a.Direc
 from oDepartment a
 where ISNULL(a.isDisabled,0)=0 and a.xOrder<>9999999999999 and a.Director is not NULL
 and a.DepType in (2,3) and a.DepGrade=1
+
+Go

@@ -1,5 +1,14 @@
 -- pVW_pYear_AppraiseType
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_pYear_AppraiseType]
+AS
+
 -- 浙商年度最高荣誉奖
 ---- 卓越团队   1
 ------ 公司领导(349)
@@ -7,13 +16,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=1 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=1
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -40,13 +49,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=2 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=2
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -75,13 +84,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=3 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=3
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -108,13 +117,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=4 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=4
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -143,13 +152,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=5 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=5
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -176,13 +185,13 @@ SELECT a.EID as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM eEmployee a,oCD_AppraiseType b
 WHERE b.ID=6 and a.DepID in (349) and a.Status not in (4,5) and a.EID not in (1022,5014,5587) -- 不包含公司一把手(董事长(1022)、总裁(5014)、书记(5587))
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,NULL as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=6
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -210,12 +219,12 @@ SELECT (case when a.DepID=393 then (select Director from oDepartment where DepID
 b.ID as AppraiseID,b.AppraiseLimit as Limit,5 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepID in (695,393) and b.ID=7
------- 财富管理中心（事业部）(715)、浙商证券研究所(361)
+------ 财富管理事业部(811)、浙商证券研究所(361)
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
-WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepID in (715,361) and b.ID=7
+WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepID in (811,361) and b.ID=7
 ------ 网点运营管理总部(362)
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -230,13 +239,13 @@ FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (2,3) and a.DepGrade=1 and b.ID=7
 
 ---- 服务明星   8
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811)) 1
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814)) 1
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=8
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -257,13 +266,13 @@ FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (2,3) and a.DepGrade=1 and b.ID=8
 
 ---- 浙商卫士   9
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=9
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -284,13 +293,13 @@ FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (2,3) and a.DepGrade=1 and b.ID=9
 
 ---- 运营标兵   10
------- 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部(811))
+------ 总部部门(不包含公司领导(349)、投资银行(695)下属部门、信息技术事业部下属部门(744,745)和财富管理事业部下属部门(812,813,814))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,b.AppraiseLimit as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=10
-AND a.DepID not in (349,695,744,745,811) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,744,745,812,813,814) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(投资银行(投资银行管理总部DepID:683))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -320,13 +329,19 @@ WHERE ISNULL(a.IsDisabled,0)=0 and b.ID=12
 AND a.DepID=360
 
 -- 年度优秀员工   11
------- 总部部门(不含公司领导(349)、投资银行(695)、信息技术事业部(743)、财富管理事业部(811)、研究部(361)、FICC事业部(383)、网点运营管理总部(362)、信息技术运保部(744)、信息技术开发部(745))
+------ 总部部门(不含公司领导(349)、投资银行(695)、信息技术事业部(743)、财富管理事业部下属部门(812,813,814)、研究部(361)、FICC事业部(383)、网点运营管理总部(362)、信息技术运保部(744)、信息技术开发部(745))
 UNION
 SELECT distinct a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
 b.ID as AppraiseID,NULL as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=11
-AND a.DepID not in (349,695,743,811,361,383,362,744,745) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,743,812,813,814,361,383,362,744,745) and ISNULL(a.AdminID,0)<>695
+------ 总部部门(财富管理事业部(811))
+UNION
+SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
+b.ID as AppraiseID,NULL as Limit,6 as DepLimit
+FROM oDepartment a,oCD_AppraiseType b
+WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepID in (811) and b.ID=11
 ------ 总部部门(网点运营管理总部(362))
 UNION
 SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,
@@ -377,3 +392,5 @@ SELECT a.Director as AppraiseEID,1 as AppraiseStatus,b.AppraiseType as AppraiseT
 b.ID as AppraiseID,NULL as Limit,(select COUNT(DepID) from oDepartment where dbo.eFN_getdepid1st(DepID)=a.DepID)*2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (2,3) and a.DepGrade=1 and b.ID=11
+
+Go

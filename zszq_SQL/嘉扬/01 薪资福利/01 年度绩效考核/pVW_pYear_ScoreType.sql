@@ -420,11 +420,11 @@ WHERE a.Score_Type1=19 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 -- 
 -- 综合会计 分支机构负责人考核 (60%+40%)*20% Score_Status-2
 UNION
-SELECT DISTINCT N'分支机构区域财务经理' AS sType,c.CWEID AS EID,a.kpidepidyy AS Score_DepID,c.Director AS Score_EID,
+SELECT DISTINCT N'综合会计' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director AS Score_EID,
 60 AS Weight1,40 AS Weight2,NULL AS Weight3,20 AS Modulus,
 2 AS Score_Status,N'2-分支机构负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d
-WHERE a.Score_Type1=19 AND a.pstatus=1 AND c.CWEID=a.EID AND c.DepType in (2,3) AND a.EID=d.EID and d.status not in (4,5)
+WHERE a.Score_Type1=19 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND c.Director is not NULL AND a.EID=d.EID and d.status not in (4,5)
 --
 -- 综合会计 分支机构区域财务经理考核 (60%+40%)*40% Score_Status-3
 ---- 分支机构区域财务经理(CWEID)为非空

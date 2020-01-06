@@ -36,9 +36,9 @@ Begin
     (select Identification from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),
     (select DepID from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),
     (select JobTitle from PVW_PYEAR_APPRAISESTAFF where BID=@bid and EID is NULL),
-    (select count(1)+1 from pYear_Appraise where AppraiseEID=@AppraiseEID and AppraiseID=@AppraiseID and @AppraiseID=11),
-    (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1),
-    (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1))
+    (select count(1)+1 from pYear_Appraise where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=11),
+    (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID),
+    (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID))
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

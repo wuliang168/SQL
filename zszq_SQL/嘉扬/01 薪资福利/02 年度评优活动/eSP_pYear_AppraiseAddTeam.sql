@@ -35,8 +35,8 @@ Begin
         Insert Into pYear_Appraise(pYear_ID,AppraiseEID,AppraiseDepID,AppraiseID,AppraiseStatus,DepID,Limit,DepLimit)
         Values ((select ID from pYear_AppraiseProcess where ISNULL(Submit,0)=1 and ISNULL(Closed,0)=0),
         @AppraiseEID,@AppraiseDepID,@AppraiseID,1,@DepID,
-        (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1),
-        (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1))
+        (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID),
+        (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID))
         -- 异常处理
         IF @@Error <> 0
         Goto ErrM

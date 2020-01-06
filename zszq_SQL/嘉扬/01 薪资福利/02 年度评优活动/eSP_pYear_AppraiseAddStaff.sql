@@ -35,9 +35,9 @@ Begin
     @AppraiseEID,@AppraiseDepID,@AppraiseID,1,@EID,
     (select DepID from PVW_PYEAR_APPRAISESTAFF where EID=@EID and EID is NOT NULL),
     (select Title from oJob where JobID=(select JobID from eEmployee where EID=@EID)),
-    (select count(1)+1 from pYear_Appraise where AppraiseEID=@AppraiseEID and AppraiseID=@AppraiseID and @AppraiseID=11),
-    (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1),
-    (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseID=1))
+    (select count(1)+1 from pYear_Appraise where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=11),
+    (select limit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID),
+    (select deplimit from pVW_pYear_AppraiseType where AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID and AppraiseID=@AppraiseID))
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

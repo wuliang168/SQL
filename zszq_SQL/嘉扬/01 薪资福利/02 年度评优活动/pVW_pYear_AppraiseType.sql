@@ -335,7 +335,7 @@ SELECT distinct a.Director as AppraiseEID,a.DepID as AppraiseDepID,1 as Appraise
 b.ID as AppraiseID,NULL as Limit,2 as DepLimit
 FROM oDepartment a,oCD_AppraiseType b
 WHERE ISNULL(a.IsDisabled,0)=0 and a.Director is not NULL and a.DepType in (1) and a.DepGrade=1 and b.ID=11
-AND a.DepID not in (349,695,743,812,813,814,361,383,362,744,745) and ISNULL(a.AdminID,0)<>695
+AND a.DepID not in (349,695,743,811,812,813,814,361,383,362,744,745) and ISNULL(a.AdminID,0)<>695
 ------ 总部部门(财富管理事业部(811))
 UNION
 SELECT a.Director as AppraiseEID,a.DepID as AppraiseDepID,1 as AppraiseStatus,b.AppraiseType as AppraiseType,b.AppraiseSubType as AppraiseSubType,

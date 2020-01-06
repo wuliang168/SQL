@@ -646,14 +646,14 @@ AND a.kpidepidyy=c.DepID AND a.kpidepidyy in (666,542)
 UNION
 SELECT DISTINCT N'兼职合规管理' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,1033 AS Score_EID,
 100 AS Weight1,NULL AS Weight2,NULL AS Weight3,51 AS Modulus,
-7 AS Score_Status,N'7-法律合规部负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
+7 AS Score_Status,N'7-合规总监考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,eEmployee d
 WHERE a.Score_Type2=35 AND a.Score_Type1 in (1,2,4,17,19,32,33) AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 ---- 资管               合规总监(方斌：5479)
 UNION
 SELECT DISTINCT N'兼职合规管理' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,5479 AS Score_EID,
 100 AS Weight1,NULL AS Weight2,NULL AS Weight3,51 AS Modulus,
-7 AS Score_Status,N'7-法律合规部负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
+7 AS Score_Status,N'7-合规总监考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,eEmployee d
 WHERE a.Score_Type2=35 AND a.Score_Type1 in (10,30,11) AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 

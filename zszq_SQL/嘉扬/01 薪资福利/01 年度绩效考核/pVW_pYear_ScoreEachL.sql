@@ -103,7 +103,7 @@ and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4
 ---- 合规总监测评 EachLType=210 Modulus=100%
 ---- 合规总监(许向军：1033)
 UNION
-select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,100 as Modulus,210 as EachLType,
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,1033 as Score_EID,100 as Modulus,210 as EachLType,
 N'210-合规总监测评' as EachLTypeTitle
 from pEmployee_register a,oDepartment c,eEmployee d
 where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1

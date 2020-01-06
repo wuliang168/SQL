@@ -52,7 +52,7 @@ Begin
     -- 年度最高荣誉奖卓越团队候选单位超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=1 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=1 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=1 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003110
         Return @RetVal
@@ -61,7 +61,7 @@ Begin
     -- 年度最高荣誉奖浙商之星候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=2 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=2 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=2 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003120
         Return @RetVal
@@ -70,7 +70,7 @@ Begin
     -- 年度专业团队奖转型创新先锋团队候选单位超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=3 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=3 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=3 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003130
         Return @RetVal
@@ -79,7 +79,7 @@ Begin
     -- 年度专业团队奖进步最快团队候选单位超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=4 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=4 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=4 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003140
         Return @RetVal
@@ -88,7 +88,7 @@ Begin
     -- 年度专业标兵奖管理英才候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=5 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=5 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=5 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003150
         Return @RetVal
@@ -97,7 +97,7 @@ Begin
     -- 年度专业标兵奖优秀经理人候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=6 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and a.AppraiseID=6 and a.AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and a.AppraiseID=6 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003160
         Return @RetVal
@@ -107,7 +107,7 @@ Begin
     ---- 最大名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=7 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >a.Limit and AppraiseID=7 and AppraiseEID=@AppraiseEID)
+    >a.Limit and AppraiseID=7 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003170
         Return @RetVal
@@ -115,8 +115,8 @@ Begin
     ---- 最大部门名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where a.DepLimit is not NULL and (select COUNT(ID) from pYear_Appraise where AppraiseID=7 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID
-    and (dbo.eFN_getdepid1(DepID)=(select DepID from eEmployee where EID=@AppraiseEID) or dbo.eFN_getdepid1(DepID1)=(select DepID from eEmployee where EID=@AppraiseEID)))
-    >a.DepLimit and a.AppraiseID=7 and a.AppraiseEID=@AppraiseEID)
+    and (dbo.eFN_getdepid1(DepID)=@AppraiseDepID or dbo.eFN_getdepid1(DepID1)=@AppraiseDepID))
+    >a.DepLimit and a.AppraiseID=7 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003170
         Return @RetVal
@@ -126,7 +126,7 @@ Begin
     ---- 最大名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=8 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >a.Limit and AppraiseID=8 and AppraiseEID=@AppraiseEID)
+    >a.Limit and AppraiseID=8 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003180
         Return @RetVal
@@ -134,8 +134,8 @@ Begin
     ---- 最大部门名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where a.DepLimit is not NULL and (select COUNT(ID) from pYear_Appraise where AppraiseID=8 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID
-    and (dbo.eFN_getdepid1(DepID)=(select DepID from eEmployee where EID=@AppraiseEID) or dbo.eFN_getdepid1(DepID1)=(select DepID from eEmployee where EID=@AppraiseEID)))
-    >a.DepLimit and a.AppraiseID=8 and a.AppraiseEID=@AppraiseEID)
+    and (dbo.eFN_getdepid1(DepID)=@AppraiseDepID or dbo.eFN_getdepid1(DepID1)=@AppraiseDepID))
+    >a.DepLimit and a.AppraiseID=8 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003180
         Return @RetVal
@@ -145,7 +145,7 @@ Begin
     ---- 最大名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where a.DepLimit is not NULL and (select COUNT(ID) from pYear_Appraise where AppraiseID=9 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >a.Limit and AppraiseID=9 and AppraiseEID=@AppraiseEID)
+    >a.Limit and AppraiseID=9 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003190
         Return @RetVal
@@ -153,8 +153,8 @@ Begin
     ---- 最大部门名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=9 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID
-    and (dbo.eFN_getdepid1(DepID)=(select DepID from eEmployee where EID=@AppraiseEID) or dbo.eFN_getdepid1(DepID1)=(select DepID from eEmployee where EID=@AppraiseEID)))
-    >a.DepLimit and a.AppraiseID=9 and a.AppraiseEID=@AppraiseEID)
+    and (dbo.eFN_getdepid1(DepID)=@AppraiseDepID or dbo.eFN_getdepid1(DepID1)=@AppraiseDepID))
+    >a.DepLimit and a.AppraiseID=9 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003190
         Return @RetVal
@@ -164,7 +164,7 @@ Begin
     ---- 最大名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where a.DepLimit is not NULL and (select COUNT(ID) from pYear_Appraise where AppraiseID=10 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >a.Limit and a.AppraiseID=10 and a.AppraiseEID=@AppraiseEID)
+    >a.Limit and a.AppraiseID=10 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003200
         Return @RetVal
@@ -172,8 +172,8 @@ Begin
     ---- 最大部门名额范围
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise A where AppraiseID=10 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID
-    and (dbo.eFN_getdepid1(DepID)=(select DepID from eEmployee where EID=@AppraiseEID) or dbo.eFN_getdepid1(DepID1)=(select DepID from eEmployee where EID=@AppraiseEID)))
-    >a.DepLimit and a.AppraiseID=10 and a.AppraiseEID=@AppraiseEID)
+    and (dbo.eFN_getdepid1(DepID)=@AppraiseDepID or dbo.eFN_getdepid1(DepID1)=@AppraiseDepID))
+    >a.DepLimit and a.AppraiseID=10 and a.AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003200
         Return @RetVal
@@ -182,7 +182,7 @@ Begin
     -- 年度专业团队奖优秀讲师候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=12 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=12 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=12 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003205
         Return @RetVal
@@ -191,7 +191,7 @@ Begin
     -- 年度优秀员工候选个人超过名额范围，无法递交年度评优！
     IF Exists(select 1 from pVW_pYear_AppraiseType a
     where (select COUNT(ID) from pYear_Appraise where AppraiseID=11 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
-    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=11 and AppraiseEID=@AppraiseEID)
+    >ISNULL(a.DepLimit,a.Limit) and AppraiseID=11 and AppraiseEID=@AppraiseEID and AppraiseDepID=@AppraiseDepID)
     Begin
         Set @RetVal=1003210
         Return @RetVal

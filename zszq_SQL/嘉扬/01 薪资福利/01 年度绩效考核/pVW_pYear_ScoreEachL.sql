@@ -30,12 +30,12 @@ AS
 --where a.Score_Type1=1 and a.pstatus=1
 --and d.EID in (1022,5587,5014)
 --and a.kpidepidyy<>737
------- 分管领导 EachLType=120 Modulus=30%
+---- 分管领导 EachLType=120 Modulus=30%
 --UNION
---select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,120 as EachLType,
---N'120-分管领导测评' as EachLTypeTitle
---from pEmployee_register a,oDepartment c
---where a.kpidepidyy=c.DepID and a.Score_Type1=1 and a.pstatus=1
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,120 as EachLType,
+N'120-分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c
+where a.kpidepidyy=c.DepID and a.Score_Type1=1 and a.pstatus=1
 --and a.kpidepidyy<>737
 ------ 其他领导 EachLType=125 Modulus=10%
 ------ 副总裁(赵伟江：1026、高玮：1027、程景东：6012)
@@ -48,7 +48,7 @@ AS
 --and d.EID in (1026,1027,6012,1028,1033,1425)
 --and a.kpidepidyy<>737
 -- 360度评价 总部部门负责人互评 EachLType=130 Modulus=5%
---UNION
+UNION
 select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,5 as Modulus,130 as EachLType,
 N'130-360度评价 部门负责人互评' as EachLTypeTitle
 from pEmployee_register a,pEmployee_register b
@@ -78,14 +78,14 @@ and a.kpidepidyy=c.DepID and a.kpidepidyy=737
 --from pEmployee_register a,eEmployee d
 --where a.Score_Type1=2 and a.pstatus=1
 --and d.EID in (1022,5587,5014) and a.kpidepidyy<>737
------- 分管领导测评 EachLType=210 Modulus=30%
------- 分管领导非部门负责人
---UNION
---select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,210 as EachLType,
---N'210-分管领导测评' as EachLTypeTitle
---from pEmployee_register a,oDepartment c,eEmployee d
---where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1
---and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
+---- 分管领导测评 EachLType=210 Modulus=30%
+---- 分管领导非部门负责人
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,210 as EachLType,
+N'210-分管领导测评' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=2 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy<>737
 ---- 部门负责人测评 EachLType=220 Modulus=30%
 UNION
 select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,30 as Modulus,220 as EachLType,
@@ -118,14 +118,14 @@ and a.EID=d.EID and d.Status not in (4,5) and a.kpidepidyy=737
 --from pEmployee_register a,oDepartment c,eEmployee d
 --where a.kpidepidyy=c.DepID and a.Score_Type1=31 and a.pstatus=1
 --and a.EID=d.EID and d.EID in (1022,5587,5014)
------- 分管领导评测 EachLType=320 Modulus=30%
------- 分管领导非公司班子成员
---UNION
---select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,320 as EachLType,
---N'320-分管领导评测' as EachLTypeTitle
---from pEmployee_register a,oDepartment c,eEmployee d
---where a.kpidepidyy=c.DepID and a.Score_Type1=31 and a.pstatus=1
---and a.EID=d.EID and d.Status not in (4,5)
+---- 分管领导评测 EachLType=320 Modulus=30%
+---- 分管领导非公司班子成员
+UNION
+select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,320 as EachLType,
+N'320-分管领导评测' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where a.kpidepidyy=c.DepID and a.Score_Type1=31 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
 -- 360度评价 一级分支机构负责人互评 EachLType=330 Modulus=10%
 UNION
 select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,10 as Modulus,330 as EachLType,
@@ -143,12 +143,12 @@ and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4
 
 -- 32-一级分支机构副职及二级分支机构经理室成员
 ---- 分管领导评测 EachLType=410 Modulus=30%
---UNION
---select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,410 as EachLType,
---N'410-分管领导评测' as EachLTypeTitle
---from pEmployee_register a,oDepartment c,eEmployee d
---where dbo.eFN_getdepid1(a.kpidepidyy)=c.DepID and a.Score_Type1=32 and a.pstatus=1
---and a.EID=d.EID and d.Status not in (4,5)
+UNION
+select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director2 as Score_EID,30 as Modulus,410 as EachLType,
+N'410-分管领导评测' as EachLTypeTitle
+from pEmployee_register a,oDepartment c,eEmployee d
+where dbo.eFN_getdepid1(a.kpidepidyy)=c.DepID and a.Score_Type1=32 and a.pstatus=1
+and a.EID=d.EID and d.Status not in (4,5)
 ---- 一级分支机构负责人评测 EachLType=420 Modulus=50%
 UNION
 select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,c.Director as Score_EID,50 as Modulus,420 as EachLType,

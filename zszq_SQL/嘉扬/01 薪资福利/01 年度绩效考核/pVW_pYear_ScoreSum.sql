@@ -209,7 +209,7 @@ WHERE a.Score_Type1=19 and a.Score_Status=99
 -- Score_Status=7               法律合规部负责人考核(兼合规管理)
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
-a.Score1 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreTotal*a.Weight1/100*ISNULL(a.Modulus,100)/100 as ScoreCompl,
+a.Score1 as ScoreTotal,a.ScoreEach as ScoreEach,a.Score1*ISNULL(a.Weight1,100)/100*ISNULL(a.Modulus,100)/100 as ScoreCompl,
 a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 a.ScoreYear as ScoreYear
 from pYear_Score a

@@ -518,7 +518,7 @@ FROM pYear_Score a
 left join pYear_Process b on a.pYear_ID=b.ID
 inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11) and a.Score_DepID not in (542,666)
+AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11) and a.Score_DepID not in (542,666,737)
 ---- 兼职合规
 ---- 二级分支机构员工
 ---- 一级分支机构负责人兼职二级分支机构负责人
@@ -558,7 +558,7 @@ left join pYear_Process b on a.pYear_ID=b.ID
 inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (14,17,19)
----- 子公司合规部门员工
+---- 合规部门员工
 UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503020'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
 + '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
@@ -568,7 +568,7 @@ FROM pYear_Score a
 left join pYear_Process b on a.pYear_ID=b.ID
 inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1=11 and a.Score_DepID in (542,666)
+AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,11) and a.Score_DepID in (542,666,737)
 ---- 一级分支机构负责人 ----
 -- skyWindow ID: 503040
 UNION

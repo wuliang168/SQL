@@ -150,7 +150,7 @@ from pYear_Score a
 WHERE a.Score_Type1=33 and a.Score_Status=99
 --------- 分支机构区域财务经理 --------
 -- 17-分支机构区域财务经理
--- Score_Status=2               分支机构负责人考核(岗位工作完成情况60%和专业技术考核40%)
+-- Score_Status=2               分支机构负责人考核(岗位工作完成情况60%和专业技术考核40%) STG1存在问题，
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
 a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
@@ -241,7 +241,16 @@ a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=10 and a.Score_Status=99
+WHERE a.Score_Type1=10 and a.Score_Status=99 and a.Score_DepID<>666
+-- Score_Status=99              合规总监考核(部门年度工作计划和履职情况)
+UNION
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+NULL as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100)
+*(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
+from pYear_Score a
+WHERE a.Score_Type1=10 and a.Score_Status=99 and a.Score_DepID=666
 --------- 子公司部门副职 --------
 -- 30-子公司部门副职
 -- Score_Status=2               子公司部门负责人考核(部门年度工作计划和履职情况)
@@ -261,7 +270,16 @@ a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=30 and a.Score_Status=99
+WHERE a.Score_Type1=30 and a.Score_Status=99 and a.Score_DepID<>666
+-- Score_Status=99               子公司分管领导考核(部门年度工作计划和履职情况)
+union
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+a.Score1 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
+((a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100)
+*(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
+from pYear_Score a
+WHERE a.Score_Type1=30 and a.Score_Status=99 and a.Score_DepID=666
 --------- 子公司普通员工 --------
 -- 11-子公司普通员工
 -- Score_Status=99             子公司部门负责人考核

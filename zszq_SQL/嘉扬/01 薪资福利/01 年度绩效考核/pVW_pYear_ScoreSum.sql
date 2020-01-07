@@ -59,7 +59,16 @@ a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 +ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
-WHERE a.Score_Type1=4 and a.Score_Status=99
+WHERE a.Score_Type1=4 and a.Score_Status=99 and a.Score_DepID<>737
+-- 4-总部合规部门普通员工
+-- Score_Status=99             合规总监考核
+union
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,100)/100 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
+(a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,100)/100)*ISNULL(a.Modulus,100)/100 as ScoreYear
+from pYear_Score a
+WHERE a.Score_Type1=4 and a.Score_Status=99 and a.Score_DepID=737
 ------ 一级分支机构负责人 ------
 -- 31-一级分支机构负责人
 -- Score_Status=2               网点运营管理总部考核(经营业绩指标)

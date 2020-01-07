@@ -630,7 +630,7 @@ AND a.kpidepidyy=c.DepID AND a.kpidepidyy not in (666,542)
 -- 子公司普通员工 子公司负责人考核 100% Score_Status-99
 ---- 合规部门
 UNION
-SELECT DISTINCT N'子公司普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,ISNULL(c.Director,c.Director2) AS Score_EID,
+SELECT DISTINCT N'子公司普通员工' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,c.Director2 AS Score_EID,
 50 AS Weight1,50 AS Weight2,NULL AS Weight3,100 AS Modulus,
 99 AS Score_Status,N'99-子公司负责人考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,oDepartment c,eEmployee d

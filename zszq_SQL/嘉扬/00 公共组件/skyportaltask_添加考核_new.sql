@@ -511,12 +511,12 @@ AND a.Score_Type1 in (1,2,31,32,36,10)
 -- skyWindow ID: 503010
 UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503010'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
-+ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
++ '-' + cast(a.Score_Status AS nvarchar(15)) + '-' + cast(a.Score_DepID AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
++ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'
++(select DepAbbr from oDepartment where DepID=a.Score_DepID)+N'员工年度考核评分</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_Score a
 left join pYear_Process b on a.pYear_ID=b.ID
-inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11) and a.Score_DepID not in (542,666,737)
 ---- 兼职合规

@@ -193,6 +193,14 @@ a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
 WHERE a.Score_Type1=19 and a.Score_Status=99
+--------- 分支机构合规专员 --------
+UNION
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+a.Score1*a.Weight1/100+a.Score2*a.Weight2/100 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
+a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
+(a.Score1*a.Weight1/100+a.Score2*a.Weight2/100)*ISNULL(a.Modulus,100)/100 as ScoreYear
+from pYear_Score a
+WHERE a.Score_Type1=14 and a.Score_Status=99
 --------- 兼职合规管理 --------
 -- 35-兼职合规管理
 -- Score_Status=7               法律合规部负责人考核(兼合规管理)
@@ -281,14 +289,13 @@ a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
 *(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
 from pYear_Score a
 WHERE a.Score_Type1=11 and a.Score_Status=99 and a.Score_DepID not in (542,666)
+-- 11-子公司合规风控部门普通员工
 -- Score_Status=99             子公司合规总监考核
 union
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
 a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,100)/100 as ScoreTotal,a.ScoreEach as ScoreEach,a.ScoreCompl as ScoreCompl,
 a.ScoreSTG1 as ScoreSTG1,a.ScoreSTG2 as ScoreSTG2,a.ScoreSTG3 as ScoreSTG3,
-((a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,100)/100)*ISNULL(a.Modulus,100)/100
-+ISNULL(a.ScoreEach,0)+ISNULL(a.ScoreSTG1,0)+ISNULL(a.ScoreSTG2,0)+ISNULL(a.ScoreSTG3,0))
-*(1-ISNULL(a.ScoreCompl/a.ScoreCompl*(select Modulus*1.00/100 from pYear_Score where EID=a.EID and Score_Status=7),0))+ISNULL(a.ScoreCompl,0) as ScoreYear
+(a.Score1*ISNULL(a.Weight1,100)/100+a.Score2*ISNULL(a.Weight2,100)/100)*ISNULL(a.Modulus,100)/100 as ScoreYear
 from pYear_Score a
 WHERE a.Score_Type1=11 and a.Score_Status=99 and a.Score_DepID in (542,666)
 

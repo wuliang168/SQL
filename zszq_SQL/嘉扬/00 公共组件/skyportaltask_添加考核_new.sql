@@ -464,6 +464,15 @@ WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and IS
 and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (353,792))
 
 
+------------- 述职测评 ------------
+UNION
+SELECT N'<a href="#" onclick="moveTo(''1.0.510210'',''总部部门负责人测评'')">请您完成'
++ cast(datepart(yy, b.Date) AS varchar(4)) + N'年度总部部门负责人测评</a>' AS url, 
+ISNULL(a.Eval_EID,5256) AS approver, 1 AS id
+FROM pYear_ReportEval a,pYear_Process b
+WHERE ISNULL(a.Submit,0)=0
+and a.pYear_ID=b.ID
+
 ------------- 年度考核 ------------
 -- 员工自评
 -- skyWindow ID: 500010
@@ -495,16 +504,40 @@ AND a.Score_Type1 IN (4,33,34,11)
 -- skyWindow ID: 501100
 UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
-N''',''年度考核-履职胜任测评'')" >请您完成'
+N''',''年度考核-履职胜任互评'')" >请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + 
-N'年'+d.sEachLType+N'履职胜任测评' + '</a>' AS url, 
+N'年'+d.sEachLType+N'履职胜任互评' + '</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_ScoreEachL a
 left join pYear_Process c on a.pYear_ID=c.ID
 inner join (select Score_EID,MIN(EachLType) as EachLType,Score_Type1,sEachLType from pVW_pYear_ScoreEachL where Score_EID is not NULL and sEachLType is not NULL group by Score_EID,Score_Type1,sEachLType) d on a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Type1 in (1,2,31,32,36,10)
-
+AND a.Score_Type1 in (1,2,31,32,36,10,3) and a.EachLType not in (335,430,230)
+-- 1-总部部门负责人；2-总部部门副职；31-一级分支机构负责人；32-一级分支机构副职及二级分支机构经理室成员；10-子公司部门负责人
+-- skyWindow ID: 501100
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
+N''',''年度考核-履职胜任考核'')" >请您完成'
++ cast(datepart(yy, c.Date) AS varchar(4)) + 
+N'年'+d.sEachLType+N'履职胜任考核' + '</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_ScoreEachL a
+left join pYear_Process c on a.pYear_ID=c.ID
+inner join (select Score_EID,MIN(EachLType) as EachLType,Score_Type1,sEachLType from pVW_pYear_ScoreEachL where Score_EID is not NULL and sEachLType is not NULL group by Score_EID,Score_Type1,sEachLType) d on a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND a.Score_Type1 in (1,2,31,32,36,10,3) and a.EachLType in (335,430) and a.EachLType not in (230)
+-- skyWindow ID: 501100
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
+N''',''年度考核-履职胜任考核'')" >请您完成'
++ cast(datepart(yy, c.Date) AS varchar(4)) + 
+N'年'+d.sEachLType+N'履职胜任考核' + '</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_ScoreEachL a
+left join pYear_Process c on a.pYear_ID=c.ID
+inner join (select Score_EID,EachLType as EachLType,Score_Type1,sEachLType from pVW_pYear_ScoreEachL where Score_EID is not NULL and sEachLType is not NULL) d on a.Score_EID=d.Score_EID and a.EachLType=d.EachLType
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND a.Score_Type1 in (1,2,31,32,36,10,3) and a.EachLType in (230)
 
 ---- 评分
 ---- 普通员工 ----

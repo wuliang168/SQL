@@ -18,7 +18,7 @@ begin
     from ATTENCE_LLMONTHLY A,eEmployee B,eDetails C,pSMSInfo D
     where (A.ABNORMWORKDAYS<>0 or A.LATEWORKDAYS<>0 or A.EARLYWORKDAYS<>0)
     and dbo.eFN_getdeptype(ISNULL(A.Dep2nd,A.Dep1st))=1 and A.Dep1st not in (349,394,383)
-    and A.EID=B.EID and B.WorkCity=45 and A.EID=C.EID and D.ID=10
+    and A.EID=B.EID and B.WorkCity=45 and A.EID=C.EID and D.ID=10 and B.CompID=11
     ---- 邮件内容提醒
     /*
         去除公司领导(349)、FICC事业部(383)、金融衍生品(394)
@@ -28,7 +28,7 @@ begin
     from ATTENCE_LLMONTHLY A,eEmployee B,eDetails C,pEMAILInfo D
     where (A.ABNORMWORKDAYS<>0 or A.LATEWORKDAYS<>0 or A.EARLYWORKDAYS<>0)
     and dbo.eFN_getdeptype(ISNULL(A.Dep2nd,A.Dep1st))=1 and A.Dep1st not in (349,394,383)
-    and A.EID=B.EID and B.WorkCity=45 and A.EID=C.EID and D.ID=1
+    and A.EID=B.EID and B.WorkCity=45 and A.EID=C.EID and D.ID=1 and B.CompID=11
 
     -- 部门负责人短信提醒
     ---- 短信内容提醒
@@ -39,6 +39,6 @@ begin
     select distinct C.Mobile,D.SMS
     from ATTENCE_LLMMDEP A,eEmployee B,eDetails C,pSMSInfo D
     where A.ReportToDaily=B.EID and B.DepID not in (349,394,383)
-    and A.ReportToDaily=C.EID and D.ID=13
+    and A.ReportToDaily=C.EID and D.ID=13 and B.CompID=11
 
 end

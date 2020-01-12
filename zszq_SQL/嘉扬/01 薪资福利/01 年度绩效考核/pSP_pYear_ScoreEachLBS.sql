@@ -17,12 +17,12 @@ Begin
 
     -- 胜任素质评测得分为空，无法递交员工胜任素质评测！
     ---- ScoreTotal为NULL表示存在某个评分项未填写
-    IF Exists(select 1 from pYear_ScoreEachL where ScoreTotal is NULL
-    and Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
-    Begin
-        Set @RetVal=1002100
-        Return @RetVal
-    End
+    --IF Exists(select 1 from pYear_ScoreEachL where ScoreTotal is NULL
+    --and Score_EID=(select EID from SkySecUser where ID=@URID) and EachLType=@leftid)
+    --Begin
+    --    Set @RetVal=1002100
+    --    Return @RetVal
+    --End
 
     -- 胜任素质评测得分超过上限，无法递交员工胜任素质评测！
     IF Exists(select 1 from pYear_ScoreEachL where Score_EID=(select EID from SkySecUser where ID=@URID) 

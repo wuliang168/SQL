@@ -135,21 +135,11 @@ FROM pEmployee_register a,oDepartment c,eEmployee d
 WHERE a.Score_Type1=2 AND a.pstatus=1 AND a.kpidepidyy=c.DepID AND a.EID=d.EID and d.status not in (4,5)
 AND a.kpidepidyy<>737
 --
--- 总部部门副职 履职情况胜任素质测评 30% Score_Status-10
----- 法律合规部门 合规总监(许向军：1033)考核 100%
------- 待确定
-UNION
-SELECT DISTINCT N'总部部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,1033 AS Score_EID,
-30 AS Weight1,NULL AS Weight2,NULL AS Weight3,30 AS Modulus,(case when a.Score_Type2=35 then 49 else NULL end) as ComplModulus,
-1 AS Score_Status,N'1-履职情况胜任素质测评' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
-FROM pEmployee_register a,eEmployee d
-WHERE a.Score_Type1=2 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5) AND a.kpidepidyy=737
---
 -- 总部部门副职 最终年度考核 70% Score_Status-99
 ---- 法律合规部门 合规总监(许向军：1033)考核 100%
 UNION
 SELECT DISTINCT N'总部部门副职' AS sType,a.EID AS EID,a.kpidepidyy AS Score_DepID,1033 AS Score_EID,
-70 AS Weight1,NULL AS Weight2,NULL AS Weight3,70 AS Modulus,(case when a.Score_Type2=35 then 49 else NULL end) as ComplModulus,
+NULL AS Weight1,NULL AS Weight2,NULL AS Weight3,100 AS Modulus,(case when a.Score_Type2=35 then 49 else NULL end) as ComplModulus,
 99 AS Score_Status,N'99-合规总监考核' AS Score_StatusTitle,a.Score_Type1 AS Score_Type1,a.Score_Type2 AS Score_Type2
 FROM pEmployee_register a,eEmployee d
 WHERE a.Score_Type1=2 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5) AND a.kpidepidyy=737

@@ -44,6 +44,15 @@ select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EI
 from pYear_Score a,pVW_pYear_ScoreType_update b
 WHERE a.Score_Type1=2 and a.Score_Status=4
 and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Status
+-- 2-总部部门副职
+-- Score_Status=99               合规总监考核
+UNION
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+(ISNULL(a.Score1,0)*ISNULL(b.Weight1,100)+ISNULL(a.Score2,0)*ISNULL(b.Weight2,100)+ISNULL(a.Score3,0)*ISNULL(b.Weight3,100))/100*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
+from pYear_Score a,pVW_pYear_ScoreType_update b
+WHERE a.Score_Type1=2 and a.Score_Status=99
+and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Status
+and a.Score_DepID=737
 --------- 总部普通员工 --------
 -- 4-总部普通员工
 -- Score_Status=1              互评考核

@@ -44,8 +44,8 @@ AS
 --------- 总部部门负责人 --------
 -- 1-总部部门负责人
 -- Score_Status=0：0%               自评完毕
--- Score_Status=10：30%             履职情况胜任素质测评
--- Score_Status=20：70%             战略企划部考核(部门年度工作计划)
+-- Score_Status=1：30%              履职情况胜任素质测评
+-- Score_Status=2：70%              战略企划部考核(部门年度工作计划)
 -- Score_Status=99：%               最终年度考核
 --
 -- 总部部门负责人 自评 0% Score_Status-0
@@ -94,8 +94,8 @@ WHERE a.Score_Type1=1 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 --------- 总部部门副职 --------
 -- 2-总部部门副职
 -- Score_Status=0：0%               自评完毕
--- Score_Status=10：30%             履职情况胜任素质测评
--- Score_Status=20：70%             战略企划部考核(部门年度工作计划)
+-- Score_Status=1：30%              履职情况胜任素质测评
+-- Score_Status=2：70%              战略企划部考核(部门年度工作计划)
 -- Score_Status=99：%               最终年度考核
 --
 -- 总部部门副职 自评 0% Score_Status-0
@@ -148,7 +148,7 @@ WHERE a.Score_Type1=2 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5) 
 --------- 总部普通员工 --------
 -- 4-总部普通员工
 -- Score_Status=0：0%               自评完毕
--- Score_Status=10：30%             员工互评
+-- Score_Status=1：30%              员工互评
 -- Score_Status=99：70%             总部部门负责人考核
 --
 -- 总部普通员工 自评 0% Score_Status-0
@@ -190,9 +190,9 @@ WHERE a.Score_Type1=4 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5) 
 ------ 一级分支机构负责人 ------
 -- 31-一级分支机构负责人
 -- Score_Status=0：0%               自评完毕
--- Score_Status=10：25%             履职情况胜任素质测评
--- Score_Status=20：60%             网点运营管理总部考核(经营业绩指标)
--- Score_Status=30：15%             法律合规部考核(合规管理有效性)
+-- Score_Status=1：25%              履职情况胜任素质测评
+-- Score_Status=2：60%              网点运营管理总部考核(经营业绩指标)
+-- Score_Status=3：15%              法律合规部考核(合规管理有效性)
 -- Score_Status=99：%               最终年度考核
 --
 -- 一级分支机构负责人 自评 0% Score_Status-0
@@ -240,8 +240,8 @@ WHERE a.Score_Type1=31 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 -- 32-一级分支机构副职及二级分支机构经理室成员
 -- Score_Status=0：0%               自评完毕
 -- Score_Status=1：40%              履职情况胜任素质测评
--- Score_Status=20：60%             网点运营管理总部考核(经营业绩指标)
--- Score_Status=30：15%             法律合规部考核(合规管理有效性)
+-- Score_Status=2：60%              网点运营管理总部考核(经营业绩指标)
+-- Score_Status=3：15%              法律合规部考核(合规管理有效性)
 -- Score_Status=99：%               最终年度考核
 --
 -- 一级分支机构副职及二级分支机构经理室成员 自评 0% Score_Status-0
@@ -362,8 +362,8 @@ WHERE a.Score_Type1=14 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 --------- 分支机构区域财务经理 --------
 -- 17-分支机构区域财务经理
 -- Score_Status=0：                     自评完毕
--- Score_Status=20：                    分支机构负责人考核
--- Score_Status=30：                    计划财务部负责人考核
+-- Score_Status=2：                     分支机构负责人考核
+-- Score_Status=3：                     计划财务部负责人考核
 -- Score_Status=99：                    财务总监考核
 --
 -- 分支机构区域财务经理 自评 0% Score_Status-0
@@ -404,8 +404,8 @@ WHERE a.Score_Type1=17 AND a.pstatus=1 AND a.EID=d.EID and d.status not in (4,5)
 --------- 综合会计 --------
 -- 19-综合会计
 -- Score_Status=0：                     自评完毕
--- Score_Status=20：                    分支机构负责人考核
--- Score_Status=30：                    区域财务经理考核
+-- Score_Status=2：                     分支机构负责人考核
+-- Score_Status=3：                     区域财务经理考核
 -- Score_Status=99：                    计划财务部负责人考核
 --
 -- 综合会计 自评 0% Score_Status-0
@@ -553,7 +553,7 @@ AND a.kpidepidyy=c.DepID AND c.CompID=13
 -- Score_Status=0：0%                       自评完毕
 -- Score_Status=1：30%                      胜任素质测评
 -- Score_Status=2：(30%+40%)*30%            子公司部门负责人考核(部门年度工作计划和履职情况)
--- Score_Status=99：(30%+40%)*70%            子公司分管领导考核(部门年度工作计划和履职情况)
+-- Score_Status=99：(30%+40%)*70%           子公司分管领导考核(部门年度工作计划和履职情况)
 --
 -- 子公司部门副职 自评 0% Score_Status-0
 UNION

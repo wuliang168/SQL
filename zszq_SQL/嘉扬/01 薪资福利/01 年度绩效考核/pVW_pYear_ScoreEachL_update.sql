@@ -11,14 +11,25 @@ AS
 
 -- 1-总部部门负责人
 ------ 主要领导 EachLType=110 Modulus=50%
------- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
---select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,50 as Modulus,110 as EachLType,
---N'110-主要领导测评' as EachLTypeTitle
---from pEmployee_register a,eEmployee d
---where a.Score_Type1=1 and a.pstatus=1
---and d.EID in (1022,5587,5014)
---and a.kpidepidyy<>737
+------ 公司董事长(吴承根：1022)
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,105 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=1 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID=1022
+and a.kpidepidyy<>737
+------ 党委书记(李桦：5587)、公司总裁(王青山：5014)
+UNION
+select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,110 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=1 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID in (5587,5014)
+and a.kpidepidyy<>737
 ---- 分管领导 EachLType=120 Modulus=30%
+UNION
 select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,e.Director2 as Score_EID,20 as Modulus,120 as EachLType,
 N'120-分管领导测评' as EachLTypeTitle
 from pEmployee_register a,eEmployee c,oDepartment e
@@ -59,14 +70,25 @@ where a.Score_Type1=1 and a.pstatus=1 and a.kpidepidyy=737
 and a.EID=c.EID and c.Status not in (4,5)
 
 -- 2-总部部门副职
------- 主要领导 EachLType=205 Modulus=30%
------- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
---UNION
---select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,30 as Modulus,205 as EachLType,
---N'205-主要领导测评' as EachLTypeTitle
---from pEmployee_register a,eEmployee d
---where a.Score_Type1=2 and a.pstatus=1
---and d.EID in (1022,5587,5014) and a.kpidepidyy<>737
+------ 主要领导 EachLType=110 Modulus=50%
+------ 公司董事长(吴承根：1022)
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,205 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=2 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID=1022
+and a.kpidepidyy<>737
+------ 党委书记(李桦：5587)、公司总裁(王青山：5014)
+UNION
+select N'总部部门副职' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,206 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=2 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID in (5587,5014)
+and a.kpidepidyy<>737
 ---- 分管领导测评 EachLType=210 Modulus=30%
 ---- 分管领导非部门负责人
 UNION
@@ -107,13 +129,25 @@ and a.EID=c.EID and c.Status not in (4,5)
 
 -- 31-一级分支机构负责人
 ---- 主要领导测评 EachLType=310 Modulus=50%
------- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
---UNION
---select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,e.Director2 as Score_EID,50 as Modulus,310 as EachLType,
---N'310-主要领导测评' as EachLTypeTitle
---from pEmployee_register a,eEmployee d,oDepartment e
---where a.kpidepidyy=e.DepID and a.Score_Type1=31 and a.pstatus=1
---and a.EID=d.EID and d.EID in (1022,5587,5014)
+------ 主要领导 EachLType=110 Modulus=50%
+------ 公司董事长(吴承根：1022)
+UNION
+select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,305 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=31 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID=1022
+and a.kpidepidyy<>737
+------ 党委书记(李桦：5587)、公司总裁(王青山：5014)
+UNION
+select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,310 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=31 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID in (5587,5014)
+and a.kpidepidyy<>737
 ---- 分管领导评测 EachLType=320 Modulus=30%
 ---- 分管领导非公司班子成员
 UNION
@@ -147,14 +181,26 @@ where dbo.eFN_getdepid1(a.kpidepidyy) = dbo.eFN_getdepid1(b.kpidepidyy) and a.Sc
 and a.EID=c.EID and b.EID=d.EID and c.Status not in (4,5) and d.Status not in (4,5)
 
 -- 32-一级分支机构副职及二级分支机构经理室成员
----- 主要领导测评 EachLType=405 Modulus=50%
------- 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
---UNION
---select N'一级分支机构负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,e.Director2 as Score_EID,50 as Modulus,310 as EachLType,
---N'405-主要领导测评' as EachLTypeTitle
---from pEmployee_register a,eEmployee d,oDepartment e
---where a.kpidepidyy=e.DepID and a.Score_Type1=32 and a.pstatus=1
---and a.EID=d.EID and d.EID in (1022,5587,5014)
+---- 主要领导测评 EachLType=310 Modulus=50%
+------ 主要领导 EachLType=110 Modulus=50%
+------ 公司董事长(吴承根：1022)
+UNION
+select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,405 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=32 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID=1022
+and a.kpidepidyy<>737
+------ 党委书记(李桦：5587)、公司总裁(王青山：5014)
+UNION
+select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,d.EID as Score_EID,25 as Modulus,406 as EachLType,
+N'110-主要领导测评' as EachLTypeTitle
+from pEmployee_register a,eEmployee c,eEmployee d
+where a.Score_Type1=32 and a.pstatus=1
+and a.EID=c.EID and c.Status not in (4,5)
+and d.EID in (5587,5014)
+and a.kpidepidyy<>737
 ---- 分管领导评测 EachLType=410 Modulus=30%
 UNION
 select N'一级分支机构副职及二级分支机构经理室成员' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,e.Director2 as Score_EID,20 as Modulus,410 as EachLType,

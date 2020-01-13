@@ -9,14 +9,6 @@ GO
 ALTER VIEW [dbo].[pVW_pYear_ScoreEachL_update]
 AS
 
--- 0-公司领导(董事长、党委书记、总裁除外)
-select N'公司领导' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,b.EID as Score_EID,100 as Modulus,010 as EachLType,
-N'010-公司领导互评' as EachLTypeTitle
-from pEmployee_register a,pEmployee_register b,eEmployee c,eEmployee d
-where a.Score_Type1=3 and b.Score_Type1=3
-and a.EID=c.EID and c.status not in (4,5) and b.EID=d.EID and d.status not in (4,5)
-and c.EID not in (1022,5587,5014) and d.EID not in (1022,5587,5014) and a.EID<>b.EID
-
 -- 1-总部部门负责人
 ------ 主要领导 EachLType=110 Modulus=50%
 ------ 公司董事长(吴承根：1022)、党委书记(李桦：5587)、公司总裁(王青山：5014)
@@ -27,7 +19,6 @@ and c.EID not in (1022,5587,5014) and d.EID not in (1022,5587,5014) and a.EID<>b
 --and d.EID in (1022,5587,5014)
 --and a.kpidepidyy<>737
 ---- 分管领导 EachLType=120 Modulus=30%
-UNION
 select N'总部部门负责人' AS sEachLType,a.EID as EID,a.Score_Type1 as Score_Type1,e.Director2 as Score_EID,20 as Modulus,120 as EachLType,
 N'120-分管领导测评' as EachLTypeTitle
 from pEmployee_register a,eEmployee c,oDepartment e

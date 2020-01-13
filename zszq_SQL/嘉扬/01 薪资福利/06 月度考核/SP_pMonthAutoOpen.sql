@@ -74,6 +74,7 @@ Begin
     ,0,GETDATE(),DATEADD(DD,1,GETDATE()),0,3
     from PEMPPROCESS_MONTH A,eDetails B
 	where A.EID=B.EID and A.monthID=@Tid
+    AND (select CompID from eEmployee where EID=A.EID)<>12
     -- 异常处理 
     IF @@Error <> 0
     Goto ErrM

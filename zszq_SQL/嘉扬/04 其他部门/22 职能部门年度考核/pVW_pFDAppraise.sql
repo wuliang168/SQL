@@ -197,112 +197,182 @@ and a.Director<>b.Director
 
 
 -------- 部门分管领导评测
------- 基本职责(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,ISNULL(a.Director2,(select Director2 from oDepartment where DepID=a.AdminID)) as FDAppraiseEID,
---349 as FDAppraiseDepID,4 as FDAppraiseType,3 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
--------- 年度重点(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,ISNULL(a.Director2,(select Director2 from oDepartment where DepID=a.AdminID)) as FDAppraiseEID,
---349 as FDAppraiseDepID,5 as FDAppraiseType,3 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
+---- 1.     效率指标
+---- 1.1    基本职责(50分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,a.Director2 as FDAppraiseEID,a.DepID as FDAppraiseDepID,8 as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.2    重点工作(30分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,a.Director2 as FDAppraiseEID,a.DepID as FDAppraiseDepID,9 as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3    基础管理
+---- 1.3.1  成本管控(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,a.Director2 as FDAppraiseEID,a.DepID as FDAppraiseDepID,10 as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.2  团队管理(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,a.Director2 as FDAppraiseEID,a.DepID as FDAppraiseDepID,17 as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.3  内部协同(10分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,a.Director2 as FDAppraiseEID,a.DepID as FDAppraiseDepID,18 as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
 
 
 -------- 党委书记(5587)
------- 年度重点(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,349 as FDAppraiseDepID,5 as FDAppraiseType,4 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
------- 基础管理(-20~0分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,349 as FDAppraiseDepID,6 as FDAppraiseType,4 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745)
+---- 1.     效率指标
+---- 1.1    基本职责(50分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,a.DepID as FDAppraiseDepID,8 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.2    重点工作(30分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,a.DepID as FDAppraiseDepID,9 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3    基础管理
+---- 1.3.1  成本管控(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,a.DepID as FDAppraiseDepID,10 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.2  团队管理(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,a.DepID as FDAppraiseDepID,17 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.3  内部协同(10分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5587 as FDAppraiseEID,a.DepID as FDAppraiseDepID,18 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
 
 
 -------- 总裁(5014)
------- 基本职责(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,349 as FDAppraiseDepID,4 as FDAppraiseType,5 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
------- 年度重点(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,349 as FDAppraiseDepID,5 as FDAppraiseType,5 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
--------- 创新加分(10分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,349 as FDAppraiseDepID,7 as FDAppraiseType,5 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
--------- 服务支持(15分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,349 as FDAppraiseDepID,3 as FDAppraiseType,5 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
+---- 1.     效率指标
+---- 1.1    基本职责(50分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,a.DepID as FDAppraiseDepID,8 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.2    重点工作(30分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,a.DepID as FDAppraiseDepID,9 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3    基础管理
+---- 1.3.1  成本管控(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,a.DepID as FDAppraiseDepID,10 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.2  团队管理(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,a.DepID as FDAppraiseDepID,17 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.3  内部协同(10分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,5014 as FDAppraiseEID,a.DepID as FDAppraiseDepID,18 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
 
 
 -------- 董事长(1022)
------- 基本职责(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,349 as FDAppraiseDepID,4 as FDAppraiseType,6 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
------- 年度重点(50分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,349 as FDAppraiseDepID,5 as FDAppraiseType,6 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
--------- 创新加分(10分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,349 as FDAppraiseDepID,7 as FDAppraiseType,6 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
--------- 服务支持(15分)
---UNION
---select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,349 as FDAppraiseDepID,3 as FDAppraiseType,6 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
+---- 1.     效率指标
+---- 1.1    基本职责(50分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,a.DepID as FDAppraiseDepID,8 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.2    重点工作(30分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,a.DepID as FDAppraiseDepID,9 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3    基础管理
+---- 1.3.1  成本管控(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,a.DepID as FDAppraiseDepID,10 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.2  团队管理(5分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,a.DepID as FDAppraiseDepID,17 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
+---- 1.3.3  内部协同(10分)
+UNION
+select distinct a.DepID as DepID,a.Director as Director,1022 as FDAppraiseEID,a.DepID as FDAppraiseDepID,18 as FDAppraiseType,5 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
 
 Go

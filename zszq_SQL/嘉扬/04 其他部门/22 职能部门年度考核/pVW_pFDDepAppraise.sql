@@ -57,29 +57,28 @@ from oDepartment a
 where a.DepID in (353,792)
 
 
------- 部门分管领导评测
---UNION
---select distinct a.Director2 as FDAppraiseEID,(select DepID from eEmployee where EID=a.Director2) as FDAppraiseDepID,4 as FDAppraiseType,3 as Status
---from oDepartment a
----------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
----------- 行政管理总部(352)、党群部(353)、信息技术运保部(744)、信息技术开发部(745)
----------- 法律合规部(737)、风险管理部(359)、审计部(358)
---where a.DepID in (702,355,356,354,360,350,351,352,353,744,745,737,359,358)
-
+---- 部门分管领导评测
+UNION
+select distinct a.Director2 as FDAppraiseEID,NULL as FDAppraiseDepID,NULL as FDAppraiseType,4 as Status
+from oDepartment a
+-------- 战略企划部(702)、计划财务部(355)、资产存管部(356)、人力资源部(354)、培训中心(360)、办公室(350)、董办(351)
+-------- 行政管理总部(352)、党群部(353)、纪检监察室(792)、信息技术运保部(744)、信息技术开发部(745)
+-------- 法律合规部(737)、风险管理部(359)、审计部(358)
+where a.DepID in (702,355,356,354,360,350,351,352,353,792,744,745,737,359,358)
 
 ------ 党委书记考评(5587)
---UNION
---select distinct 5587 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,4 as Status
---from oDepartment a
+UNION
+select distinct 5587 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,5 as Status
+from oDepartment a
 
 ------ 总裁考评(5014)
---UNION
---select distinct 5014 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,5 as Status
---from oDepartment a
+UNION
+select distinct 5014 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,5 as Status
+from oDepartment a
 
 ------ 董事长考评(1022)
---UNION
---select distinct 1022 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,6 as Status
---from oDepartment a
+UNION
+select distinct 1022 as FDAppraiseEID,349 as FDAppraiseDepID,NULL as FDAppraiseType,5 as Status
+from oDepartment a
 
 Go

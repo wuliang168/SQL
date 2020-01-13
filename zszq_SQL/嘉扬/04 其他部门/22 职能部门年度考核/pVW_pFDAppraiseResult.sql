@@ -9,15 +9,22 @@ GO
 ALTER VIEW [dbo].[pVW_pFDAppraiseResult]
 AS
 
----- 服务支持 20%
-select a.pYear_ID,a.DepID,a.Director,AVG(ScoreTotal) as ScoreTotal,0.2 as Modulus,NULL as FDAppraiseEID,N'服务支持' as FDAppraiseTitle,1 as xOrder
+---- 服务支持 10%
+select a.pYear_ID,a.DepID,a.Director,AVG(ScoreTotal) as ScoreTotal,0.1 as Modulus,NULL as FDAppraiseEID,N'服务支持' as FDAppraiseTitle,1 as xOrder
 from pFDAppraise a
 where a.Status in (1,2) and a.FDAppraiseType in (3,15,16)
 group by a.pYear_ID,a.DepID,a.Director
 
----- 分管领导 30%
+---- 班子其他成员 20%
 UNION
-select a.pYear_ID,a.DepID,a.Director,SUM(ScoreTotal) as ScoreTotal,0.3 as Modulus,a.FDAppraiseEID as FDAppraiseEID,N'分管领导' as FDAppraiseTitle,2 as xOrder
+select a.pYear_ID,a.DepID,a.Director,SUM(ScoreTotal)/COUNT(a.FDAppraiseEID) as ScoreTotal,0.2 as Modulus,NULL as FDAppraiseEID,N'班子其他成员' as FDAppraiseTitle,2 as xOrder
+from pFDAppraise a
+where a.Status in (6) and a.FDAppraiseType in (8,9,10,17,18)
+group by a.pYear_ID,a.DepID,a.Director
+
+---- 分管领导 20%
+UNION
+select a.pYear_ID,a.DepID,a.Director,SUM(ScoreTotal) as ScoreTotal,0.2 as Modulus,a.FDAppraiseEID as FDAppraiseEID,N'分管领导' as FDAppraiseTitle,2 as xOrder
 from pFDAppraise a
 where a.Status in (4) and a.FDAppraiseType in (8,9,10,17,18)
 group by a.pYear_ID,a.DepID,a.Director,a.FDAppraiseEID

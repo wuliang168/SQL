@@ -470,6 +470,15 @@ a.FDAppraiseEID AS approver, 1 AS id
 FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
 WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
 and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (353,792))
+---- 班子其他成员(考评)
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（分管领导）'')">请您进行'
++ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（班子其他成员）</a>' AS url, 
+a.FDAppraiseEID AS approver, 2 AS id
+FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+and a.Status=6
 ---- 分管领导(考评)
 UNION
 SELECT DISTINCT

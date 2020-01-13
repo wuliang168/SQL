@@ -27,6 +27,7 @@ SELECT DISTINCT N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600052'',''考�
 ISNULL(a.ReportToDaily,5256) AS approver,2 AS id
 from BS_YC_DK a
 where ISNULL(Initialized, 0) = 1 AND ISNULL(SUBMIT, 0) = 0 AND ISNULL(OUTID,0)=0
+and (select CompID from eEmployee where EID=a.ReportToDaily)<>12
 
 -- 异常考勤说明
 UNION
@@ -36,6 +37,7 @@ FROM BS_YC_DK a
 WHERE ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.SUBMIT, 0) = 0
 ---- 仅限今年
 AND datediff(yy,a.TERM,getdate())<1
+and (select CompID from eEmployee where EID=a.EID)<>12
 
 -- 外出登记确认
 UNION
@@ -43,6 +45,7 @@ SELECT distinct N'<a href="#" onclick="$x.top().LoadPortal(''1.0.600201'',''外�
 a.ReportTo approver, 2 AS id
 FROM aOut_register a
 WHERE ISNULL(a.Initialized, 0)=1 AND ISNULL(a.SUBMIT, 0) = 0 and a.ReportTo is not NULL
+and (select CompID from eEmployee where EID=a.ReportTo)<>12
 
 -- 月工作计划与汇总(旧)
 UNION
@@ -53,6 +56,7 @@ ISNULL(a.EID, 5256) AS approver,3 AS id
 FROM PEMPPROCESS_MONTH a
 WHERE ISNULL(a.Initialized,0) = 0 AND ISNULL(a.Closed,0) = 0 
 AND a.monthID=(select id from pProcess_month where ISNULL(Initialized,0)=1 and ISNULL(Submit,0)=0)
+and (select CompID from eEmployee where EID=a.EID)<>12
 
 
 -- 月工作计划与汇总_上月(旧)
@@ -64,6 +68,7 @@ N''',''绩效首页'')">请您先修改' + cast(month(a.period) AS varchar(10)) 
 ISNULL(a.EID, 5256) AS approver,2 AS id
 FROM PEMPPROCESS_MONTH a
 WHERE ISNULL(a.Initialized, 0) = 0 AND ISNULL(a.Closed, 0) = 1 AND a.pStatus=2
+and (select CompID from eEmployee where EID=a.EID)<>12
 
 -- 月工作计划与汇总(新)
 --UNION
@@ -94,6 +99,7 @@ WHERE (a.pstatus in (0,1) or (a.pstatus=3 and ISNULL(a.IsReSubmit,0)=1))
 AND A.MONTHID=(select id from pProcess_month where DATEDIFF(mm,kpimonth,getdate())=1)
 AND DATEPART(dd,GETDATE()) BETWEEN 16 AND 31
 AND ISNULL(a.kpiReportTo,0) <> 0 and a.EID is not NULL
+and (select CompID from eEmployee where EID=a.kpiReportTo)<>12
 
 -- 月工作计划评分(历史)(旧)
 UNION
@@ -103,6 +109,7 @@ ISNULL(a.kpiReportTo, 5256) AS approver, 3 AS id
 FROM pEmpProcess_Month a
 WHERE A.pstatus=4
 AND ISNULL(a.kpiReportTo,0) <> 0
+and (select CompID from eEmployee where EID=a.kpiReportTo)<>12
 
 -- 月工作计划评分(新)
 --UNION
@@ -122,6 +129,7 @@ cast(datepart(m, mm) AS varchar(10)) + N'月工作日志空缺超过5天，请�
 ISNULL(b.EID, 5256) AS approver, 7 AS id
 FROM pvw_Workrecord b
 WHERE diffdays >= 5
+and (select CompID from eEmployee where EID=b.EID)<>12
 
 
 ------------- 后备人才选拔 ------------
@@ -504,9 +512,9 @@ AND a.Score_Type1 IN (4,33,34,11)
 -- skyWindow ID: 501100
 UNION
 SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
-N''',''年度考核-履职胜任互评'')" >请您完成'
+N''',''年度考核-履职胜任考核'')" >请您完成'
 + cast(datepart(yy, c.Date) AS varchar(4)) + 
-N'年'+d.sEachLType+N'履职胜任互评' + '</a>' AS url, 
+N'年'+d.sEachLType+N'履职胜任考核' + '</a>' AS url, 
 ISNULL(a.Score_EID,5256) AS approver, 1 AS id
 FROM pYear_ScoreEachL a
 left join pYear_Process c on a.pYear_ID=c.ID
@@ -554,16 +562,16 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,33,34,11) and a.Score_DepID not in (542,666,737)
 ---- 总部中层员工 ----
 -- skyWindow ID: 503030
-UNION
-SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503030'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
-+ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
-ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_Score a
-left join pYear_Process b on a.pYear_ID=b.ID
-inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
-WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (1,2,36)
+--UNION
+--SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503030'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
+--+ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
+--+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
+--ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+--FROM pYear_Score a
+--left join pYear_Process b on a.pYear_ID=b.ID
+--inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
+----WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+--AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (1,2,36)
 ---- 子公司中层员工 ----
 -- skyWindow ID: 503060
 UNION

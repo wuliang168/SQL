@@ -17,7 +17,7 @@ group by a.pYear_ID,a.DepID,a.Director
 
 ---- 班子其他成员 20%
 UNION
-select a.pYear_ID,a.DepID,a.Director,SUM(ScoreTotal)/COUNT(a.FDAppraiseEID) as ScoreTotal,0.2 as Modulus,NULL as FDAppraiseEID,N'班子其他成员' as FDAppraiseTitle,2 as xOrder
+select a.pYear_ID,a.DepID,a.Director,SUM(a.ScoreTotal)/COUNT(a.ScoreTotal)*5 as ScoreTotal,0.2 as Modulus,NULL as FDAppraiseEID,N'班子其他成员' as FDAppraiseTitle,2 as xOrder
 from pFDAppraise a
 where a.Status in (6) and a.FDAppraiseType in (8,9,10,17,18)
 group by a.pYear_ID,a.DepID,a.Director

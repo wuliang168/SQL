@@ -14,9 +14,9 @@ AS
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=1 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 
@@ -26,9 +26,9 @@ union
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=2 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 
@@ -38,9 +38,9 @@ union
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=31 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 
@@ -49,9 +49,9 @@ union
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=32 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 
@@ -60,9 +60,9 @@ union
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=10 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 
@@ -71,9 +71,9 @@ union
 select a.EID,
 a.EachLType,SUM(a.ScoreTotal) as EachLSUM,COUNT(a.ScoreTotal) as EachLCOUNT,
 AVG(a.ScoreTotal*b.Modulus*1.0/100) as EachLAVG,b.Modulus
-from pYear_ScoreEachL a,pVW_pYear_ScoreEachL_update b
+from pYear_ScoreEachL a,(select distinct Score_Type1,EachLType,Modulus from pVW_pYear_ScoreEachL_update) b
 where a.Score_Type1=30 and ISNULL(a.Submit,0)=1
-and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
+and a.Score_Type1=b.Score_Type1 and a.EachLType=b.EachLType
 group by a.EID,a.EachLType,b.Modulus
 
 GO

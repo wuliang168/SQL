@@ -28,9 +28,10 @@ Begin
    ---新签
    if @type=1
    begin
-      Insert Into econtract_Register(type,EID,Badge,Name,compid,DepID,depid2,jobid,conCount,RegBy,RegDate,EZID,conBeginDate,effectDate)
-      Select @type, a.EID, a.Badge, a.Name, a.compid, dbo.efn_getdepid(a.DepID), dbo.efn_getdepid2(a.DepID), a.jobid, 
-      1, @URID, getdate(), a.EZID, b.JoinDate, GETDATE()
+      Insert Into econtract_Register(type,EID,Badge,Name,compid,DepID,depid2,jobid,conCount,RegBy,RegDate,EZID,
+      conProperty,conBeginDate,conTerm,conEndDate,effectDate)
+      Select @type, a.EID, a.Badge, a.Name, a.compid, dbo.efn_getdepid(a.DepID), dbo.efn_getdepid2(a.DepID), a.jobid, 1, @URID, getdate(), a.EZID,
+      1,b.JoinDate,36,dateadd(dd,-1,dateadd(mm,36,b.JoinDate)),GETDATE()
       From eemployee a, estatus b
       Where a.EID=@EID and a.eid=b.eid
 
@@ -60,13 +61,12 @@ Begin
    begin
       Insert Into econtract_Register
          (type,EID,Badge,Name,compid,DepID,depid2,jobid,conCount,contract,contype,conProperty,
-         conNo,conBeginDate,conTerm,conEndDate,New_conCount,New_conBeginDate,RegBy,RegDate,EZID,Remark,effectDate
-         ,New_contract,New_contype,New_conProperty,New_conTerm,New_conEndDate)
-      Select @type, a.EID, a.Badge, a.Name, a.compid, dbo.efn_getdepid(a.DepID), dbo.efn_getdepid2(a.DepID), a.jobid, 
-         b.conCount, b.contract, b.contype, b.conProperty, b.conNo, b.conBeginDate,
-         b.conTerm, b.conEndDate, isnull(b.conCount,0)+1, dateadd(dd,1,conendDate), @URID, getdate(), a.EZID,
-         case when isnull(b.concount,0)>=2 then N'建议签非固定期合同' else null end, GETDATE()
-         ,b.contract, b.ConType, b.ConProperty, 36, dateadd(month,36,conendDate)
+         conNo,conBeginDate,conTerm,conEndDate,New_conCount,RegBy,RegDate,EZID,Remark,effectDate
+         ,New_contract,New_contype,New_conProperty,New_conTerm,New_conBeginDate,New_conEndDate)
+      Select @type, a.EID, a.Badge, a.Name, a.compid, dbo.efn_getdepid(a.DepID), dbo.efn_getdepid2(a.DepID),a.jobid,b.conCount,b.contract,b.contype,b.conProperty, 
+      b.conNo, b.conBeginDate,b.conTerm, b.conEndDate, isnull(b.conCount,0)+1,@URID, getdate(), a.EZID,case when isnull(b.concount,0)>=2 then N'建议签非固定期合同' else null end, GETDATE()
+         ,b.contract, b.ConType,(case when isnull(b.concount,0)>=2 then 2 else 1 end),(case when isnull(b.concount,0)>2 then NULL else 60 end),
+         dateadd(dd,1,conendDate),(case when isnull(b.concount,0)>=2 then NULL else dateadd(month,60,conendDate) end)
       From eEmployee a, eStatus b
       Where a.EID=@EID And a.EID=b.EID
 

@@ -45,7 +45,7 @@ Begin
 
     -- 插入职能部门考核打分表项pFDAppraise(被考核部门)
     insert into pFDAppraise(pYear_ID,DepID,Director,FDAppraiseEID,FDAppraiseType,Status)
-    select b.ID,a.DepID,a.Director,a.FDAppraiseEID,a.FDAppraiseType,a.Status
+    select distinct b.ID,a.DepID,a.Director,a.FDAppraiseEID,a.FDAppraiseType,a.Status
     from pVW_pFDAppraise a,pYear_FDAppraiseProcess b
     where b.ID=@ID
     -- 异常流程

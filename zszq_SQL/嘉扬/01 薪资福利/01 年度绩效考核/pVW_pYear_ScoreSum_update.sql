@@ -15,7 +15,14 @@ AS
 
 --------- 总部部门负责人 --------
 -- 1-总部部门负责人
+-- Score_Status=0              自评
+select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
+NULL as ScoreTotal
+from pYear_Score a,pVW_pYear_ScoreType_update b
+WHERE a.Score_Type1=1 and a.Score_Status=0
+and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Status
 -- Score_Status=1              履职胜任考核
+UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
 (select SUM(EachLAVG) from pVW_pYear_ScoreEachSumL_update where EID=a.EID)*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
 from pYear_Score a,pVW_pYear_ScoreType_update b
@@ -24,7 +31,7 @@ and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Statu
 -- Score_Status=2              战略企划部考核
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
-(ISNULL(a.Score1,0)*ISNULL(b.Weight1,100)+ISNULL(a.Score2,0)*ISNULL(b.Weight2,100)+ISNULL(a.Score3,0)*ISNULL(b.Weight3,100))/100*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
+(select ScoreTotal from pVW_pFDAppraiseResultSum where DepID=a.Score_DepID and ScoreTotal is not NULL)*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
 from pYear_Score a,pVW_pYear_ScoreType_update b
 WHERE a.Score_Type1=1 and a.Score_Status=4
 and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Status
@@ -40,7 +47,7 @@ and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Statu
 -- Score_Status=4               战略企划部考核
 UNION
 select a.EID,a.Score_DepID,a.Score_Type1,a.Score_Type2,a.Score_Status,a.Score_EID,
-(ISNULL(a.Score1,0)*ISNULL(b.Weight1,100)+ISNULL(a.Score2,0)*ISNULL(b.Weight2,100)+ISNULL(a.Score3,0)*ISNULL(b.Weight3,100))/100*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
+(select ScoreTotal from pVW_pFDAppraiseResultSum where DepID=a.Score_DepID and ScoreTotal is not NULL)*ISNULL(b.Modulus,100)/100*ISNULL(b.ComplModulus,100)/100 as ScoreTotal
 from pYear_Score a,pVW_pYear_ScoreType_update b
 WHERE a.Score_Type1=2 and a.Score_Status=4
 and a.EID=b.EID and a.Score_Type1=b.Score_Type1 and a.Score_Status=b.Score_Status

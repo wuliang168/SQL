@@ -666,6 +666,19 @@ FROM pYear_ScoreEachL a
 left join pYear_Process c on a.pYear_ID=c.ID
 WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
 AND a.Score_Type1 in (1) and a.EachLType in (120) and a.EID in (2286)
+---- 董事长
+-- skyWindow ID: 501100
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.501100'',''leftid^' + cast(a.EachLType AS nvarchar(15)) +
+N''',''年度考核-履职胜任考核'')" >请您完成'
++ cast(datepart(yy, c.Date) AS varchar(4)) + 
+N'年总部部门负责人履职胜任考核' + '</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_ScoreEachL a
+left join pYear_Process c on a.pYear_ID=c.ID
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND a.Score_Type1=1 and a.EachLType in (105)
+
 
 ---- 评分
 ---- 普通员工 ----
@@ -729,26 +742,24 @@ WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=
 AND a.Score_Status>=2 and a.Score_Status<>7 and A.Score_Type1 in (4,11) and a.Score_DepID in (542,666,737)
 ------ 一级分支机构负责人 ----
 ---- skyWindow ID: 503040
---UNION
---SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503040'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
---+ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
---+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
---ISNULL(a.Score_EID,5256) AS approver, 1 AS id
---FROM pYear_Score a
---left join pYear_Process b on a.pYear_ID=b.ID
---inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
---WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
---AND A.Score_Type1=31 and A.Score_Status=2
---UNION
---SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503045'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
---+ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
---+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年'+c.sType+N'年度考核评分</a>' AS url, 
---ISNULL(a.Score_EID,5256) AS approver, 1 AS id
---FROM pYear_Score a
---left join pYear_Process b on a.pYear_ID=b.ID
---inner join pVW_pYear_ScoreType c on a.Score_EID=c.Score_EID and a.Score_Status=c.Score_Status and a.Score_Type1=c.Score_Type1
---WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
---AND A.Score_Type1=31 and A.Score_Status=3
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503040'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
++ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
++ cast(datepart(yy, b.Date) AS varchar(4)) + N'年一级分支机构负责人年度考核评分</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_Score a
+left join pYear_Process b on a.pYear_ID=b.ID
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND A.Score_Type1=31 and A.Score_Status=4
+UNION
+SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503040'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
++ '-' + cast(a.Score_Status AS nvarchar(15)) + N''',''年度考核评分'')">请您完成'
++ cast(datepart(yy, b.Date) AS varchar(4)) + N'年一级分支机构副职及二级分支机构经理室年度考核评分</a>' AS url, 
+ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+FROM pYear_Score a
+left join pYear_Process b on a.pYear_ID=b.ID
+WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+AND A.Score_Type1=32 and A.Score_Status=4
 ------ 一级分支机构副职及二级分支机构经理室成员 ----
 ---- skyWindow ID: 503050
 --UNION

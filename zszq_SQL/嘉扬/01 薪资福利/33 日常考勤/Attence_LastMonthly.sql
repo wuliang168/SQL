@@ -1,5 +1,14 @@
 -- Attence_LastMonthly
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[Attence_LastMonthly]
+AS
+
 select a.EID as EID,a.Badge as Badge,a.Name as Name,a.CompID as CompID,dbo.eFN_getdepid1st(a.DepID) as Dep1st,dbo.eFN_getdepid2nd(a.DepID) as Dep2nd,a.JobID as JobID,a.WorkCity as WorkCity,
 (Case When DATEDIFF(mm,m.joindate,GETDATE())<=1 Then  (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1 and DATEDIFF(DD,m.JoinDate,term)>=0)
 ELSE (select COUNT(term) from lCalendar where xType=1 and Datediff(mm,term,GETDATE())=1) End) as ToWorkDays,
@@ -28,4 +37,6 @@ left join (select EID,COUNT(EID) as YCLateDays from BS_YC_DK where Datediff(mm,t
 left join (select EID,COUNT(EID) as YCEarlyDays from BS_YC_DK where Datediff(mm,term,GETDATE())=1 and YCKQNX=N'早退' and ISNULL(Submit,0)=0 group by EID) h on h.eid=a.EID
 ---- 排序
 inner join eStatus m on a.EID=m.EID
-where a.Status not in (4,5)
+where a.Status not in (4,5) and a.EID<>6216
+
+Go

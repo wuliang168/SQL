@@ -46,24 +46,24 @@ begin
     insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     (select beginTime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and beginTime is not null
-    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10) begintime, 
+    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>0) begintime, 
     (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and beginTime is not null
-    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10) endtime, N'上午' KQSJ, N'迟到' YCKQNX,b.ReportToDaily
+    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>0) endtime, N'上午' KQSJ, N'迟到' YCKQNX,b.ReportToDaily
     from eemployee a,pVW_EMPReportToDaily b
     where a.Status in (1,2,3) and a.EID=b.EID
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and beginTime is not null
-    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>10)
+    and DatedIff(MI,(Convert(Varchar(10),@TIME,120)+' '+'08:30'),beginTime)>0)
     ---- 下班早退
     insert into BS_YC_DK(term,termType,eid,badge,name,beginTime,endTime,KQSJ,YCKQNX,ReportToDaily)
     select @TIME, (select xtype from lCalendar where datediff(dd,term,@TIME)=0 and ezid=100) xtype, a.eid, a.badge, a.name, 
     (select beginTime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is not null
-    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30) begintime, 
+    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>0) begintime, 
     (select endtime from BS_DK_TIME where eid=a.EID and datediff(dd,term,@TIME)=0 and endTime is not null
-    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30) endtime, N'下午' KQSJ, N'早退' YCKQNX,b.ReportToDaily
+    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>0) endtime, N'下午' KQSJ, N'早退' YCKQNX,b.ReportToDaily
     from eemployee a,pVW_EMPReportToDaily b
     where a.Status in (1,2,3) and a.EID=b.EID
     and a.eid in (select eid from BS_DK_TIME where datediff(dd,term,@TIME)=0 and endTime is not null
-    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>30)
+    and DatedIff(MI,endTime,(Convert(Varchar(10),@TIME,120)+' '+'17:00'))>0)
 
     -- 删除节假日的异常考勤
     delete from BS_YC_DK where isnull(termType,0)<>1

@@ -132,6 +132,71 @@ WHERE diffdays >= 5
 and (select CompID from eEmployee where EID=b.EID)<>12
 
 
+------------- 疫情现场员工统计 ------------
+---- 总部
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
+and a.DepID not in (349) and a.DepType=1 and a.DepGrade=1
+and dbo.eFN_getdepadmin(a.DepID)<>695
+------ 投行
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+(select Director from oDepartment where DepID=683) AS approver, 1 AS id
+FROM oDepartment a
+WHERE a.DepID=695
+---- 资管
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
+and a.CompID=13 and a.DepGrade=1
+---- 资本
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE a.DepID=392
+---- 投资
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE a.DepID=830
+---- 分支机构
+------ 提交
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
+and a.DepType in (2,3)
+------ 确认
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
+N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
+ISNULL(a.Director,a.Director2) AS approver, 1 AS id
+FROM oDepartment a
+WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
+and a.DepType in (2,3) and a.DepGrade=1
+
+
 ------------- 后备人才选拔 ------------
 UNION
 SELECT DISTINCT

@@ -22,8 +22,8 @@ Begin
 
     -------- pEpidemicSuitation --------
     -- 新增员工
-    insert into pEpidemicSuitation(EID,BID,DepID,ReportTo,Location,ESDate)
-    select @EID,@BID,@DepID,@ReportTo,1,GETDATE()
+    insert into pEpidemicSuitation(EID,BID,Name,DepID,ReportTo,Location,ESDate)
+    select @EID,@BID,(select Name from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),@DepID,@ReportTo,1,GETDATE()
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

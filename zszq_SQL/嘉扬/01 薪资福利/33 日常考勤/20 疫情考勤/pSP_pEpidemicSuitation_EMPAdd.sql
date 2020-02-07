@@ -29,17 +29,12 @@ Begin
     (select dbo.eFN_getdepid2nd(DepID) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     @ReportTo,1,
     (case 
-    -- 不存在
+    -- 历史均不存在
     when ISNULL(@BID,@EID) not in (select ISNULL(BID,EID) from pEpidemicSuitation where ESDate is not NULL and ISNULL(BID,EID) is not NULL) then GETDATE() 
-    -- 今天未添加
+    -- 仅今天未添加
     when ISNULL(@BID,@EID) not in (select ISNULL(BID,EID) from pEpidemicSuitation where DATEDIFF(dd,ESDATE,GETDATE())=0 and ISNULL(BID,EID) is not NULL) then GETDATE() 
-    -- 今天存在 ，且第一大的日期比第二大的日期+1天还大
-    when ISNULL(@BID,@EID) in (select ISNULL(BID,EID) from pEpidemicSuitation where DATEDIFF(dd,ESDATE,GETDATE())=0 and ISNULL(BID,EID) is not NULL) 
-        and (select MAX(ESDATE) from pEpidemicSuitation where ISNULL(BID,EID)=ISNULL(@BID,@EID))
-            >DATEADD(dd,1,(select ESDATE from pEpidemicSuitation a,(select ROW_NUMBER() over (order by ESDATE desc) as num,ID from pEpidemicSuitation where ISNULL(@BID,@EID)=ISNULL(BID,EID)) b where a.ID=b.ID and b.num=2)) 
-        then DATEADD(dd,1,(select ESDATE from pEpidemicSuitation a,(select ROW_NUMBER() over (order by ESDATE desc) as num,ID from pEpidemicSuitation where ISNULL(@BID,@EID)=ISNULL(BID,EID)) b where a.ID=b.ID and b.num=2))
-    -- 今天存在，且第一大的日期等于第二大的日期+1，或者小
-    else DATEADD(dd,1,(select MAX(ESDATE) from pEpidemicSuitation where ISNULL(BID,EID)=ISNULL(@BID,@EID))) end)
+    -- 今天存在 ，则使用最大日期+1
+    else DATEADD(dd,1,(select MAX(ESDATE) from pEpidemicSuitation where ISNULL(BID,EID)=ISNULL(@BID,@EID)  and ISNULL(BID,EID) is not NULL)) end)
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

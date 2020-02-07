@@ -57,6 +57,15 @@ GETDATE() as ESDATE,ISNULL(a.Director,a.Director2) AS ApproverID, a.CompID as Co
 (select COUNT(ReportTo) from pEpidemicSuitation where ReportTo=ISNULL(a.Director,a.Director2) and DATEDIFF(DD,GETDATE(),ESDATE)=0) as DepCount
 FROM oDepartment a
 WHERE a.DepID=392
+---- 投资
+UNION
+SELECT DISTINCT
+GETDATE() as ESDATE,ISNULL(a.Director,a.Director2) AS ApproverID, a.CompID as CompID,a.depid AS DepID,a.depid AS DepID1st,NULL AS DepID2nd,
+(select Name from eEmployee where EID=ISNULL(a.Director,a.Director2)) as approver,a.xOrder,
+(case when (select COUNT(Name) from pEpidemicSuitation where ReportTo=ISNULL(a.Director,a.Director2) and DATEDIFF(DD,GETDATE(),ESDATE)=0)>0 then 1 else 0 end) as SubmitStatus,
+(select COUNT(ReportTo) from pEpidemicSuitation where ReportTo=ISNULL(a.Director,a.Director2) and DATEDIFF(DD,GETDATE(),ESDATE)=0) as DepCount
+FROM oDepartment a
+WHERE a.DepID=830
 ---- 分支机构
 ------ 提交
 UNION
@@ -67,6 +76,6 @@ GETDATE() as ESDATE,ISNULL(a.Director,a.Director2) AS ApproverID, a.CompID as Co
 (select COUNT(ReportTo) from pEpidemicSuitation where ReportTo=ISNULL(a.Director,a.Director2) and DATEDIFF(DD,GETDATE(),ESDATE)=0) as DepCount
 FROM oDepartment a
 WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
-and a.DepType in (2,3) and a.DepID not in (444,629,460,652,398,427,451,479,723,728,417)
+and a.DepType in (2,3) and a.DepID not in (444,629,460,479,723,728,417)
 
 Go

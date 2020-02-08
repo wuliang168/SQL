@@ -24,6 +24,12 @@ Begin
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM
+    ---- 去除姓名为空的员工
+    delete from pEpidemicSuitation
+    where DATEDIFF(DD,ESDate,GETDATE())=0 and Name is NULL
+    -- 异常处理
+    IF @@Error <> 0
+    Goto ErrM
 
 
     -- 正常处理流程

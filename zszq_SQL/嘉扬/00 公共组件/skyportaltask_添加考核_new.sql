@@ -133,73 +133,14 @@ and (select CompID from eEmployee where EID=b.EID)<>12
 
 
 ------------- 疫情现场员工统计 ------------
----- 总部
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
 N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-ISNULL(a.Director,a.Director2) AS approver, 1 AS id
-FROM oDepartment a
-WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
-and a.DepID not in (349) and a.DepType=1 and a.DepGrade=1
-and ISNULL(dbo.eFN_getdepadmin(a.DepID),0)<>695 and a.DepID not in (780,669,811,792,702,360,361,669,789,383,835)
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
------- 公司领导
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-5256 AS approver, 1 AS id
-FROM oDepartment a
-WHERE a.DepID in (349)
------- 投行
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-(select Director from oDepartment where DepID=683) AS approver, 1 AS id
-FROM oDepartment a
-WHERE a.DepID=695
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
----- 资管
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-ISNULL(a.Director,a.Director2) AS approver, 1 AS id
-FROM oDepartment a
-WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
-and a.CompID=13 and a.DepGrade=1 and a.DepID not in (682,704,671,762,793,801,800)
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
----- 资本
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-ISNULL(a.Director,a.Director2) AS approver, 1 AS id
-FROM oDepartment a
-WHERE a.DepID=392
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
----- 投资
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-ISNULL(a.Director,a.Director2) AS approver, 1 AS id
-FROM oDepartment a
-WHERE a.DepID=830
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
----- 分支机构
------- 提交
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-ISNULL(a.Director,a.Director2) AS approver, 1 AS id
-FROM oDepartment a
-WHERE ISNULL(a.IsDisabled,0)=0 and ISNULL(a.ISOU,0)=0
-and a.DepType in (2,3) and a.DepID not in (444,629,460,479,723,728,417)
---AND DATEPART(hh,GETDATE()) BETWEEN 1 AND 12
+b.approverID AS approver, 1 AS id
+FROM oDepartment a,pEpidemicSuitation_Dep b
+WHERE a.DepID=b.DepID
+and b.SubmitStatus in (1,3)
 
 
 ------------- 后备人才选拔 ------------

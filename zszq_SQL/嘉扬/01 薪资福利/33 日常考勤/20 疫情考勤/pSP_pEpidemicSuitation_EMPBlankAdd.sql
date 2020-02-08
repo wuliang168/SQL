@@ -4,15 +4,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER proc [dbo].[pSP_pEpidemicSuitation_EMPPlusAdd]
-    @Name nvarchar(20),
+ALTER proc [dbo].[pSP_pEpidemicSuitation_EMPBlankAdd]
     @DepID int,
     @ReportTo int,
     @RetVal int=0 OutPut
 as
 /*
 -- Create By wuliang E004205
--- 疫情现场办公新增外包员工
+-- 疫情现场办公新增空白外包员工
 */
 Begin
 
@@ -21,8 +20,8 @@ Begin
 
     -------- pEpidemicSuitation --------
     -- 新增员工
-    insert into pEpidemicSuitation(Name,Type,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
-    select @Name,2,dbo.eFN_getcompid(@DepID),@DepID,dbo.eFN_getdepid1st(@DepID),dbo.eFN_getdepid2nd(@DepID),@ReportTo,1,GETDATE()
+    insert into pEpidemicSuitation(Type,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
+    select 2,dbo.eFN_getcompid(@DepID),@DepID,dbo.eFN_getdepid1st(@DepID),dbo.eFN_getdepid2nd(@DepID),@ReportTo,1,GETDATE()
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

@@ -22,8 +22,9 @@ Begin
 
     -------- pEpidemicSuitation --------
     -- 新增员工
-    insert into pEpidemicSuitation(EID,BID,Name,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
+    insert into pEpidemicSuitation(EID,BID,Name,Type,CertNoR6,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
     select @EID,@BID,(select Name from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
+    1,(select RIGHT(Identification,6) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     dbo.eFN_getcompid(@DepID),@DepID,
     (select dbo.eFN_getdepid1st(DepID) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     (select dbo.eFN_getdepid2nd(DepID) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),

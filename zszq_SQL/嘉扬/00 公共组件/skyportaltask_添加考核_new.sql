@@ -140,7 +140,7 @@ N''',''现场上班员工统计登记'')">请您完成现场上班员工统计�
 b.approverID AS approver, 1 AS id
 FROM oDepartment a,pEpidemicSuitation_Dep b
 WHERE a.DepID=b.DepID
-and b.SubmitStatus in (1,3)
+and b.SubmitType in (1,3)
 
 
 ------------- 后备人才选拔 ------------

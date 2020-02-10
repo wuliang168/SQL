@@ -17,7 +17,7 @@ Begin
     -- 存在同名同在岗日期，无法确认递交！
     IF (select COUNT(CONVERT(VARCHAR(10),ESDate,120)) from pEpidemicSuitation a
     where CONVERT(VARCHAR(10),ESDate,120) in (select CONVERT(VARCHAR(10),ESDate,120) from pEpidemicSuitation where ReportTo=@ReportTo and Name=a.Name group by CONVERT(VARCHAR(10),ESDate,120) having count(CONVERT(VARCHAR(10),ESDate,120)) > 1)
-    and ReportTo=@ReportTo)>0
+    and ReportTo=@ReportTo and DATEDIFF(dd,ESDate,GETDATE())=0)>0
     Begin
         Set @RetVal=1100031
         Return @RetVal

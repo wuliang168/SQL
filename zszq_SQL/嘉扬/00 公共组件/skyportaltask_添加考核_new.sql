@@ -135,12 +135,10 @@ and (select CompID from eEmployee where EID=b.EID)<>12
 ------------- 疫情现场员工统计 ------------
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.DepID AS nvarchar(15)) + 
-N''',''现场上班员工统计登记'')">请您完成现场上班员工统计登记工作</a>' AS url, 
-b.approverID AS approver, 1 AS id
-FROM oDepartment a,pEpidemicSuitation_Dep b
-WHERE a.DepID=b.DepID
-and b.SubmitType in (1,3)
+N'<a href="#" onclick="moveTo(''1.0.150010'',''leftid^' + cast(a.approverID AS nvarchar(15)) + 
+N''',''在岗及返回员工统计登记'')">请您完成在岗及返回员工统计登记工作</a>' AS url, 
+a.approverID AS approver, 1 AS id
+FROM pEpidemicSuitation_Dep a
 
 
 ------------- 后备人才选拔 ------------

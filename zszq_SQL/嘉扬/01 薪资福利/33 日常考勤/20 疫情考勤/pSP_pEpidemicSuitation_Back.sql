@@ -6,6 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[pSP_pEpidemicSuitation_Back]
     @ID int,
+    @ReportTo int,
     @RetVal int=0 OutPut
 as
 /*
@@ -20,7 +21,7 @@ Begin
     -------- pEpidemicSuitation --------
     -- 新增员工
     update pEpidemicSuitation
-    set Submit=NULL,SubmitBy=NULL,SubmitTime=NULL
+    set Submit=NULL,SubmitBy=NULL,SubmitTime=NULL,ReportTo=@ReportTo
     Where ID=@ID
     -- 异常处理
     IF @@Error <> 0

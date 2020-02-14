@@ -7,7 +7,6 @@ GO
 ALTER proc [dbo].[pSP_pEpidemicSuitation_EMPAdd]
     @EID int,
     @BID int,
-    @DepID int,
     @ReportTo int,
     @RetVal int=0 OutPut
 as
@@ -25,7 +24,8 @@ Begin
     insert into pEpidemicSuitation(EID,BID,Name,Type,CertNoR6,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
     select @EID,@BID,(select Name from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     1,(select RIGHT(Identification,6) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
-    dbo.eFN_getcompid(@DepID),@DepID,
+    (select CompID from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
+    (select DepID from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     (select dbo.eFN_getdepid1st(DepID) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     (select dbo.eFN_getdepid2nd(DepID) from pVW_employee where ISNULL(BID,EID)=ISNULL(@BID,@EID)),
     @ReportTo,1,

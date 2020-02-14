@@ -5,7 +5,6 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[pSP_pEpidemicSuitation_EMPBlankAdd]
-    @DepID int,
     @ReportTo int,
     @RetVal int=0 OutPut
 as
@@ -21,7 +20,9 @@ Begin
     -------- pEpidemicSuitation --------
     -- 新增员工
     insert into pEpidemicSuitation(Type,CompID,DepID,DepID1st,DepID2nd,ReportTo,Location,ESDate)
-    select 2,dbo.eFN_getcompid(@DepID),@DepID,dbo.eFN_getdepid1st(@DepID),dbo.eFN_getdepid2nd(@DepID),@ReportTo,1,GETDATE()
+    select 2,a.CompID,a.DepID,a.DepID1st,a.DepID2nd,@ReportTo,1,GETDATE()
+    from pVW_employee a
+    where a.EID=@ReportTo
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

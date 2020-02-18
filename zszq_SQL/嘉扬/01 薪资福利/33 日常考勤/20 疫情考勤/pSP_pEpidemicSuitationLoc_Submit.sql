@@ -79,7 +79,6 @@ Begin
     in (select DepID from pEpidemicSuitation_Dep where approverID=@ReportTo) 
     or A.EID in (select ISNULL(Director,Director2) from oDepartment where DepID in (select DepID from pEpidemicSuitation_Dep where approverID=@ReportTo))
     or a.ReportTo=@ReportTo)
-	and ISNULL(BID,EID) not in (select ISNULL(BID,EID) from pEpidemicSuitationLoc_all where DATEDIFF(dd,GETDATE(),ESTDATE)=0 and ISNULL(BID,EID) is not NULL)
     -- 异常处理
     IF @@Error <> 0
     Goto ErrM

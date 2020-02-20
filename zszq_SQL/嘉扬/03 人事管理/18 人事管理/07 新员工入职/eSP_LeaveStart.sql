@@ -117,8 +117,15 @@ Begin TRANSACTION
   From eStatus a,eleave_Register b                        
   Where a.EID=b.EID and b.ID=@ID                        
               
-  If @@Error<>0                        
-  Goto ErrM                        
+  If @@Error<>0
+  Goto ErrM   
+
+  -- 从疫情6类中删除
+  delete from pEpidemicSuitationLoc
+  where EID=(select EID from eleave_register where id=@id)
+  -- 异常流程
+  If @@Error<>0
+  Goto ErrM
                        
   --同步解除合同，自动处理合同相关              
   if Exists(Select 1 From eleave_register a,estatus b                  

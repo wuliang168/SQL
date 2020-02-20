@@ -655,6 +655,14 @@ and not exists (select 1 from ebg_zqqh where badge=a.Badge)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+    -- 疫情6类人员添加
+    insert into pEpidemicSuitationLoc(eid,name,type,compid,depid,depid1st,depid2nd)
+    select eid,name,1,compid,depid,dbo.eFN_getdepid1st(depid),dbo.eFN_getdepid2nd(depid)
+    from eemployee a
+    where a.EID=@EID and a.EID not in (select EID from pEpidemicSuitationLoc where EID is not NULL)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
 
     -- 年金
     ---- 前台转后台；根据身份证编号

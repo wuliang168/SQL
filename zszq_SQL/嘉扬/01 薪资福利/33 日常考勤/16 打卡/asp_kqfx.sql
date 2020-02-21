@@ -183,14 +183,14 @@ begin
 
     -- 疫情六类表格更新
     ---- 新增在人事表格中确认的人员
-    insert into pEpidemicSuitationLoc(eid,name,type,compid,depid,depid1st,depid2nd)
-    select eid,name,1,compid,depid,dbo.eFN_getdepid1st(depid),dbo.eFN_getdepid2nd(depid)
-    from eemployee a
-    where a.EID not in (select EID from pEpidemicSuitationLoc where EID is not NULL) and a.status not in (4,5)
-    and a.EID<>6216
+    --insert into pEpidemicSuitationLoc(eid,name,type,compid,depid,depid1st,depid2nd)
+    --select eid,name,1,compid,depid,dbo.eFN_getdepid1st(depid),dbo.eFN_getdepid2nd(depid)
+    --from eemployee a
+    --where a.EID not in (select EID from pEpidemicSuitationLoc where EID is not NULL) and a.status not in (4,5)
+    --and a.EID<>6216
     ---- 删除在人事表格中离职退休的人员
-    delete from pEpidemicSuitationLoc
-	where EID in (select EID from eEmployee where Status in (4,5))
-	and EID is not NULL
+    --delete from pEpidemicSuitationLoc
+	--where EID in (select EID from eEmployee where Status in (4,5))
+	--and EID is not NULL
 
 end

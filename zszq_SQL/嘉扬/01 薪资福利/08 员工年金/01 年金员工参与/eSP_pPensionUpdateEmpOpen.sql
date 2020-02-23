@@ -11,8 +11,8 @@ ALTER  Procedure [dbo].[eSP_pPensionUpdateEmpOpen]
 As
 /*
 -- Create By wuliang E004205
--- 年金后台人员重新开启程序
--- @ID 为年金后台人员对应ID
+-- 年金总部子公司人员重新开启程序
+-- @ID 为年金总部子公司人员对应ID
 */
 Begin
 
@@ -20,11 +20,11 @@ Begin
     Begin TRANSACTION
 
     -- 更新员工年金确认状态
-    ---- 前台员工
+    ---- 总部子公司员工
     Update a
     Set a.IsSubmit=NULL
     From pPensionUpdatePerEmp_register a
-    Where ID=@ID
+    Where a.ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

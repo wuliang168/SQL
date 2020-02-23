@@ -213,12 +213,22 @@ and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.EID=c.EID and c.DepType 
 UNION
 SELECT DISTINCT
 N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
-N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
+N''',''企业年金分配参与员工'')">请您调整' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
 + cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) + N'年度企业年金分配人员</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
 FROM pPensionUpdatePerDep a,pPensionUpdate b
-where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
+where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsDirectorSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.PensionContact is not NULL
+-- 营业部确认;
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
+N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
++ cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) + N'年度企业年金分配人员</a>' AS url, 
+a.Director AS approver, 1 AS id
+FROM pPensionUpdatePerDep a,pPensionUpdate b
+where ISNULL(a.IsSubmit,0)=1 and ISNULL(a.IsDirectorSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
+and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.Director is not NULL
 
 
 --------------- 月度工资 ------------

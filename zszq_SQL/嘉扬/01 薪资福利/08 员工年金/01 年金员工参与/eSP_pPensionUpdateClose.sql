@@ -63,7 +63,7 @@ Begin
     from pPensionUpdatePerEmp_register a,pEMPAdminIDMD b,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
     where c.ID=@ID and a.Status in (1,2,3) and a.EID is not NULL and a.EID=b.EID 
     and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
-    and a.pPensionUpdateID=@ID and a.EID is not NULL and ISNULL(a.IsPension,0)=1
+    and a.pPensionUpdateID=@ID and a.EID is not NULL and ISNULL(a.IsPensionNow,0)=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -74,6 +74,7 @@ Begin
     (select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
 	where a.EID=b.EID and a.Status=5 and c.ID=@ID and DATEDIFF(YY,a.LeaDate,c.PensionYearBegin)<=0 
     and YEAR(a.LeaDate)>=d.PerYY and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd)
+    and ISNULL(a.IsPensionNow,0)=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -84,7 +85,7 @@ Begin
     select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
-    and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPension,0)=1
+    and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
     and a.Status=1
     -- 异常流程
     If @@Error<>0
@@ -94,8 +95,19 @@ Begin
     select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,5,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.LeaDate)>=d.PerYY
-    and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPension,0)=1
-    and a.LeaDate is not NULL and a.Status=4
+    and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
+    and a.LeaDate is not NULL and a.Status=5
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+
+    ---- 更新前台员工身份证号码
+    update b
+    set b.Identification_update=a.Identification_update
+    from pPensionUpdatePerEmp_register a,pCRMStaff b
+    where a.BID=b.BID and b.BID is not NULL
+    and a.Identification_update<>b.Identification_update
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -103,7 +115,7 @@ Begin
 
     ---- 企业年金参与人员总人数
     update a
-    set a.PensionTotalNum=(select COUNT(IsPension) from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
+    set a.PensionTotalNum=(select COUNT(IsPensionNow) from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
     from pPensionUpdate a
     Where a.ID=@ID
     -- 异常流程

@@ -10,7 +10,7 @@ ALTER VIEW [dbo].[pVW_Employee]
 AS
 
 ---- 理顾
-select b.xOrder*10000+4010 as JobxOrder,NULL as EID,a.BID as BID,NULL as HRLID,NULL as Badge,a.Identification as Identification,ID as CRMID,a.Name as Name,b.CompID as CompID,
+select b.xOrder*10000+4010 as JobxOrder,NULL as EID,a.BID as BID,NULL as HRLID,NULL as Badge,a.Identification as Identification,a.Identification_update as Identification_update,ID as CRMID,a.Name as Name,b.CompID as CompID,
 a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,b.DepType as DepType,b.DepGrade as DepGrade,NULL as KPIDepID,b.DepAbbr as DepTitle,
 b.DepProperty as DepProperty,b.DepProperty1 as DepProperty1,NULL as JobID,a.JobTitle as JobTitle,a.Status as Status,NULL as EmpGrade,
 NULL as CompPartTime,a.JoinDate as JoinDate,a.LeaDate as LeaDate,NULL as WorkCity,a.Mobile as Mobile,a.Account as Account,NULL as ResidentAddress
@@ -20,7 +20,7 @@ where a.DepID=b.DepID
 
 ---- 非理顾
 UNION
-select c.xOrder as JobxOrder,a.EID as EID,NULL as BID,a.HRLID as HRLID,a.Badge as Badge,f.CertNo as Identification,NULL as CRMID,a.Name as Name,d.CompID as CompID,
+select c.xOrder as JobxOrder,a.EID as EID,NULL as BID,a.HRLID as HRLID,a.Badge as Badge,f.CertNo as Identification,f.CertNo as Identification_update,NULL as CRMID,a.Name as Name,d.CompID as CompID,
 a.DepID as DepID,dbo.eFN_getdepid1st(a.DepID) as DepID1st,dbo.eFN_getdepid2nd(a.DepID) as DepID2nd,d.DepType as DepType,d.DepGrade as DepGrade,e.kpiDepID as KPIDepID,d.DepAbbr as DepTitle,
 d.DepProperty as DepProperty,d.DepProperty1 as DepProperty1,c.JobID as JobID,c.Title as JobTitle,a.Status as Status,a.EmpGrade as EmpGrade,ISNULL(e.pegroup,e.perole) as CompPartTime,
 b.JoinDate as JoinDate,b.LeaDate as LeaDate,a.WorkCity as WorkCity,f.Mobile as Mobile,g.Account as Account,f.residentAddress as ResidentAddress

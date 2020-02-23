@@ -29,7 +29,8 @@ Begin
     update a
     set a.IsSubmit=1,a.SubmitTime=GETDATE()
     from pPensionUpdatePerEmp_register a
-    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and EID=@EID and pPensionUpdateID=@pPensionUpdateID
+    where ISNULL(a.IsClosed,0)=0 and ISNULL(a.IsSubmit,0)=0 and a.EID=@EID and a.EID is not NULL
+    and a.pPensionUpdateID=@pPensionUpdateID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

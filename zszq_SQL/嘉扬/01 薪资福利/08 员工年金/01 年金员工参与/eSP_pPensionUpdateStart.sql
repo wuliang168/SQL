@@ -53,11 +53,12 @@ Begin
 
     -- 插入后台员工报名表
     ----在职前后台员工报名表pPensionUpdatePerEmp_register
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Identification_update,Status,JoinDate,LeaDate)
-    select a.ID,b.EID,b.BID,b.Identification_update,b.Status,b.JoinDate,b.LeaDate
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Identification_update,Status_update,JoinDate,LeaDate)
+    select a.ID,b.EID,b.BID,b.Identification_update,b.Status_update,b.JoinDate,b.LeaDate
     from pPensionUpdate a,pVW_Employee b
-    where a.ID=@ID and b.Status in (1,2,3) and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
+    where a.ID=@ID and b.Status_update in (1,2,3) and DATEDIFF(yy,b.JoinDate,a.PensionYearEnd)>=0
     and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pPensionUpdatePerEmp_register where pPensionUpdateID=@ID)
+    and b.JOBTITLE<>N'经纪人'
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -90,10 +91,10 @@ Begin
     Goto ErrM
     
     ---- 插入退休员工
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Status,JoinDate,LeaDate,IsPension,IsPensionNow,IsSubmit)
-    select a.ID,b.EID,b.BID,b.Status,b.JoinDate,b.LeaDate,1,1,1
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Status_update,JoinDate,LeaDate,IsPension,IsPensionNow,IsSubmit)
+    select a.ID,b.EID,b.BID,b.Status_update,b.JoinDate,b.LeaDate,1,1,1
     from pPensionUpdate a,pVW_Employee b
-    where a.ID=@ID and b.Status=5
+    where a.ID=@ID and b.Status_update=5
     and DATEDIFF(yy,b.LeaDate,a.PensionYearBegin)<=0
     and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
     -- 异常流程

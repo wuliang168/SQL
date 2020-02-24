@@ -24,7 +24,8 @@ Begin
     IF Exists(Select 1 From pPensionUpdatePerEmp_register a,pVW_employee b 
     Where ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) AND a.pPensionUpdateID=@pPensionUpdateID AND b.DepID=@DepID
     AND a.Identification_update <> dbo.eFN_CID18CheckSum(a.Identification_update)
-    AND Len(a.Identification_update)=18 AND a.Identification_update IS NOT NULL)
+    AND Len(a.Identification_update)=18 AND a.Identification_update IS NOT NULL
+    AND ISNULL(a.IsPensionNow,0)=1)
     Begin
         Set @RetVal=920033
         Return @RetVal
@@ -34,11 +35,23 @@ Begin
     IF Exists(Select 1 From pPensionUpdatePerEmp_register a,pVW_employee b 
     Where ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) AND a.pPensionUpdateID=@pPensionUpdateID AND b.DepID=@DepID
     AND a.Identification_update in (SELECT Identification_update FROM pPensionUpdatePerEmp_register 
-    where pPensionUpdateID=@pPensionUpdateID and ISNULL(IsPensionNow,0)=1 GROUP BY Identification_update HAVING COUNT(Identification_update) > 1))
+    where pPensionUpdateID=@pPensionUpdateID and ISNULL(IsPensionNow,0)=1 GROUP BY Identification_update HAVING COUNT(Identification_update) > 1)
+    AND ISNULL(a.IsPensionNow,0)=1)
     Begin
         Set @RetVal=1004055
         Return @RetVal
     End
+
+    -- 参与年金的退休人员退休日期早于报名年度，无法递交!
+    IF Exists(Select 1 From pPensionUpdatePerEmp_register a,pVW_employee b,pPensionUpdate c
+    Where ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) AND a.pPensionUpdateID=@pPensionUpdateID AND b.DepID=@DepID
+    AND a.pPensionUpdateID=c.ID and DATEDIFF(yy,a.LeaDate,c.PensionYearBegin)>0 
+    AND ISNULL(a.IsPensionNow,0)=1)
+    Begin
+        Set @RetVal=1004056
+        Return @RetVal
+    End
+
 
     Begin TRANSACTION
 

@@ -61,7 +61,7 @@ Begin
     insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
     select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,1,1
     from pPensionUpdatePerEmp_register a,pEMPAdminIDMD b,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
-    where c.ID=@ID and a.Status in (1,2,3) and a.EID is not NULL and a.EID=b.EID 
+    where c.ID=@ID and a.Status_update in (1,2,3) and a.EID is not NULL and a.EID=b.EID 
     and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
     and a.pPensionUpdateID=@ID and a.EID is not NULL and ISNULL(a.IsPensionNow,0)=1
     -- 异常流程
@@ -69,10 +69,10 @@ Begin
     Goto ErrM
     ---- 退休
     insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,5,1
+    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,a.Status_update,1
 	from pPensionUpdatePerEmp_register a,pEMPAdminIDMD b,pPensionUpdate c,
     (select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
-	where a.EID=b.EID and a.Status=5 and c.ID=@ID and DATEDIFF(YY,a.LeaDate,c.PensionYearBegin)<=0 
+	where a.EID=b.EID and a.Status_update=5 and c.ID=@ID and DATEDIFF(YY,a.LeaDate,c.PensionYearBegin)<=0 
     and YEAR(a.LeaDate)>=d.PerYY and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd)
     and ISNULL(a.IsPensionNow,0)=1
     -- 异常流程
@@ -82,21 +82,21 @@ Begin
     -- 新增前台员工
     ---- 在职
     insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status,1
+    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
     and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
-    and a.Status=1
+    and a.Status_update=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 退休
     insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,5,1
+    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.LeaDate)>=d.PerYY
     and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
-    and a.LeaDate is not NULL and a.Status=5
+    and a.LeaDate is not NULL and a.Status_update=5
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -108,6 +108,16 @@ Begin
     from pPensionUpdatePerEmp_register a,pCRMStaff b
     where a.BID=b.BID and b.BID is not NULL
     and a.Identification_update<>b.Identification_update
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    ---- 更新前台员工职位状态
+    update b
+    set b.Status_update=a.Status_update
+    from pPensionUpdatePerEmp_register a,pCRMStaff b
+    where a.BID=b.BID and b.BID is not NULL
+    and a.Status_update<>b.Status_update
     -- 异常流程
     If @@Error<>0
     Goto ErrM

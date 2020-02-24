@@ -33,8 +33,8 @@ Begin
 
 
     -- 新增部门员工
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Identification_update,Status,JoinDate,LeaDate,IsPensionNow)
-    select @pPensionUpdateID,a.EID,a.BID,a.Identification_update,a.Status,a.JoinDate,a.LeaDate,1
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Identification_update,Status_update,JoinDate,LeaDate,IsPensionNow)
+    select @pPensionUpdateID,a.EID,a.BID,a.Identification_update,a.Status_update,a.JoinDate,a.LeaDate,1
     from pVW_employee a
     where ISNULL(BID,EID)=ISNULL(@BID,@EID)
     -- 异常流程

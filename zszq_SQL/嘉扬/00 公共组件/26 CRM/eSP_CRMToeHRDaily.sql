@@ -14,9 +14,9 @@ Begin
 
     -- 如果pVW_CRM_Staff的Identification未出现在pCRMStaff中，则插入该Identification
     insert into pCRMStaff
-        (Identification,Name,DepID,DepAbbr,DepxOrder,JobTitle,Status,JoinDate,WorkDate,
+        (Account,Identification,Name,DepID,DepAbbr,DepxOrder,JobTitle,Status,JoinDate,WorkDate,
         Party,ConBeginDate,ConEndDate,HighLevel,HighDegree,Mobile,Telephone,LeaDate)
-    select Identification, Name, DepID, DepAbbr, DepxOrder, JobTitle, Status, JoinDate, WorkDate, Party,
+    select USERID,Identification, Name, DepID, DepAbbr, DepxOrder, JobTitle, Status, JoinDate, WorkDate, Party,
         ConBeginDate, ConEndDate, HighLevel, HighDegree, Mobile, Telephone, LeaDate
     from pVW_CRM_Staff
     where Identification in (select Identification

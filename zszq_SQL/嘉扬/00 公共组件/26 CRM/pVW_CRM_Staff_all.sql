@@ -1,8 +1,17 @@
 -- pVW_CRM_Staff_all
 
+USE [zszq]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER VIEW [dbo].[pVW_CRM_Staff_all]
+AS
+
 select (select xOrder
     from oDepartment
-    where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepxOrder, a.YYB,
+    where Title=REPLACE(a.YYB,CHAR(ASCII(RIGHT(a.YYB,1))),'') and ISNULL(isDisabled,0)=0 and xOrder<>9999999999999) as DepxOrder, a.YYB,a.USERID,
     (case when right(LTRIM(RTRIM(a.SFZ)),1)='x' then 
 (case when LEN(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')))=15 and ISNUMERIC(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),1))=1 
 then dbo.eFN_CID18CheckSum(LEFT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),6)+'19'+RIGHT(Convert(varchar(100),REPLACE(LTRIM(RTRIM(a.SFZ)),'x','X')),9)+'0') 
@@ -41,4 +50,5 @@ as Identification,
     convert(datetime,left(a.LZRQ,4)+'-'+right(left(a.LZRQ,6),2)+'-'+RIGHT(a.LZRQ,2)) as LeaDate
 from OPENQUERY(CRMDB, 'SELECT * FROM CRMII.VJJR_HR') a
 where a.SFZ is not NULL and ISNULL(a.JJRJB,0) not like N'%虚拟%'
-order by DepxOrder
+
+Go

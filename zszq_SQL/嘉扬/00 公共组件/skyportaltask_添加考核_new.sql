@@ -173,6 +173,15 @@ a.Director AS approver, 1 AS id
 FROM pYear_MDSalaryModifyDep a,pYear_MDSalaryModify_Process b
 WHERE a.Date=b.Date AND ISNULL(a.IsDepSubmit,0)=1 AND ISNULL(a.IsHRSubmit,0)=1 AND ISNULL(a.IsDepReSubmit,0)=0
 AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0 AND ISNULL(a.IsClosed,0)=0
+-- 分支机构MD职级及薪酬查看
+UNION
+SELECT DISTINCT
+N'<a href="#" onclick="moveTo(''1.0.520070'',''leftid^' + cast(dbo.eFN_getdepdirector(b.DepID) AS nvarchar(15)) + 
+N''',''MD职级及薪酬调整确认'')">请您确认部门员工MD职级及薪酬信息</a>' AS url, 
+dbo.eFN_getdepdirector(b.DepID) AS approver, 1 AS id
+FROM pEMPSalaryCheck a,pVW_employee b
+WHERE ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) and ISNULL(a.IsSubmit,0)=0
+and b.DepType in (2,3) and b.Status not in (4,5)
 
 
 ------------- 年金分配 ------------
@@ -222,7 +231,7 @@ and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.PensionContact is not NU
 -- 营业部确认;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530120'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
+N'<a href="#" onclick="moveTo(''1.0.530130'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
 N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
 + cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) + N'年度企业年金分配人员</a>' AS url, 
 a.Director AS approver, 1 AS id

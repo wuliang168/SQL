@@ -65,11 +65,14 @@ Begin
     IF @@Error <> 0
         Goto ErrM
     ---- Status变动 需要对历史上的记录进行过滤
+    ------ 先更新所有存在离职记录的员工
     update a
-        set a.Status=b.Status,a.LeaDate=b.LeaDate
-        from pCRMStaff a,pVW_CRM_Staff_all b
-        where a.Identification=b.Identification and a.Status=1 and b.Status=4
-        and a.JoinDate=b.JoinDate and a.ConBeginDate=b.ConBeginDate
+    set a.Status=4,a.LeaDate=(select MAX(LeaDate) from pVW_CRM_Staff_all where Identification=a.Identification and Status=4) 
+    from pCRMStaff a
+    where a.Identification not in (select distinct Identification
+    from pVW_CRM_Staff_all b
+    where b.Status=1
+    ) and a.Status=1
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM

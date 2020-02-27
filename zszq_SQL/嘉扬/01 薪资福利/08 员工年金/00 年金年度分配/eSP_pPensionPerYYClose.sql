@@ -46,17 +46,16 @@ Begin
     select PensionYear,EID,BID,Badge,Name,CertNo,IsPension,JoinDate,LeaDate,Status,
     PostModulusPerYY,PostMonthPerYY,PostModulusPerMM,GrpPensionPerYY,EmpPensionPerYY,JobXorder
     from pVW_pEMPPensionPerYY
-    where Year(PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
+    where DATEDIFF(YY,PensionYear,(select PensionYear from pPensionPerYY where ID=@ID))=0
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     ---- 员工年金年度分配详细数据表项
     update a
-    set a.EmpPensionPerYYRST=b.EmpPensionPerYY
-    from pPensionUpdatePerEmp a,pEMPPensionPerYY b
-    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and DATEDIFF(YY,a.PensionYear,b.PensionYear)=0
-    and Year(a.PensionYear)=(select Year(PensionYear) from pPensionPerYY where ID=@ID)
+    set a.EmpPensionPerYYRST=(select SUM(EmpPensionPerYY) from pVW_pEMPPensionPerYY where pPensionUpdateID=a.pPensionUpdateID)
+    from pPensionUpdatePerEmpTrack a
+    where a.pPensionUpdateID=(select distinct pPensionUpdateID from pVW_pEMPPensionPerYY where DATEDIFF(YY,PensionYear,(select PensionYear from pPensionPerYY where ID=@ID))=0)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

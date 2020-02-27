@@ -65,9 +65,11 @@ Begin
     ------ 同步年金分配上年度员工报名状态
     update a
     set a.IsPension=b.IsPension,a.IsWayside=b.IsWayside
-    from pPensionUpdatePerEmp_register a,pPensionUpdatePerEmp_register b
+    from pPensionUpdatePerEmp_register a,pPensionUpdatePerEmpTrack b
     where ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID)
-    AND @ID=a.pPensionUpdateID and b.pPensionUpdateID=(select MAX(ID) from pPensionUpdate where ISNULL(Closed,0)=1)
+    AND @ID=a.pPensionUpdateID 
+    and b.pPensionUpdateID=(select ID from pPensionUpdate 
+    where ISNULL(Closed,0)=1 and DATEDIFF(YY,PensionYearEnd,(select PensionYearBegin from pPensionUpdate where ID=@ID))=1)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -91,12 +93,21 @@ Begin
     Goto ErrM
     
     ---- 插入退休员工
-    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Status_update,JoinDate,LeaDate,IsPension,IsPensionNow,IsSubmit)
-    select a.ID,b.EID,b.BID,b.Status_update,b.JoinDate,b.LeaDate,1,1,1
+    insert into pPensionUpdatePerEmp_register(pPensionUpdateID,EID,BID,Identification_update,Status_update,JoinDate,LeaDate,IsPension,IsPensionNow)
+    select a.ID,b.EID,b.BID,b.Identification_update,b.Status_update,b.JoinDate,b.LeaDate,1,1
     from pPensionUpdate a,pVW_Employee b
     where a.ID=@ID and b.Status_update=5
     and DATEDIFF(yy,b.LeaDate,a.PensionYearBegin)<=0
     and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pPensionUpdatePerEmp_register where pPensionUpdateID=a.ID)
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+    ------ 总部、子公司员工为参加的，默认递交
+    update b
+    set b.IsSubmit=1
+    from pPensionUpdatePerEmp_register b,pVW_employee c
+    where @ID=b.pPensionUpdateID and b.Status_update=5
+    and b.EID=c.EID and c.DepType in (1,4)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

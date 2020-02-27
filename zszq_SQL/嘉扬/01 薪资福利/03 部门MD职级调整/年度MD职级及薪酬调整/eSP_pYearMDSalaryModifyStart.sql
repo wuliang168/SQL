@@ -50,24 +50,24 @@ Begin
     Begin TRANSACTION
 
     -- 插入部门年度MD职级及薪酬调整流程表项pYear_MDSalaryModifyDep
-    insert into pYear_MDSalaryModifyDep(Date,SupDepID,DepID,Director,MDRemark,SalaryRemark,HRRemark)
-    select distinct b.Date,a.SupDepID,a.DepID,a.Director,(select Info from pYear_MDSalaryModifyInfo where ID=1),
+    insert into pYear_MDSalaryModifyDep(pProcessID,Date,SupDepID,DepID,Director,MDRemark,SalaryRemark,HRRemark)
+    select distinct @ID,b.Date,a.SupDepID,a.DepID,a.Director,(select Info from pYear_MDSalaryModifyInfo where ID=1),
     (select Info from pYear_MDSalaryModifyInfo where ID=2),(select Info from pYear_MDSalaryModifyInfo where ID=3)
     from pVW_pYearMDSalaryModifyDep a,pYear_MDSalaryModify_Process b
     where b.ID=@ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-    and a.Director not in (select Director from pYear_MDSalaryModifyDep where Year(Date)=YEAR(b.Date))
+    and a.Director not in (select Director from pYear_MDSalaryModifyDep where pProcessID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
     -- 插入MD职级及薪酬调整表项pYear_MDSalaryModify_register
-    insert into pYear_MDSalaryModify_register (Date,EID,Badge,Name,SupDepID,DepID,JobID,Director,
+    insert into pYear_MDSalaryModify_register (pProcessID,Date,EID,Badge,Name,SupDepID,DepID,JobID,Director,
     Education,Degree,ServingAge,Seniority,pYear,pYearScore,pYearRanking,pYearLevel,MDID,SalaryPerMM)
-    select b.Date,a.EID,a.Badge,a.Name,a.SupDepID,a.DepID,a.JobID,a.Director,
+    select @ID,b.Date,a.EID,a.Badge,a.Name,a.SupDepID,a.DepID,a.JobID,a.Director,
     a.Education,a.Degree,a.ServingAge,a.Seniority,YEAR(a.pYear),a.ScoreYear,a.Ranking,a.RankLevel,a.MDID,a.SalaryPerMM
     from pVW_pYearMDSalaryModifyEMP a,pYear_MDSalaryModify_Process b
-    where b.ID=@ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and DATEDIFF(YY,b.Date,a.pYear)=0
-    and a.EID not in (select EID from pYear_MDSalaryModify_register where Year(a.pYear)=Year(b.Date))
+    where b.ID=@ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+    and a.EID not in (select EID from pYear_MDSalaryModify_register where pProcessID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -84,9 +84,10 @@ Begin
 
 
     -- 更新年度MD职级及薪酬调整流程状态
-    update pYear_MDSalaryModify_Process
-    set Submit=1,SubmitBy=@URID,SubmitTime=GETDATE()
-    where ID=@ID
+    update a
+    set a.Submit=1,a.SubmitBy=@URID,a.SubmitTime=GETDATE()
+    from pYear_MDSalaryModify_Process a
+    where a.ID=@ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

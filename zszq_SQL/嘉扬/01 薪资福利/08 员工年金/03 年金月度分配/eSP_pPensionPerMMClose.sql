@@ -41,19 +41,21 @@ Begin
     update a
     set a.IsClosed=1
     from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and DATEDIFF(MM,a.PensionMonth,b.PensionMonth)=0
+    where b.ID=@ID and a.pProcessID=b.ID
     -- 异常流程
     If @@Error<>0
     Goto ErrM
 
-    -- 更新个人年度剩余
+    ---- 更新月度分配剩余金额
     update a
-    set a.EmpPensionPerYYRST=b.EmpPensionPerYYRST_new
-    from pPensionUpdatePerEmp a,pVW_pPensionPerYYDis b
-    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID) and DATEDIFF(YY,a.PensionYear,b.PensionYear)=0
+    set a.EmpPensionPerYYRST=b.EmpPensionMonthRest
+    from pPensionUpdatePerEmpTrack a,pEmpPensionPerMM_register b
+    where ISNULL(a.EID,a.BID)=ISNULL(b.EID,b.BID)
+    AND b.pProcessID=@ID and a.pPensionUpdateID=(select pPensionUpdateID from pPensionPerMM where ID=@ID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
+
 
     -- 插入年金月度历史数据表项
     -- 插入后台人员月度历史数据表项pEmpPensionPerMM_all

@@ -52,13 +52,13 @@ Begin
     Goto ErrM
 
     ---- 更新月度分配状态
-    Update a
-    Set a.IsDisMM=NULL
-    From pPensionPerYY a
-    Where a.ID<@ID and ISNULL(a.Closed,0)=1
-    -- 异常流程
-    If @@Error<>0
-    Goto ErrM
+    --Update a
+    --Set a.IsDisMM=NULL
+    --From pPensionPerYY a
+    --Where a.ID<@ID and ISNULL(a.Closed,0)=1
+    ---- 异常流程
+    --If @@Error<>0
+    --Goto ErrM
 
 
     -- 递交

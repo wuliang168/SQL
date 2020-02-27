@@ -26,8 +26,8 @@ Begin
         update a
         set a.PensionContact=b.PensionContact
         from pEmpPensionPerMM_register a,pDepPensionPerMM b
-        where b.ID=@ID and b.SalaryPayID=1
-        and a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19)
+        where b.ID=@ID and a.pProcessID=b.pProcessID
+        and b.SalaryPayID=1 and a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19)
         -- 异常流程
         If @@Error<>0
         Goto ErrM
@@ -38,8 +38,8 @@ Begin
         update a
         set a.PensionContact=b.PensionContact
         from pEmpPensionPerMM_register a,pDepPensionPerMM b
-        where b.ID=@ID and b.SalaryPayID=4
-        and a.SalaryPayID in (4,5)
+        where b.ID=@ID and a.pProcessID=b.pProcessID 
+        and b.SalaryPayID=4 and a.SalaryPayID in (4,5)
         -- 异常流程
         If @@Error<>0
         Goto ErrM
@@ -50,8 +50,8 @@ Begin
         update a
         set a.PensionContact=b.PensionContact
         from pEmpPensionPerMM_register a,pDepPensionPerMM b
-        where b.ID=@ID and b.SalaryPayID=7 
-        and a.SalaryPayID=7
+        where b.ID=@ID and a.pProcessID=b.pProcessID
+        and b.SalaryPayID=7 and a.SalaryPayID=7
         -- 异常流程
         If @@Error<>0
         Goto ErrM
@@ -63,8 +63,8 @@ Begin
         update a
         set a.PensionContact=b.PensionContact
         from pEmpPensionPerMM_register a,pDepPensionPerMM b
-        where b.ID=@ID and b.SalaryPayID=6
-        and ISNULL(b.DepID,b.SupDepID)=a.DepID and a.SalaryPayID=6
+        where b.ID=@ID and a.pProcessID=b.pProcessID
+        and b.SalaryPayID=6 and ISNULL(b.DepID,b.SupDepID)=a.DepID and a.SalaryPayID=6
         -- 异常流程
         If @@Error<>0
         Goto ErrM

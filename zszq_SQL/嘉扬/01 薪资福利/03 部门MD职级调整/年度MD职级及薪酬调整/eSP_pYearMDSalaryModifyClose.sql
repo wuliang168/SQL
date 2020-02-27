@@ -35,10 +35,10 @@ Begin
     Begin TRANSACTION
 
     -- 插入年度MD职级及薪酬调整流程的历史表项pYear_MDSalaryModify_all
-    insert into pYear_MDSalaryModify_all(Date,EID,Badge,Name,SupDepID,DepID,JobID,Director,Education,Degree,ServingAge,Seniority,
+    insert into pYear_MDSalaryModify_all(pProcessID,Date,EID,Badge,Name,SupDepID,DepID,JobID,Director,Education,Degree,ServingAge,Seniority,
     pYear,pYearScore,pYearRanking,pYearLevel,MDID,SalaryPerMM,MDIDtoModify,SalaryPerMMtoModify,MDSalaryRemark,
     HRMDID,HRSalaryPerMM,MDIDtoReModify,SalaryPerMMtoReModify,MDSalaryReRemark,HRMDIDAM,HRSalaryPerMMAM,Lock)
-    select a.Date,a.EID,a.Badge,a.Name,a.SupDepID,a.DepID,a.JobID,a.Director,a.Education,a.Degree,a.ServingAge,a.Seniority,
+    select a.pProcessID,a.Date,a.EID,a.Badge,a.Name,a.SupDepID,a.DepID,a.JobID,a.Director,a.Education,a.Degree,a.ServingAge,a.Seniority,
     a.pYear,a.pYearScore,a.pYearRanking,a.pYearLevel,a.MDID,a.SalaryPerMM,a.MDIDtoModify,a.SalaryPerMMtoModify,a.MDSalaryRemark,
     a.HRMDID,a.HRSalaryPerMM,a.MDIDtoReModify,a.SalaryPerMMtoReModify,a.MDSalaryReRemark,a.HRMDIDAM,a.HRSalaryPerMMAM,a.Lock
     from pYear_MDSalaryModify_register a
@@ -55,11 +55,19 @@ Begin
     If @@Error<>0
     Goto ErrM
 
-    -- 更新员工MD职级和薪酬
+    -- 更新员工MD职级
     update a
-    set a.MDID=ISNULL(b.HRMDIDAM,a.MDID),a.SalaryPerMM=ISNULL(b.HRSalaryPerMMAM,a.SalaryPerMM)
-    from pEmployeeEmolu a,pYear_MDSalaryModify_register b
-    where a.EID=b.EID
+    set a.MDID=ISNULL(c.HRMDIDAM,a.MDID)
+    from pEMPAdminIDMD a,pYear_MDSalaryModify_register c
+    where a.EID=c.EID
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+	-- 更新员工薪酬
+    update b
+    set b.SalaryPerMM=ISNULL(c.HRSalaryPerMMAM,b.SalaryPerMM)
+    from pEMPSalary b,pYear_MDSalaryModify_register c
+    where b.EID=c.EID
     -- 异常流程
     If @@Error<>0
     Goto ErrM

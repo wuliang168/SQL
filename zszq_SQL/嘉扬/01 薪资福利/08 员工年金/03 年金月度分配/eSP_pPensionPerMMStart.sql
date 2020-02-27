@@ -31,6 +31,13 @@ Begin
         Set @RetVal = 930066
         Return @RetVal
     End
+    
+    -- 月度年金计划分配未选择报名年度!
+    If Exists(Select 1 From pPensionPerMM Where ID=@ID And pPensionUpdateID is NULL)
+    Begin
+        Set @RetVal = 930078
+        Return @RetVal
+    End
 
     -- 上月度年金计划分配未关闭!
     If Exists(Select 1 From pPensionPerMM Where @ID>1 and ID=@ID-1 And Isnull(Closed,0)=0)
@@ -60,9 +67,10 @@ Begin
     then (select DepPensionContact from oDepartment where DepID=(select DepID from pVW_employee where ISNULL(EID,BID)=ISNULL(b.EID,b.BID)))
     when (select SalaryPayID from pEMPSalary where EID=b.EID)<>6
     then (select PensionContact from oCD_SalaryPayType where ID=(select SalaryPayID from pEMPSalary where EID=b.EID)) end)
-    from pPensionPerMM a,pVW_pPensionPerMM b,pVW_employee c
+    from pPensionPerMM a,pPensionUpdatePerEmpTrack b,pVW_employee c
     where a.ID=@ID and ISNULL(b.EmpPensionPerYYRST,0)>0 and ISNULL(b.EID,b.BID)=ISNULL(c.EID,c.BID)
-    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEmpPensionPerMM_register)
+    and a.pPensionUpdateID=b.pPensionUpdateID
+    and ISNULL(b.EID,b.BID) not in (select ISNULL(EID,BID) from pEmpPensionPerMM_register where @ID=pProcessID)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
@@ -72,7 +80,8 @@ Begin
     update a
     set a.IsClosed=1
     from pDepPensionPerMM a,pPensionPerMM b
-    where b.ID=@ID and DATEDIFF(YY,a.PensionMonth,b.PensionMonth)=0
+    where b.ID=@ID and a.pProcessID=b.ID
+    and a.pPensionUpdateID=b.pPensionUpdateID
     and ((a.SalaryPayID=6 and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and DepID=ISNULL(a.DepID,a.SupDepID))=0)
     or ((a.SalaryPayID in (4,5) or a.SalaryPayID in (1,2,3,10,11,12,13,14,15,16,19) or a.SalaryPayID=7)
     and (select COUNT(ISNULL(EID,BID)) from pEmpPensionPerMM_register where PensionContact=a.PensionContact and a.SalarypayID=SalarypayID)=0))

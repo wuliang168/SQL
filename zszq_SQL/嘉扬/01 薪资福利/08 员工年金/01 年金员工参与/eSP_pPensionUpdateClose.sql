@@ -58,18 +58,18 @@ Begin
     -- 插入后台员工参与年金pPensionUpdatePerEmp
     ---- 在职
     ------ MD和AdminID为去年年度的
-    insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,1,1
+    insert into pPensionUpdatePerEmp(pPensionUpdateID,PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.pPensionUpdateID,CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,1,1
     from pPensionUpdatePerEmp_register a,pEMPAdminIDMD b,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
-    where c.ID=@ID and a.Status_update in (1,2,3) and a.EID is not NULL and a.EID=b.EID 
+    where c.ID=@ID and a.Status_update in (1,2,3,4) and a.EID is not NULL and a.EID=b.EID 
     and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
     and a.pPensionUpdateID=@ID and a.EID is not NULL and ISNULL(a.IsPensionNow,0)=1
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 退休
-    insert into pPensionUpdatePerEmp(PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,a.Status_update,1
+    insert into pPensionUpdatePerEmp(pPensionUpdateID,PensionYear,EID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.pPensionUpdateID,CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.EID,b.LastYearAdminID,b.LastYearMDID,a.JoinDate,a.LeaDate,a.Status_update,1
 	from pPensionUpdatePerEmp_register a,pEMPAdminIDMD b,pPensionUpdate c,
     (select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d 
 	where a.EID=b.EID and a.Status_update=5 and c.ID=@ID and DATEDIFF(YY,a.LeaDate,c.PensionYearBegin)<=0 
@@ -81,22 +81,31 @@ Begin
     ---- 前台员工
     -- 新增前台员工
     ---- 在职
-    insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
+    insert into pPensionUpdatePerEmp(pPensionUpdateID,PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.pPensionUpdateID,CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.JoinDate)<=d.PerYY
     and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
-    and a.Status_update=1
+    and a.Status_update in (1,4)
     -- 异常流程
     If @@Error<>0
     Goto ErrM
     ---- 退休
-    insert into pPensionUpdatePerEmp(PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
-    select CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
+    insert into pPensionUpdatePerEmp(pPensionUpdateID,PensionYear,BID,AdminIDYY,MDIDYY,JoinDate,LeaDate,Status,IsPension)
+    select a.pPensionUpdateID,CONVERT(smalldatetime,CONVERT(char(4), d.PerYY) + '-01-01'),a.BID,30,NULL,a.JoinDate,a.LeaDate,a.Status_update,1
     from pPensionUpdatePerEmp_register a,pPensionUpdate c,(select distinct YEAR(Term) as PerYY from Lleave_Periods where YEAR(Term)<=YEAR(GETDATE())) as d
     where c.ID=@ID and a.BID is not NULL and d.PerYY>=YEAR(c.PensionYearBegin) and d.PerYY<=YEAR(c.PensionYearEnd) and YEAR(a.LeaDate)>=d.PerYY
     and a.pPensionUpdateID=@ID and a.BID is not NULL and ISNULL(a.IsPensionNow,0)=1
     and a.LeaDate is not NULL and a.Status_update=5
+    -- 异常流程
+    If @@Error<>0
+    Goto ErrM
+
+    ---- 月度分配跟踪
+    insert into pPensionUpdatePerEmpTrack(pPensionUpdateID,EID,BID,IsPension)
+    select pPensionUpdateID,EID,BID,IsPension
+    from pPensionUpdatePerEmp_register a
+    where a.pPensionUpdateID=@ID and a.Status_update in (1,2,3,4)
     -- 异常流程
     If @@Error<>0
     Goto ErrM

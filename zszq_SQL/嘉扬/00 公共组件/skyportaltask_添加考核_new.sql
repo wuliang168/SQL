@@ -161,8 +161,9 @@ N''',''MD职级及薪酬调整'')">请您完成' + cast(datepart(yy, dateadd(yy,
 N'年度' + (select DepAbbr from oDepartment where DepID=a.DepID) + N'MD职级及薪酬调整</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_MDSalaryModifyDep a,pYear_MDSalaryModify_Process b
-WHERE a.Date=b.Date AND a.IsDepSubmit is NULL
-AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0 AND ISNULL(a.IsClosed,0)=0
+WHERE a.pProcessID=b.ID AND ISNULL(a.IsClosed,0)=0 
+AND a.IsDepSubmit is NULL
+AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0
 -- 部门MD职级及薪酬HR调整反馈
 UNION
 SELECT DISTINCT
@@ -171,8 +172,9 @@ N''',''MD职级及薪酬调整确认'')">请您完成' + cast(datepart(yy, datea
 N'年度' + (select DepAbbr from oDepartment where DepID=a.DepID) + N'MD职级及薪酬调整确认</a>' AS url, 
 a.Director AS approver, 1 AS id
 FROM pYear_MDSalaryModifyDep a,pYear_MDSalaryModify_Process b
-WHERE a.Date=b.Date AND ISNULL(a.IsDepSubmit,0)=1 AND ISNULL(a.IsHRSubmit,0)=1 AND ISNULL(a.IsDepReSubmit,0)=0
-AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0 AND ISNULL(a.IsClosed,0)=0
+WHERE a.pProcessID=b.ID AND ISNULL(a.IsClosed,0)=0
+AND ISNULL(a.IsDepSubmit,0)=1 AND ISNULL(a.IsHRSubmit,0)=1 AND ISNULL(a.IsDepReSubmit,0)=0
+AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0
 -- 分支机构MD职级及薪酬查看
 UNION
 SELECT DISTINCT
@@ -188,7 +190,7 @@ and b.DepType in (2,3) and b.Status not in (4,5)
 -- 薪酬类型非营业部;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530010'',''leftid^' +'0-'+cast(a.SalaryPayID AS nvarchar(15)) + 
+N'<a href="#" onclick="moveTo(''1.0.530010'',''leftid^' +cast(a.pProcessID AS nvarchar(15))+'-'+cast(a.SalaryPayID AS nvarchar(15)) + 
 N''',''企业年金分配反馈'')">请您完成' + cast(datepart(yy, a.PensionMonth) AS varchar(10)) + 
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.Title + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
@@ -198,7 +200,7 @@ and a.PensionContact is not NULL
 -- 薪酬类型为营业部;
 UNION
 SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530020'',''leftid^' + cast(b.DepID AS nvarchar(15)) +'-6'+
+N'<a href="#" onclick="moveTo(''1.0.530020'',''leftid^' + cast(b.DepID AS nvarchar(15)) +'-'+cast(a.pProcessID AS nvarchar(15))+
 N''',''企业年金分配反馈'')">请您完成' + cast(datepart(yy, a.PensionMonth) AS varchar(10)) + 
 N'年' + cast(datepart(mm, a.PensionMonth) AS varchar(10)) + N'月' + b.DepAbbr + N'员工年金分配</a>' AS url, 
 a.PensionContact AS approver, 1 AS id
@@ -229,15 +231,15 @@ FROM pPensionUpdatePerDep a,pPensionUpdate b
 where ISNULL(a.IsSubmit,0)=0 and ISNULL(a.IsDirectorSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
 and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.PensionContact is not NULL
 -- 营业部确认;
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.530130'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
-N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
-+ cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) + N'年度企业年金分配人员</a>' AS url, 
-a.Director AS approver, 1 AS id
-FROM pPensionUpdatePerDep a,pPensionUpdate b
-where ISNULL(a.IsSubmit,0)=1 and ISNULL(a.IsDirectorSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
-and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.Director is not NULL
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.530130'',''leftid^' + cast(ISNULL(a.DepID,a.SupDepID) AS nvarchar(15)) +'-'+ cast(a.pPensionUpdateID AS varchar(4))+
+--N''',''企业年金分配参与员工'')">请您确认' + (select DepAbbr from odepartment where DepID=ISNULL(a.DepID,a.SupDepID)) + N'参加'
+--+ cast(YEAR(b.PensionYearBegin) AS varchar(4))+'-'+cast(YEAR(b.PensionYearEnd) AS varchar(4)) + N'年度企业年金分配人员</a>' AS url, 
+--a.Director AS approver, 1 AS id
+--FROM pPensionUpdatePerDep a,pPensionUpdate b
+--where ISNULL(a.IsSubmit,0)=1 and ISNULL(a.IsDirectorSubmit,0)=0 and ISNULL(a.IsClosed,0)=0 and a.pPensionUpdateID=b.ID
+--and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0 and a.Director is not NULL
 
 
 --------------- 月度工资 ------------

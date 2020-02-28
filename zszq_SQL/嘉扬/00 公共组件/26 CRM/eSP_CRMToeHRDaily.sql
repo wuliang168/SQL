@@ -36,6 +36,22 @@ Begin
     -- 异常处理
     IF @@Error <> 0
         Goto ErrM
+    -- 如果Identification_update为空
+    Update a
+        Set a.Identification_update=a.Identification
+        From pCRMStaff a
+        Where a.Identification_update is NULL
+    -- 异常处理
+    IF @@Error <> 0
+        Goto ErrM
+    -- 如果Status_update为空
+    Update a
+        Set a.Status_update=a.Status
+        From pCRMStaff a
+        Where a.Status_update is NULL
+    -- 异常处理
+    IF @@Error <> 0
+        Goto ErrM
 
     -- 如果pVW_CRM_Staff的DepID或Status变更时，则同步更新pCRMStaff的DepID、Status或JoinDate
     ---- JoinDate变动 仅仅关注在职人员

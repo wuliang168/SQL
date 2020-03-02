@@ -75,6 +75,7 @@ Begin
     from PEMPPROCESS_MONTH A,eDetails B
 	where A.EID=B.EID and A.monthID=@Tid
     AND (select CompID from eEmployee where EID=A.EID)<>12
+    AND B.OA_mail is not NULL
     -- 异常处理 
     IF @@Error <> 0
     Goto ErrM

@@ -176,14 +176,14 @@ WHERE a.pProcessID=b.ID AND ISNULL(a.IsClosed,0)=0
 AND ISNULL(a.IsDepSubmit,0)=1 AND ISNULL(a.IsHRSubmit,0)=1 AND ISNULL(a.IsDepReSubmit,0)=0
 AND ISNULL(b.Submit,0)=1 AND ISNULL(b.Closed,0)=0
 -- 分支机构MD职级及薪酬查看
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.520070'',''leftid^' + cast(dbo.eFN_getdepdirector(b.DepID) AS nvarchar(15)) + 
-N''',''MD职级及薪酬调整确认'')">请您确认部门员工MD职级及薪酬信息</a>' AS url, 
-dbo.eFN_getdepdirector(b.DepID) AS approver, 1 AS id
-FROM pEMPSalaryCheck a,pVW_employee b
-WHERE ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) and ISNULL(a.IsSubmit,0)=0
-and b.DepType in (2,3) and b.Status not in (4,5)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.520070'',''leftid^' + cast(dbo.eFN_getdepdirector(b.DepID) AS nvarchar(15)) + 
+--N''',''MD职级及薪酬调整确认'')">请您确认部门员工MD职级及薪酬信息</a>' AS url, 
+--dbo.eFN_getdepdirector(b.DepID) AS approver, 1 AS id
+--FROM pEMPSalaryCheck a,pVW_employee b
+--WHERE ISNULL(a.BID,a.EID)=ISNULL(b.BID,b.EID) and ISNULL(a.IsSubmit,0)=0
+--and b.DepType in (2,3) and b.Status not in (4,5)
 
 
 ------------- 年金分配 ------------
@@ -429,114 +429,114 @@ and a.IsSubmit=0 AND ISNULL(a.IsClosed,0)=0
 AND a.AnnualBonusDepID=c.DepID AND c.DepGrade=2
 
 
-------------- 年度评优 ------------
----- 部门负责人(含展业精英含投理顾)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.510020'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
-'-' + cast(a.AppraiseEID AS nvarchar(5)) +
-N''',''年度评优'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年度'+(select DepAbbr from odepartment where DepID=a.AppraiseDepID)+N'评优工作</a>' AS url, 
-a.AppraiseEID AS approver, 1 AS id
-FROM pYear_DepAppraise a,pYear_AppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-AND a.AppraiseDepID<>349
----- 公司领导
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.510040'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
-'-' + cast(a.AppraiseEID AS nvarchar(5)) +
-N''',''年度评优'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年度评优工作</a>' AS url, 
-a.AppraiseEID AS approver, 1 AS id
-FROM pYear_DepAppraise a,pYear_AppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-AND a.AppraiseDepID=349
+--------------- 年度评优 ------------
+------ 部门负责人(含展业精英含投理顾)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.510020'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
+--'-' + cast(a.AppraiseEID AS nvarchar(5)) +
+--N''',''年度评优'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年度'+(select DepAbbr from odepartment where DepID=a.AppraiseDepID)+N'评优工作</a>' AS url, 
+--a.AppraiseEID AS approver, 1 AS id
+--FROM pYear_DepAppraise a,pYear_AppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--AND a.AppraiseDepID<>349
+------ 公司领导
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.510040'',''leftid^' + cast(a.AppraiseDepID AS nvarchar(5)) + 
+--'-' + cast(a.AppraiseEID AS nvarchar(5)) +
+--N''',''年度评优'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年度评优工作</a>' AS url, 
+--a.AppraiseEID AS approver, 1 AS id
+--FROM pYear_DepAppraise a,pYear_AppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--AND a.AppraiseDepID=349
 
 
-------------- 职能部门考核 ------------
----- 部门负责人(考评)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门自评及互评考核工作</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=1
----- 部门负责人(业务部门)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门服务考核工作</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=2
--------- 效率指标：基础管理：成本管控     计划财务部(355)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门效率指标考核</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (355))
------- 质量系数：安全管理               法律合规部(737)、风险管理部(359)、审计部(358)、行政管理总部(352)、信息技术运保部(744)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门质量系数(安全管理)考核</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (737,359,358,352,744))
------- 质量系数：党风廉政               党群部(353)、纪检监察室(792)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门质量系数(党风廉政)考核</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (353,792))
----- 班子其他成员(考评)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（分管领导）'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（班子其他成员）</a>' AS url, 
-a.FDAppraiseEID AS approver, 2 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=6
----- 分管领导(考评)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（分管领导）'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（分管领导）</a>' AS url, 
-a.FDAppraiseEID AS approver, 2 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=4
----- 主要领导(考评)
-UNION
-SELECT DISTINCT
-N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（主要领导）'')">请您进行'
-+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（主要领导）</a>' AS url, 
-a.FDAppraiseEID AS approver, 1 AS id
-FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
-WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
-and a.Status=5
+--------------- 职能部门考核 ------------
+------ 部门负责人(考评)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门自评及互评考核工作</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=1
+------ 部门负责人(业务部门)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门服务考核工作</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=2
+---------- 效率指标：基础管理：成本管控     计划财务部(355)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门效率指标考核</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (355))
+-------- 质量系数：安全管理               法律合规部(737)、风险管理部(359)、审计部(358)、行政管理总部(352)、信息技术运保部(744)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门质量系数(安全管理)考核</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (737,359,358,352,744))
+-------- 质量系数：党风廉政               党群部(353)、纪检监察室(792)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门质量系数(党风廉政)考核</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=3 and a.FDAppraiseEID in (select Director from oDepartment where DepID in (353,792))
+------ 班子其他成员(考评)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（分管领导）'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（班子其他成员）</a>' AS url, 
+--a.FDAppraiseEID AS approver, 2 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=6
+------ 分管领导(考评)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（分管领导）'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（分管领导）</a>' AS url, 
+--a.FDAppraiseEID AS approver, 2 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=4
+------ 主要领导(考评)
+--UNION
+--SELECT DISTINCT
+--N'<a href="#" onclick="moveTo(''1.0.570011'',''leftid^' + cast(a.Status AS nvarchar(2)) + N''',''职能部门考核（主要领导）'')">请您进行'
+--+ cast(YEAR(b.Date) AS varchar(4)) + N'年职能部门考核（主要领导）</a>' AS url, 
+--a.FDAppraiseEID AS approver, 1 AS id
+--FROM pYear_FDDepAppraise a,pYear_FDAppraiseProcess b
+--WHERE ISNULL(a.IsSubmit,0)=0 and a.pYear_ID=b.ID and ISNULL(b.Submit,0)=1 and ISNULL(b.Closed,0)=0
+--and a.Status=5
 
 
-------------- 述职测评 ------------
-UNION
-SELECT N'<a href="#" onclick="moveTo(''1.0.510210'',''总部部门负责人测评'')">请您完成'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年度总部部门负责人测评</a>' AS url, 
-ISNULL(a.Eval_EID,5256) AS approver, 1 AS id
-FROM pYear_ReportEval a,pYear_Process b
-WHERE ISNULL(a.Submit,0)=0
-and a.pYear_ID=b.ID
+--------------- 述职测评 ------------
+--UNION
+--SELECT N'<a href="#" onclick="moveTo(''1.0.510210'',''总部部门负责人测评'')">请您完成'
+--+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年度总部部门负责人测评</a>' AS url, 
+--ISNULL(a.Eval_EID,5256) AS approver, 1 AS id
+--FROM pYear_ReportEval a,pYear_Process b
+--WHERE ISNULL(a.Submit,0)=0
+--and a.pYear_ID=b.ID
 
 ------------- 年度考核 ------------
 -- 员工自评
@@ -713,15 +713,15 @@ and a.pYear_ID=b.ID
 ---- 评分
 ---- 普通员工 ----
 -- skyWindow ID: 503010
-UNION
-SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503070'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
-+ N''',''年度考核评分'')">请您确认'
-+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年分支机构普通员工年度考核评分及考核等级</a>' AS url, 
-ISNULL(a.Score_EID,5256) AS approver, 1 AS id
-FROM pYear_Score a
-left join pYear_Process b on a.pYear_ID=b.ID
-WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
-AND a.Score_Status=99 and a.Score_Type1=33 and a.Score_EID is not NULL
+--UNION
+--SELECT DISTINCT N'<a href="#" onclick="moveTo(''1.0.503070'',''leftid^' + cast(a.Score_Type1 AS nvarchar(15)) 
+--+ N''',''年度考核评分'')">请您确认'
+--+ cast(datepart(yy, b.Date) AS varchar(4)) + N'年分支机构普通员工年度考核评分及考核等级</a>' AS url, 
+--ISNULL(a.Score_EID,5256) AS approver, 1 AS id
+--FROM pYear_Score a
+--left join pYear_Process b on a.pYear_ID=b.ID
+--WHERE ISNULL(a.Initialized,0)=1 AND ISNULL(a.Submit,0)=0 AND ISNULL(a.Closed,0)=0
+--AND a.Score_Status=99 and a.Score_Type1=33 and a.Score_EID is not NULL
 ---- 总部中层员工 ----
 -- skyWindow ID: 503030
 --UNION

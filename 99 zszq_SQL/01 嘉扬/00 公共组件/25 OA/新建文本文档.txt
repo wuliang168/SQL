@@ -1,1 +1,0 @@
-select * from OPENQUERY(OAHR,'select * from ZSZQ.VM_USER)
